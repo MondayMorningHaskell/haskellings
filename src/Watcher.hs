@@ -25,7 +25,7 @@ processEvent configPaths (Modified fp _ _) = case M.lookup modName exerciseMap o
   Nothing -> putStrLn $ "Couldn't find exercise: " ++ modName
   Just exerciseInfo -> do
     putStrLn $ "Running exercise: " ++ modName
-    compileExercise configPaths exerciseInfo
+    compileExercise_ configPaths exerciseInfo
   where
     modName = haskellModuleName fp
 processEvent _ _ = return ()
