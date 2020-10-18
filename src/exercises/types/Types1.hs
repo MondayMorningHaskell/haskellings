@@ -1,6 +1,6 @@
 -- I AM NOT DONE
 
-myFirstVariable :: Int
+myFirstVariable :: ???
 myFirstVariable = 4
 
 main :: IO ()

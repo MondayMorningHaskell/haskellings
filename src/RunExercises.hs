@@ -11,4 +11,4 @@ import           Utils
 runExercise :: (FilePath, FilePath) -> String -> IO ()
 runExercise configPaths exerciseName = case M.lookup exerciseName exerciseMap of
   Nothing -> putStrLn $ "Could not find exercise: " ++ exerciseName ++ "!"
-  Just exerciseInfo -> compileExercise_ configPaths exerciseInfo
+  Just (exDir, exFile) -> compileExercise_ configPaths (exerciseName, exDir, exFile)

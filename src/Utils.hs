@@ -1,6 +1,7 @@
 module Utils where
 
-import Control.Monad (void)
+import Control.Monad (void, forM_)
+import Data.Char
 import Data.List
 import Data.List.Extra
 import System.Console.ANSI
@@ -8,6 +9,8 @@ import System.Directory
 import System.Exit
 import System.IO
 import System.Process
+
+import ExerciseList
 
 fpBasename :: FilePath -> FilePath
 fpBasename = takeWhileEnd (/= '/')
@@ -19,8 +22,8 @@ isHaskellFile = isSuffixOf ".hs"
 haskellModuleName :: FilePath -> FilePath
 haskellModuleName fp = dropEnd 3 (fpBasename fp)
 
-compileExercise :: (FilePath, FilePath) -> (FilePath, FilePath) -> IO ExitCode
-compileExercise (projectRoot, ghcPath) (exDirectory, exFilename) = do
+compileExercise :: (FilePath, FilePath) -> ExerciseInfo -> IO ExitCode
+compileExercise (projectRoot, ghcPath) (_, exDirectory, exFilename) = do
   let fullSourcePath = projectRoot ++ "/src/exercises/" ++ exDirectory ++ "/" ++ exFilename
   let genDirPath = projectRoot ++ "/generated_files/" ++ exDirectory
   let genExecutablePath = genDirPath ++ "/" ++ (haskellModuleName exFilename)
@@ -33,6 +36,7 @@ compileExercise (projectRoot, ghcPath) (exDirectory, exFilename) = do
       setSGR [SetColor Foreground Vivid Green]
       putStrLn $ "Successfully compiled : " ++ exFilename
       setSGR [Reset]
+      removeDirectoryRecursive genDirPath
       return exitCode
     ExitFailure code -> do
       setSGR [SetColor Foreground Vivid Red]
@@ -41,7 +45,19 @@ compileExercise (projectRoot, ghcPath) (exDirectory, exFilename) = do
         Nothing -> return ()
         Just h -> hGetContents h >>= putStrLn
       setSGR [Reset]
+      removeDirectoryRecursive genDirPath
       return exitCode
 
-compileExercise_ :: (FilePath, FilePath) -> (FilePath, FilePath) -> IO ()
+compileExercise_ :: (FilePath, FilePath) -> ExerciseInfo -> IO ()
 compileExercise_ ps ex = void $ compileExercise ps ex
+
+fileContainsNotDone :: FilePath -> IO Bool
+fileContainsNotDone fullFp = do
+  fileLines <- lines <$> readFile fullFp
+  return (any isDoneLine fileLines)
+  where
+    isDoneLine :: String -> Bool
+    isDoneLine l = (upper . (filter (not . isSpace)) $ l) == "--IAMNOTDONE"
+
+fullExerciseFp :: FilePath -> ExerciseInfo -> FilePath
+fullExerciseFp projectRoot (_, exDir, exFile) = projectRoot ++ "/src/exercises/" ++ exDir ++ "/" ++ exFile
