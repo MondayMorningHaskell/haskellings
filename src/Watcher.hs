@@ -6,47 +6,48 @@ import System.Exit
 import System.FSNotify
 import qualified Data.Map as M
 
+import Config
 import ExerciseList
 import Utils
 
-watchExercises :: (FilePath, FilePath) -> IO ()
-watchExercises paths = runExerciseWatch paths exerciseList
+watchExercises :: ProgramConfig -> IO ()
+watchExercises config = runExerciseWatch config exerciseList
 
 shouldCheckFile :: ExerciseInfo -> Event -> Bool
 shouldCheckFile (_, _, exFile) (Modified fp _ _) = fpBasename fp == exFile
 shouldCheckFile _ _ = False
 
 -- This event should be a modification of one of our exercise files
-processEvent :: (FilePath, FilePath) -> ExerciseInfo -> MVar () -> Event -> IO ()
-processEvent configPaths exerciseInfo@(modName, exDirectory, exFile) signalMVar _ = do
-  putStrLn $ "Running exercise: " ++ modName
-  exitCode <- compileExercise configPaths exerciseInfo
+processEvent :: ProgramConfig -> ExerciseInfo -> MVar () -> Event -> IO ()
+processEvent config exerciseInfo@(modName, exDirectory, exFile) signalMVar _ = do
+  progPutStrLn config $ "Running exercise: " ++ modName
+  exitCode <- compileExercise config exerciseInfo
   case exitCode of
     ExitSuccess -> do
       isNotDone <- fileContainsNotDone fullFp
       if isNotDone
-        then putStrLn "This exercise compiles! Remove 'I AM NOT DONE' to proceed!"
+        then progPutStrLn config "This exercise compiles! Remove 'I AM NOT DONE' to proceed!"
         else putMVar signalMVar ()
     ExitFailure _ -> return ()
   where
-    fullFp = fullExerciseFp (fst configPaths) exerciseInfo
+    fullFp = fullExerciseFp (projectRoot config) exerciseInfo
 
-runExerciseWatch :: (FilePath, FilePath) -> [ExerciseInfo] -> IO ()
-runExerciseWatch _ [] = putStrLn "Congratulations, you've completed all the exercises!"
-runExerciseWatch paths@(projectRoot, _) (firstEx : restExs) = do
-  exitCode <- compileExercise paths firstEx
+runExerciseWatch :: ProgramConfig -> [ExerciseInfo] -> IO ()
+runExerciseWatch config [] = progPutStrLn config "Congratulations, you've completed all the exercises!"
+runExerciseWatch config (firstEx : restExs) = do
+  exitCode <- compileExercise config firstEx
   isDone <- not <$> fileContainsNotDone fullFp
   if exitCode == ExitSuccess && isDone
-    then runExerciseWatch paths restExs
+    then runExerciseWatch config restExs
     else do
-      when (exitCode == ExitSuccess) $ putStrLn "This exercise compiles! Remove 'I AM NOT DONE' to proceed!"
+      when (exitCode == ExitSuccess) $ progPutStrLn config "This exercise compiles! Remove 'I AM NOT DONE' to proceed!"
       let conf = defaultConfig { confDebounce = Debounce 1 }
       withManagerConf conf $ \mgr -> do
         signalMVar <- newEmptyMVar
-        stopAction <- watchTree mgr (projectRoot ++ "/src/exercises") (shouldCheckFile firstEx)
-          (processEvent paths firstEx signalMVar)
+        stopAction <- watchTree mgr ((projectRoot config) ++ "/src/exercises") (shouldCheckFile firstEx)
+          (processEvent config firstEx signalMVar)
         takeMVar signalMVar
         stopAction
-      runExerciseWatch paths restExs
+      runExerciseWatch config restExs
   where
-    fullFp = fullExerciseFp projectRoot firstEx
+    fullFp = fullExerciseFp (projectRoot config) firstEx

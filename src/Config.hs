@@ -5,6 +5,7 @@ import Data.List (find, isSuffixOf)
 import Data.Maybe (catMaybes)
 import qualified Data.Sequence as S
 import System.Directory
+import System.IO
 
 ghcVersion :: String
 ghcVersion = "ghc-8.8.4"
@@ -14,6 +15,29 @@ projectRootDirName = "haskellings"
 
 data ConfigError = NoProjectRootError | NoGhcError
   deriving (Show)
+
+data ProgramConfig = ProgramConfig
+  { projectRoot :: FilePath
+  , ghcPath     :: FilePath
+  , inHandle    :: Handle
+  , outHandle   :: Handle
+  , errHandle   :: Handle
+  }
+
+progPutStrLn :: ProgramConfig -> String -> IO ()
+progPutStrLn pc = hPutStrLn (outHandle pc)
+
+progPrint :: (Show a) => ProgramConfig -> a -> IO ()
+progPrint pc = hPrint (outHandle pc)
+
+progPutStrErr :: ProgramConfig -> String -> IO ()
+progPutStrErr pc = hPutStrLn (errHandle pc)
+
+progPrintErr :: (Show a) => ProgramConfig -> a -> IO ()
+progPrintErr pc = hPrint (errHandle pc)
+
+progReadLine :: ProgramConfig -> IO String
+progReadLine pc = hGetLine (inHandle pc)
 
 loadProjectRootAndGhc :: IO (Either ConfigError (FilePath, FilePath))
 loadProjectRootAndGhc = do

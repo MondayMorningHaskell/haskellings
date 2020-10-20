@@ -10,6 +10,7 @@ import System.Exit
 import System.IO
 import System.Process
 
+import Config
 import ExerciseList
 
 fpBasename :: FilePath -> FilePath
@@ -22,34 +23,35 @@ isHaskellFile = isSuffixOf ".hs"
 haskellModuleName :: FilePath -> FilePath
 haskellModuleName fp = dropEnd 3 (fpBasename fp)
 
-compileExercise :: (FilePath, FilePath) -> ExerciseInfo -> IO ExitCode
-compileExercise (projectRoot, ghcPath) (_, exDirectory, exFilename) = do
-  let fullSourcePath = projectRoot ++ "/src/exercises/" ++ exDirectory ++ "/" ++ exFilename
-  let genDirPath = projectRoot ++ "/generated_files/" ++ exDirectory
+compileExercise :: ProgramConfig -> ExerciseInfo -> IO ExitCode
+compileExercise config (_, exDirectory, exFilename) = do
+  let root = projectRoot config
+  let fullSourcePath = root ++ "/src/exercises/" ++ exDirectory ++ "/" ++ exFilename
+  let genDirPath = root ++ "/generated_files/" ++ exDirectory
   let genExecutablePath = genDirPath ++ "/" ++ (haskellModuleName exFilename)
   createDirectoryIfMissing True genDirPath
-  let processSpec = proc ghcPath [fullSourcePath, "-odir", genDirPath, "-hidir", genDirPath, "-o", genExecutablePath]
+  let processSpec = proc (ghcPath config) [fullSourcePath, "-odir", genDirPath, "-hidir", genDirPath, "-o", genExecutablePath]
   (_, _, procStdErr, procHandle) <- createProcess (processSpec { std_out = CreatePipe, std_err = CreatePipe })
   exitCode <- waitForProcess procHandle
   case exitCode of
     ExitSuccess -> do
       setSGR [SetColor Foreground Vivid Green]
-      putStrLn $ "Successfully compiled : " ++ exFilename
+      progPutStrLn config $ "Successfully compiled : " ++ exFilename
       setSGR [Reset]
       removeDirectoryRecursive genDirPath
       return exitCode
     ExitFailure code -> do
       setSGR [SetColor Foreground Vivid Red]
-      putStrLn $ "Couldn't compile : " ++ exFilename
+      progPutStrLn config $ "Couldn't compile : " ++ exFilename
       case procStdErr of
         Nothing -> return ()
-        Just h -> hGetContents h >>= putStrLn
+        Just h -> hGetContents h >>= progPutStrLn config
       setSGR [Reset]
       removeDirectoryRecursive genDirPath
       return exitCode
 
-compileExercise_ :: (FilePath, FilePath) -> ExerciseInfo -> IO ()
-compileExercise_ ps ex = void $ compileExercise ps ex
+compileExercise_ :: ProgramConfig -> ExerciseInfo -> IO ()
+compileExercise_ config ex = void $ compileExercise config ex
 
 fileContainsNotDone :: FilePath -> IO Bool
 fileContainsNotDone fullFp = do

@@ -5,10 +5,11 @@ import qualified Data.Map as M
 import           System.Directory
 import           System.Process
 
+import           Config
 import           ExerciseList (exerciseMap)
 import           Utils
 
-runExercise :: (FilePath, FilePath) -> String -> IO ()
-runExercise configPaths exerciseName = case M.lookup exerciseName exerciseMap of
-  Nothing -> putStrLn $ "Could not find exercise: " ++ exerciseName ++ "!"
-  Just (exDir, exFile) -> compileExercise_ configPaths (exerciseName, exDir, exFile)
+runExercise :: ProgramConfig -> String -> IO ()
+runExercise config exerciseName = case M.lookup exerciseName exerciseMap of
+  Nothing -> progPutStrLn config $ "Could not find exercise: " ++ exerciseName ++ "!"
+  Just (exDir, exFile) -> compileExercise_ config (exerciseName, exDir, exFile)
