@@ -3,3 +3,4 @@
 *.swp
 generated_files/
 .config/
+tests/test_gen/
