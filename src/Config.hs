@@ -17,11 +17,12 @@ data ConfigError = NoProjectRootError | NoGhcError
   deriving (Show)
 
 data ProgramConfig = ProgramConfig
-  { projectRoot :: FilePath
-  , ghcPath     :: FilePath
-  , inHandle    :: Handle
-  , outHandle   :: Handle
-  , errHandle   :: Handle
+  { projectRoot  :: FilePath
+  , ghcPath      :: FilePath
+  , exercisesExt :: FilePath
+  , inHandle     :: Handle
+  , outHandle    :: Handle
+  , errHandle    :: Handle
   }
 
 progPutStrLn :: ProgramConfig -> String -> IO ()

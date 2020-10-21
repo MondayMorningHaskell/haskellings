@@ -26,7 +26,7 @@ haskellModuleName fp = dropEnd 3 (fpBasename fp)
 compileExercise :: ProgramConfig -> ExerciseInfo -> IO ExitCode
 compileExercise config (_, exDirectory, exFilename) = do
   let root = projectRoot config
-  let fullSourcePath = root ++ "/src/exercises/" ++ exDirectory ++ "/" ++ exFilename
+  let fullSourcePath = root ++ exercisesExt config ++ exDirectory ++ "/" ++ exFilename
   let genDirPath = root ++ "/generated_files/" ++ exDirectory
   let genExecutablePath = genDirPath ++ "/" ++ (haskellModuleName exFilename)
   createDirectoryIfMissing True genDirPath
@@ -61,5 +61,5 @@ fileContainsNotDone fullFp = do
     isDoneLine :: String -> Bool
     isDoneLine l = (upper . (filter (not . isSpace)) $ l) == "--IAMNOTDONE"
 
-fullExerciseFp :: FilePath -> ExerciseInfo -> FilePath
-fullExerciseFp projectRoot (_, exDir, exFile) = projectRoot ++ "/src/exercises/" ++ exDir ++ "/" ++ exFile
+fullExerciseFp :: FilePath -> FilePath -> ExerciseInfo -> FilePath
+fullExerciseFp projectRoot exercisesExt (_, exDir, exFile) = projectRoot ++ exercisesExt ++ exDir ++ "/" ++ exFile

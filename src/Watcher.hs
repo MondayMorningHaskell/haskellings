@@ -30,7 +30,7 @@ processEvent config exerciseInfo@(modName, exDirectory, exFile) signalMVar _ = d
         else putMVar signalMVar ()
     ExitFailure _ -> return ()
   where
-    fullFp = fullExerciseFp (projectRoot config) exerciseInfo
+    fullFp = fullExerciseFp (projectRoot config) (exercisesExt config) exerciseInfo
 
 runExerciseWatch :: ProgramConfig -> [ExerciseInfo] -> IO ()
 runExerciseWatch config [] = progPutStrLn config "Congratulations, you've completed all the exercises!"
@@ -44,10 +44,10 @@ runExerciseWatch config (firstEx : restExs) = do
       let conf = defaultConfig { confDebounce = Debounce 1 }
       withManagerConf conf $ \mgr -> do
         signalMVar <- newEmptyMVar
-        stopAction <- watchTree mgr ((projectRoot config) ++ "/src/exercises") (shouldCheckFile firstEx)
+        stopAction <- watchTree mgr ((projectRoot config) ++ (exercisesExt config)) (shouldCheckFile firstEx)
           (processEvent config firstEx signalMVar)
         takeMVar signalMVar
         stopAction
       runExerciseWatch config restExs
   where
-    fullFp = fullExerciseFp (projectRoot config) firstEx
+    fullFp = fullExerciseFp (projectRoot config) (exercisesExt config) firstEx

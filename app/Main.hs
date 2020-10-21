@@ -15,7 +15,7 @@ main = do
     Left NoProjectRootError -> putStrLn "Couldn't find project root!"
     Left NoGhcError -> putStrLn "Couldn't find ghc-8.8.4"
     Right paths -> do
-      let config = ProgramConfig (fst paths) (snd paths) stdin stdout stderr
+      let config = ProgramConfig (fst paths) (snd paths) "/src/exercises/" stdin stdout stderr
       if null args
         then progPutStrLn config "Haskellings requires a sub-command!"
         else do
