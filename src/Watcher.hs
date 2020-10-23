@@ -14,13 +14,13 @@ watchExercises :: ProgramConfig -> IO ()
 watchExercises config = runExerciseWatch config exerciseList
 
 shouldCheckFile :: ExerciseInfo -> Event -> Bool
-shouldCheckFile (_, _, exFile) (Modified fp _ _) = fpBasename fp == exFile
+shouldCheckFile (ExerciseInfo _ _ exFile) (Modified fp _ _) = fpBasename fp == exFile
 shouldCheckFile _ _ = False
 
 -- This event should be a modification of one of our exercise files
 processEvent :: ProgramConfig -> ExerciseInfo -> MVar () -> Event -> IO ()
-processEvent config exerciseInfo@(modName, exDirectory, exFile) signalMVar _ = do
-  progPutStrLn config $ "Running exercise: " ++ modName
+processEvent config exerciseInfo signalMVar _ = do
+  progPutStrLn config $ "Running exercise: " ++ exerciseName exerciseInfo
   exitCode <- compileExercise config exerciseInfo
   case exitCode of
     ExitSuccess -> do

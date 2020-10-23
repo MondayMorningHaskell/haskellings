@@ -2,16 +2,20 @@ module ExerciseList where
 
 import qualified Data.Map as M
 
-exerciseMap :: M.Map String (String, String)
+exerciseMap :: M.Map String ExerciseInfo
 exerciseMap = M.fromList
-  [ ("Types1", ("types", "Types1.hs"))
-  , ("Types2", ("types", "Types2.hs"))
+  [ ("Types1", ExerciseInfo "Types1" "types" "Types1.hs")
+  , ("Types2", ExerciseInfo "Types2" "types" "Types2.hs")
   ]
 
-type ExerciseInfo = (String, String, String)
+data ExerciseInfo = ExerciseInfo
+  { exerciseName :: String
+  , exerciseDirectory :: String
+  , exerciseModuleFile :: String
+  } deriving (Show, Eq)
 
 exerciseList :: [ExerciseInfo]
 exerciseList =
-  [ ("Types1", "types", "Types1.hs")
-  , ("Types2", "types", "Types2.hs")
+  [ ExerciseInfo "Types1" "types" "Types1.hs"
+  , ExerciseInfo "Types2" "types" "Types2.hs"
   ]

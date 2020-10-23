@@ -64,4 +64,6 @@ test-suite haskellings-tests
     , directory
     , haskellings
     , hspec
+    , HUnit
+    , time
   default-language: Haskell2010
