@@ -1,5 +1,4 @@
+module Types1 where
+
 myFirstVariable :: Int
 myFirstVariable = 4
-
-main :: IO ()
-main = print myFirstVariable

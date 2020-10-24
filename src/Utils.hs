@@ -27,23 +27,19 @@ data RunResult =
   CompileError | TestFailed | RunSuccess
   deriving (Show, Eq)
 
-compileExercise :: ProgramConfig -> ExerciseInfo -> IO ExitCode
-compileExercise config (ExerciseInfo _ exDirectory exFilename) = do
+compileExercise :: ProgramConfig -> ExerciseInfo -> IO RunResult
+compileExercise config (ExerciseInfo _ exDirectory exFilename exIsRunnable) = do
   let root = projectRoot config
   let fullSourcePath = root ++ exercisesExt config ++ exDirectory ++ "/" ++ exFilename
   let genDirPath = root ++ "/generated_files/" ++ exDirectory
   let genExecutablePath = genDirPath ++ "/" ++ (haskellModuleName exFilename)
   createDirectoryIfMissing True genDirPath
-  let processSpec = proc (ghcPath config) [fullSourcePath, "-odir", genDirPath, "-hidir", genDirPath, "-o", genExecutablePath]
+  let baseArgs = [fullSourcePath, "-odir", genDirPath, "-hidir", genDirPath]
+  let finalArgs = if exIsRunnable then baseArgs ++ ["-o", genExecutablePath] else baseArgs
+  let processSpec = proc (ghcPath config) finalArgs
   (_, _, procStdErr, procHandle) <- createProcess (processSpec { std_out = CreatePipe, std_err = CreatePipe })
   exitCode <- waitForProcess procHandle
   case exitCode of
-    ExitSuccess -> do
-      setSGR [SetColor Foreground Vivid Green]
-      progPutStrLn config $ "Successfully compiled : " ++ exFilename
-      setSGR [Reset]
-      removeDirectoryRecursive genDirPath
-      return exitCode
     ExitFailure code -> do
       setSGR [SetColor Foreground Vivid Red]
       progPutStrLn config $ "Couldn't compile : " ++ exFilename
@@ -52,7 +48,33 @@ compileExercise config (ExerciseInfo _ exDirectory exFilename) = do
         Just h -> hGetContents h >>= progPutStrLn config
       setSGR [Reset]
       removeDirectoryRecursive genDirPath
-      return exitCode
+      return CompileError
+    ExitSuccess -> do
+      setSGR [SetColor Foreground Vivid Green]
+      progPutStrLn config $ "Successfully compiled : " ++ exFilename
+      setSGR [Reset]
+      if not exIsRunnable
+        then removeDirectoryRecursive genDirPath >> return RunSuccess
+        else do
+          let execSpec = shell genExecutablePath
+          (_, _, execStdErr, execProcHandle) <- createProcess (execSpec { std_out = CreatePipe, std_err = CreatePipe })
+          execExit <- waitForProcess execProcHandle
+          case execExit of
+            ExitFailure code -> do
+              setSGR [SetColor Foreground Vivid Red]
+              progPutStrLn config $ "Tests failed on exercise : " ++ exFilename
+              case execStdErr of
+                Nothing -> return ()
+                Just h -> hGetContents h >>= progPutStrLn config
+              setSGR [Reset]
+              removeDirectoryRecursive genDirPath
+              return TestFailed
+            ExitSuccess -> do
+              setSGR [SetColor Foreground Vivid Green]
+              progPutStrLn config $ "Successfully ran : " ++ exFilename
+              setSGR [Reset]
+              removeDirectoryRecursive genDirPath
+              return RunSuccess
 
 compileExercise_ :: ProgramConfig -> ExerciseInfo -> IO ()
 compileExercise_ config ex = void $ compileExercise config ex
@@ -66,4 +88,4 @@ fileContainsNotDone fullFp = do
     isDoneLine l = (upper . (filter (not . isSpace)) $ l) == "--IAMNOTDONE"
 
 fullExerciseFp :: FilePath -> FilePath -> ExerciseInfo -> FilePath
-fullExerciseFp projectRoot exercisesExt (ExerciseInfo _ exDir exFile) = projectRoot ++ exercisesExt ++ exDir ++ "/" ++ exFile
+fullExerciseFp projectRoot exercisesExt (ExerciseInfo _ exDir exFile _) = projectRoot ++ exercisesExt ++ exDir ++ "/" ++ exFile

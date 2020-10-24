@@ -22,15 +22,17 @@ main = do
       hspec $ describe "Basic Compile Tests" $ do
         compileTests1 paths
         compileTests2 paths
+        compileAndRunTestFail1 paths
+        compileAndRunTestFail2 paths
+        compileAndRunTestPass paths
         watchTests paths
 
-compileBeforeHook :: (FilePath, FilePath) -> FilePath -> FilePath -> IO (String, ExitCode)
-compileBeforeHook (projectRoot, ghcPath) inFile outFile = do
+compileBeforeHook :: (FilePath, FilePath) -> ExerciseInfo -> FilePath -> IO (String, RunResult)
+compileBeforeHook (projectRoot, ghcPath) exInfo outFile = do
   let fullFp = projectRoot ++ "/tests/test_gen/" ++ outFile
   outHandle <- openFile fullFp WriteMode
   let conf = ProgramConfig projectRoot ghcPath "/tests/exercises/" stdin outHandle stderr
-  let exerciseInfo = ExerciseInfo "Test" "types" inFile
-  resultExit <- compileExercise conf exerciseInfo
+  resultExit <- compileExercise conf exInfo
   hClose outHandle
   programOutput <- readFile fullFp
   return (programOutput, resultExit)
@@ -41,24 +43,67 @@ isFailureOutput output = do
   length outputLines `shouldSatisfy` (> 1)
   head outputLines `shouldSatisfy` (isPrefixOf "Couldn't compile :")
 
+isRunFailureOutput :: String -> Expectation
+isRunFailureOutput output = do
+  let outputLines = lines output
+  length outputLines `shouldSatisfy` (> 1)
+  head outputLines `shouldSatisfy` (isPrefixOf "Successfully compiled :")
+  outputLines !! 1 `shouldSatisfy` (isPrefixOf "Tests failed on exercise :")
+
 isSuccessOutput :: String -> Expectation
 isSuccessOutput output = output `shouldSatisfy` (isPrefixOf "Successfully compiled :")
 
+isSuccessRunOutput :: String -> Expectation
+isSuccessRunOutput output = do
+  let outputLines = lines output
+  length outputLines `shouldBe` 2
+  head outputLines `shouldSatisfy` (isPrefixOf "Successfully compiled :")
+  outputLines !! 1 `shouldSatisfy` (isPrefixOf "Successfully ran :")
+
 compileTests1 :: (FilePath, FilePath) -> Spec
-compileTests1 paths = before (compileBeforeHook paths "Types1Bad.hs" "types1_bad.output") $
+compileTests1 paths = before (compileBeforeHook paths exInfo "types1_bad.output") $
   describe "When running 'compileExercise' with non-compiling file" $
     it "Should indicate failure to compile and return a failing exit code" $ \(output, exit) -> do
-      exit `shouldNotBe` ExitSuccess
+      exit `shouldBe` CompileError
       isFailureOutput output
+  where
+    exInfo = ExerciseInfo "Types1Bad" "types" "Types1Bad.hs" False
 
 compileTests2 :: (FilePath, FilePath) -> Spec
-compileTests2 paths = before (compileBeforeHook paths "Types1Good.hs" "types1_good.output") $
+compileTests2 paths = before (compileBeforeHook paths exInfo "types1_good.output") $
   describe "When running 'compileExercise' with compiling file" $
     it "Should indicate successful compilation and return a success exit code" $ \(output, exit) -> do
-      exit `shouldBe` ExitSuccess
+      exit `shouldBe` RunSuccess
       isSuccessOutput output
+  where
+    exInfo = ExerciseInfo "Types1Good" "types" "Types1Good.hs" False
 
+compileAndRunTestFail1 :: (FilePath, FilePath) -> Spec
+compileAndRunTestFail1 paths = before (compileBeforeHook paths exInfo "recursion1_bad1.output") $
+  describe "When running 'compileExercise' with non-compiling and runnable file" $
+    it "Should indicate failure to compile and return a failing exit code" $ \(output, exit) -> do
+      exit `shouldBe` CompileError
+      isFailureOutput output
+  where
+    exInfo = ExerciseInfo "Recursion1Bad1" "recursion" "Recursion1Bad1.hs" True
 
+compileAndRunTestFail2 :: (FilePath, FilePath) -> Spec
+compileAndRunTestFail2 paths = before (compileBeforeHook paths exInfo "recursion1_bad2.output") $
+  describe "When running 'compileExercise' with compiling but incorrect file" $
+    it "Should indicate test failures and return a failing exit code" $ \(output, exit) -> do
+      isRunFailureOutput output
+      exit `shouldBe` TestFailed
+  where
+    exInfo = ExerciseInfo "Recursion1Bad2" "recursion" "Recursion1Bad2.hs" True
+
+compileAndRunTestPass :: (FilePath, FilePath) -> Spec
+compileAndRunTestPass paths = before (compileBeforeHook paths exInfo "recursion1_good.output") $
+  describe "When running 'compileExercise' with compiling and runnable file" $
+    it "Should indicate successful compilation and return a success exit code" $ \(output, exit) -> do
+      exit `shouldBe` RunSuccess
+      isSuccessRunOutput output
+  where
+    exInfo = ExerciseInfo "Recursion1Good" "recursion" "Recursion1Good.hs" True
 
 
 
@@ -67,8 +112,8 @@ compileTests2 paths = before (compileBeforeHook paths "Types1Good.hs" "types1_go
 
 watchTestExercises :: [ExerciseInfo]
 watchTestExercises =
-  [ ExerciseInfo "Types1" "watcher_types" "Types1.hs"
-  , ExerciseInfo "Types2" "watcher_types" "Types2.hs"
+  [ ExerciseInfo "Types1" "watcher_types" "Types1.hs" False
+  , ExerciseInfo "Types2" "watcher_types" "Types2.hs" False
   ]
 
 watchTests :: (FilePath, FilePath) -> Spec
@@ -80,11 +125,11 @@ watchTests paths = before (beforeWatchHook paths "watcher_tests_.out") $
     expectedSequence =
       [ "Couldn't compile : Types1.hs"
       , "Successfully compiled : Types1.hs"
-      , "This exercise compiles! Remove 'I AM NOT DONE' to proceed!"
+      , "This exercise succeeds! Remove 'I AM NOT DONE' to proceed!"
       , "Successfully compiled : Types1.hs"
       , "Couldn't compile : Types2.hs"
       , "Successfully compiled : Types2.hs"
-      , "This exercise compiles! Remove 'I AM NOT DONE' to proceed!"
+      , "This exercise succeeds! Remove 'I AM NOT DONE' to proceed!"
       , "Successfully compiled : Types2.hs"
       , "Congratulations, you've completed all the exercises!"
       ]
