@@ -25,13 +25,15 @@ main = do
         compileAndRunTestFail1 paths
         compileAndRunTestFail2 paths
         compileAndRunTestPass paths
+        compileAndRunTestPass2 paths
         watchTests paths
 
 compileBeforeHook :: (FilePath, FilePath) -> ExerciseInfo -> FilePath -> IO (String, RunResult)
 compileBeforeHook (projectRoot, ghcPath) exInfo outFile = do
   let fullFp = projectRoot ++ "/tests/test_gen/" ++ outFile
   outHandle <- openFile fullFp WriteMode
-  let conf = ProgramConfig projectRoot ghcPath "/tests/exercises/" stdin outHandle stderr
+  packageDb <- findStackPackageDb
+  let conf = ProgramConfig projectRoot ghcPath packageDb "/tests/exercises/" stdin outHandle stderr
   resultExit <- compileExercise conf exInfo
   hClose outHandle
   programOutput <- readFile fullFp
@@ -105,6 +107,15 @@ compileAndRunTestPass paths = before (compileBeforeHook paths exInfo "recursion1
   where
     exInfo = ExerciseInfo "Recursion1Good" "recursion" "Recursion1Good.hs" True ""
 
+compileAndRunTestPass2 :: (FilePath, FilePath) -> Spec
+compileAndRunTestPass2 paths = before (compileBeforeHook paths exInfo "recursion2.output") $
+  describe "When running 'compileExercise' with compiling and runnable file that has a unit testing library" $
+    it "Should indicate successful compilation and return a success exit code" $ \(output, exit) -> do
+      exit `shouldBe` RunSuccess
+      isSuccessRunOutput output
+  where
+    exInfo = ExerciseInfo "Recursion" "recursion" "Recursion2.hs" True ""
+
 
 
 
@@ -163,7 +174,7 @@ beforeWatchHook (projectRoot, ghcPath) outFile = do
   let fullIn = projectRoot ++ "/tests/watcher_tests.in"
   outHandle <- openFile fullFp WriteMode
   inHandle <- openFile fullIn ReadMode
-  let conf = ProgramConfig projectRoot ghcPath "/tests/exercises/" inHandle outHandle stderr
+  let conf = ProgramConfig projectRoot ghcPath Nothing "/tests/exercises/" inHandle outHandle stderr
   watchTid <- forkIO (runExerciseWatch conf watchTestExercises)
   -- Modify Files
   makeModifications modifications

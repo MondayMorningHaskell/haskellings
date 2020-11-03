@@ -37,7 +37,8 @@ library
     , directory
     , extra
     , fsnotify
-    , HUnit
+    , tasty
+    , tasty-hunit
     , process
     , time
   default-language: Haskell2010

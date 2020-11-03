@@ -1,10 +1,9 @@
--- I AM NOT DONE
-
 import Test.Tasty
 import Test.Tasty.HUnit
 
 sumList :: [Int] -> Int
-sumList = undefined
+sumList [] = 0
+sumList (a : as) = a + sumList as
 
 main :: IO ()
 main = defaultMain $

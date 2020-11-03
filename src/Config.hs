@@ -10,6 +10,9 @@ import System.IO
 ghcVersion :: String
 ghcVersion = "ghc-8.8.4"
 
+ghcVersionNumber :: String
+ghcVersionNumber = "8.8.4"
+
 projectRootDirName :: String
 projectRootDirName = "haskellings"
 
@@ -19,6 +22,7 @@ data ConfigError = NoProjectRootError | NoGhcError
 data ProgramConfig = ProgramConfig
   { projectRoot  :: FilePath
   , ghcPath      :: FilePath
+  , packageDb    :: Maybe FilePath
   , exercisesExt :: FilePath
   , inHandle     :: Handle
   , outHandle    :: Handle
@@ -61,6 +65,27 @@ findGhc = do
   case catMaybes results of
     [] -> return Nothing
     (fp : _) -> return $ Just (fp ++ "/bin/ghc")
+
+-- TODO: This doesn't necessarily account for having multiple snapshots that
+--       both use 8.8.4. This logic definitely needs to be tighter.
+findStackPackageDb :: IO (Maybe FilePath)
+findStackPackageDb = do
+  home <- getHomeDirectory
+  let stackDir = home ++ "/.stack/snapshots"
+  nextDirs <- listDirectory stackDir
+  results <- forM nextDirs $ \subPath -> do
+    -- 'fullPath' is like .stack/snapshots/linux_x86_64
+    let fullPath = stackDir ++ "/" ++ subPath
+    subContents <- listDirectory fullPath
+    results' <- forM subContents $ \hashDirectory -> do
+      -- 'fullHashPath' is like .stack/snapshots/linux_x86_64/77asdfasdf...
+      let fullHashPath = fullPath ++ "/" ++ hashDirectory
+      allGhcDirs <- listDirectory fullHashPath
+      return $ fmap ((++) (fullHashPath ++ "/")) (find (== ghcVersionNumber) allGhcDirs)
+    return $ catMaybes results'
+  case concat results of
+    [] -> return Nothing
+    (pkgPath : _) -> return (Just $ pkgPath ++ "/pkgdb/")
 
 -- BFS
 -- Assumes home is NOT the project

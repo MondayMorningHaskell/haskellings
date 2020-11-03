@@ -35,7 +35,10 @@ compileExercise config (ExerciseInfo _ exDirectory exFilename exIsRunnable _) = 
   let genExecutablePath = genDirPath ++ "/" ++ (haskellModuleName exFilename)
   createDirectoryIfMissing True genDirPath
   let baseArgs = [fullSourcePath, "-odir", genDirPath, "-hidir", genDirPath]
-  let finalArgs = if exIsRunnable then baseArgs ++ ["-o", genExecutablePath] else baseArgs
+  let execArgs = if exIsRunnable then baseArgs ++ ["-o", genExecutablePath] else baseArgs
+  let finalArgs = case packageDb config of
+        Nothing -> execArgs
+        Just pkgPath -> execArgs ++ ["-package-db", pkgPath]
   let processSpec = proc (ghcPath config) finalArgs
   (_, _, procStdErr, procHandle) <- createProcess (processSpec { std_out = CreatePipe, std_err = CreatePipe })
   exitCode <- waitForProcess procHandle
