@@ -28,7 +28,7 @@ data RunResult =
   deriving (Show, Eq)
 
 compileExercise :: ProgramConfig -> ExerciseInfo -> IO RunResult
-compileExercise config (ExerciseInfo _ exDirectory exFilename exIsRunnable) = do
+compileExercise config (ExerciseInfo _ exDirectory exFilename exIsRunnable _) = do
   let root = projectRoot config
   let fullSourcePath = root ++ exercisesExt config ++ exDirectory ++ "/" ++ exFilename
   let genDirPath = root ++ "/generated_files/" ++ exDirectory
@@ -88,4 +88,4 @@ fileContainsNotDone fullFp = do
     isDoneLine l = (upper . (filter (not . isSpace)) $ l) == "--IAMNOTDONE"
 
 fullExerciseFp :: FilePath -> FilePath -> ExerciseInfo -> FilePath
-fullExerciseFp projectRoot exercisesExt (ExerciseInfo _ exDir exFile _) = projectRoot ++ exercisesExt ++ exDir ++ "/" ++ exFile
+fullExerciseFp projectRoot exercisesExt (ExerciseInfo _ exDir exFile _ _) = projectRoot ++ exercisesExt ++ exDir ++ "/" ++ exFile

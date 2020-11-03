@@ -67,7 +67,7 @@ compileTests1 paths = before (compileBeforeHook paths exInfo "types1_bad.output"
       exit `shouldBe` CompileError
       isFailureOutput output
   where
-    exInfo = ExerciseInfo "Types1Bad" "types" "Types1Bad.hs" False
+    exInfo = ExerciseInfo "Types1Bad" "types" "Types1Bad.hs" False ""
 
 compileTests2 :: (FilePath, FilePath) -> Spec
 compileTests2 paths = before (compileBeforeHook paths exInfo "types1_good.output") $
@@ -76,7 +76,7 @@ compileTests2 paths = before (compileBeforeHook paths exInfo "types1_good.output
       exit `shouldBe` RunSuccess
       isSuccessOutput output
   where
-    exInfo = ExerciseInfo "Types1Good" "types" "Types1Good.hs" False
+    exInfo = ExerciseInfo "Types1Good" "types" "Types1Good.hs" False ""
 
 compileAndRunTestFail1 :: (FilePath, FilePath) -> Spec
 compileAndRunTestFail1 paths = before (compileBeforeHook paths exInfo "recursion1_bad1.output") $
@@ -85,7 +85,7 @@ compileAndRunTestFail1 paths = before (compileBeforeHook paths exInfo "recursion
       exit `shouldBe` CompileError
       isFailureOutput output
   where
-    exInfo = ExerciseInfo "Recursion1Bad1" "recursion" "Recursion1Bad1.hs" True
+    exInfo = ExerciseInfo "Recursion1Bad1" "recursion" "Recursion1Bad1.hs" True ""
 
 compileAndRunTestFail2 :: (FilePath, FilePath) -> Spec
 compileAndRunTestFail2 paths = before (compileBeforeHook paths exInfo "recursion1_bad2.output") $
@@ -94,7 +94,7 @@ compileAndRunTestFail2 paths = before (compileBeforeHook paths exInfo "recursion
       isRunFailureOutput output
       exit `shouldBe` TestFailed
   where
-    exInfo = ExerciseInfo "Recursion1Bad2" "recursion" "Recursion1Bad2.hs" True
+    exInfo = ExerciseInfo "Recursion1Bad2" "recursion" "Recursion1Bad2.hs" True ""
 
 compileAndRunTestPass :: (FilePath, FilePath) -> Spec
 compileAndRunTestPass paths = before (compileBeforeHook paths exInfo "recursion1_good.output") $
@@ -103,7 +103,7 @@ compileAndRunTestPass paths = before (compileBeforeHook paths exInfo "recursion1
       exit `shouldBe` RunSuccess
       isSuccessRunOutput output
   where
-    exInfo = ExerciseInfo "Recursion1Good" "recursion" "Recursion1Good.hs" True
+    exInfo = ExerciseInfo "Recursion1Good" "recursion" "Recursion1Good.hs" True ""
 
 
 
@@ -112,8 +112,8 @@ compileAndRunTestPass paths = before (compileBeforeHook paths exInfo "recursion1
 
 watchTestExercises :: [ExerciseInfo]
 watchTestExercises =
-  [ ExerciseInfo "Types1" "watcher_types" "Types1.hs" False
-  , ExerciseInfo "Types2" "watcher_types" "Types2.hs" False
+  [ ExerciseInfo "Types1" "watcher_types" "Types1.hs" False "What type should you fill in for the variable?"
+  , ExerciseInfo "Types2" "watcher_types" "Types2.hs" False "What type can you fill in for the tuple?"
   ]
 
 watchTests :: (FilePath, FilePath) -> Spec
@@ -124,6 +124,7 @@ watchTests paths = before (beforeWatchHook paths "watcher_tests_.out") $
   where
     expectedSequence =
       [ "Couldn't compile : Types1.hs"
+      , "What type should you fill in for the variable?"
       , "Successfully compiled : Types1.hs"
       , "This exercise succeeds! Remove 'I AM NOT DONE' to proceed!"
       , "Successfully compiled : Types1.hs"
@@ -159,13 +160,16 @@ beforeWatchHook (projectRoot, ghcPath) outFile = do
   copyFile (addFullDirectory "Types2Orig.hs") fullDest2
   -- Build Configuration
   let fullFp = projectRoot ++ "/tests/test_gen/" ++ outFile
+  let fullIn = projectRoot ++ "/tests/watcher_tests.in"
   outHandle <- openFile fullFp WriteMode
-  let conf = ProgramConfig projectRoot ghcPath "/tests/exercises/" stdin outHandle stderr
+  inHandle <- openFile fullIn ReadMode
+  let conf = ProgramConfig projectRoot ghcPath "/tests/exercises/" inHandle outHandle stderr
   watchTid <- forkIO (runExerciseWatch conf watchTestExercises)
   -- Modify Files
   makeModifications modifications
   killThread watchTid
   hClose outHandle
+  hClose inHandle
   removeFile fullDest1
   removeFile fullDest2
   programOutput <- readFile fullFp

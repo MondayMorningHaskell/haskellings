@@ -4,6 +4,7 @@ import Control.Concurrent
 import Control.Monad (forever, when, unless)
 import System.Exit
 import System.FSNotify
+import System.IO (hIsEOF)
 import qualified Data.Map as M
 
 import Config
@@ -14,7 +15,7 @@ watchExercises :: ProgramConfig -> IO ()
 watchExercises config = runExerciseWatch config exerciseList
 
 shouldCheckFile :: ExerciseInfo -> Event -> Bool
-shouldCheckFile (ExerciseInfo _ _ exFile _) (Modified fp _ _) = fpBasename fp == exFile
+shouldCheckFile (ExerciseInfo _ _ exFile _ _) (Modified fp _ _) = fpBasename fp == exFile
 shouldCheckFile _ _ = False
 
 -- This event should be a modification of one of our exercise files
@@ -46,8 +47,20 @@ runExerciseWatch config (firstEx : restExs) = do
         signalMVar <- newEmptyMVar
         stopAction <- watchTree mgr ((projectRoot config) ++ (exercisesExt config)) (shouldCheckFile firstEx)
           (processEvent config firstEx signalMVar)
+        userInputThread <- forkIO $ forever (watchForUserInput config firstEx)
         takeMVar signalMVar
         stopAction
+        killThread userInputThread
       runExerciseWatch config restExs
   where
     fullFp = fullExerciseFp (projectRoot config) (exercisesExt config) firstEx
+
+watchForUserInput :: ProgramConfig -> ExerciseInfo -> IO ()
+watchForUserInput config exInfo = do
+  inIsEnd <- hIsEOF (inHandle config)
+  if inIsEnd
+    then threadDelay 1000000 >> return ()
+    else do
+      userInput <- progReadLine config
+      when (userInput == "hint") $
+        progPutStrLn config (exerciseHint exInfo)
