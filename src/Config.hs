@@ -1,8 +1,10 @@
 module Config where
 
+import Control.Concurrent (MVar, putMVar, takeMVar)
 import Control.Monad (forM)
 import Data.List (find, isSuffixOf)
 import Data.Maybe (catMaybes)
+import qualified Data.Map as M
 import qualified Data.Sequence as S
 import System.Directory
 import System.Environment (lookupEnv)
@@ -25,6 +27,17 @@ mainProjectExercisesDir = makeRelative ("src" `pathJoin` "exercises")
 data ConfigError = NoProjectRootError | NoGhcError
   deriving (Show)
 
+type FileLockMap = M.Map FilePath (MVar ())
+
+withFileLock :: FilePath -> ProgramConfig -> IO a -> IO a
+withFileLock fp config action = case M.lookup fp (fileLocks config) of
+  Nothing -> action
+  Just lock -> do
+    putMVar lock ()
+    result <- action
+    takeMVar lock
+    return result
+
 data ProgramConfig = ProgramConfig
   { projectRoot  :: FilePath
   , ghcPath      :: FilePath
@@ -33,6 +46,7 @@ data ProgramConfig = ProgramConfig
   , inHandle     :: Handle
   , outHandle    :: Handle
   , errHandle    :: Handle
+  , fileLocks    :: FileLockMap
   }
 
 progPutStrLn :: ProgramConfig -> String -> IO ()

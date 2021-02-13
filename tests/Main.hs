@@ -1,5 +1,6 @@
 import Control.Concurrent
 import Data.List
+import qualified Data.Map as M
 import Data.Time
 import System.Directory
 import System.Exit
@@ -34,7 +35,7 @@ compileBeforeHook (projectRoot, ghcPath) exInfo outFile = do
   let fullFp = projectRoot `pathJoin` "tests" `pathJoin` "test_gen" `pathJoin` outFile
   outHandle <- openFile fullFp WriteMode
   packageDb <- findStackPackageDb
-  let conf = ProgramConfig projectRoot ghcPath packageDb "/tests/exercises/" stdin outHandle stderr
+  let conf = ProgramConfig projectRoot ghcPath packageDb "/tests/exercises/" stdin outHandle stderr M.empty
   resultExit <- compileExercise conf exInfo
   hClose outHandle
   programOutput <- readFile fullFp
@@ -156,14 +157,15 @@ assertSequence all@(expectedString : restExpected) (fileLine : restFile) =
     then assertSequence restExpected restFile
     else assertSequence all restFile
 
-makeModifications :: [(FilePath, FilePath)] -> IO ()
-makeModifications [] = return ()
-makeModifications ((src, dst) : rest) = do
+makeModifications :: ProgramConfig -> [(FilePath, FilePath)] -> IO ()
+makeModifications _ [] = return ()
+makeModifications conf ((src, dst) : rest) = do
   threadDelay 1000000
-  copyFile src dst
-  getCurrentTime >>= setModificationTime dst
+  withFileLock dst conf $ do
+    copyFile src dst
+    getCurrentTime >>= setModificationTime dst
   threadDelay 1000000
-  makeModifications rest
+  makeModifications conf rest
 
 beforeWatchHook :: (FilePath, FilePath) -> FilePath -> IO String
 beforeWatchHook (projectRoot, ghcPath) outFile = do
@@ -175,10 +177,13 @@ beforeWatchHook (projectRoot, ghcPath) outFile = do
   let fullIn = projectRoot `pathJoin` "tests" `pathJoin` "watcher_tests.in"
   outHandle <- openFile fullFp WriteMode
   inHandle <- openFile fullIn ReadMode
-  let conf = ProgramConfig projectRoot ghcPath Nothing testExercisesDir inHandle outHandle stderr
+  lock1 <- newEmptyMVar
+  lock2 <- newEmptyMVar
+  let locks = M.fromList [(fullDest1, lock1), (fullDest2, lock2)]
+  let conf = ProgramConfig projectRoot ghcPath Nothing testExercisesDir inHandle outHandle stderr locks
   watchTid <- forkIO (runExerciseWatch conf watchTestExercises)
   -- Modify Files
-  makeModifications modifications
+  makeModifications conf modifications
   killThread watchTid
   hClose outHandle
   hClose inHandle

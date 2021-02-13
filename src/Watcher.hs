@@ -37,8 +37,10 @@ processEvent config exerciseInfo signalMVar _ = do
 runExerciseWatch :: ProgramConfig -> [ExerciseInfo] -> IO ()
 runExerciseWatch config [] = progPutStrLn config "Congratulations, you've completed all the exercises!"
 runExerciseWatch config (firstEx : restExs) = do
-  runResult <- compileExercise config firstEx
-  isDone <- not <$> fileContainsNotDone fullFp
+  (runResult, isDone) <- withFileLock fullFp config $ do
+    runResult <- compileExercise config firstEx
+    isDone <- not <$> fileContainsNotDone fullFp
+    return (runResult, isDone)
   if runResult == RunSuccess && isDone
     then runExerciseWatch config restExs
     else do

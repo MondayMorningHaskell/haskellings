@@ -1,5 +1,6 @@
 module Main where
 
+import Data.Map (empty)
 import System.Environment
 import System.IO
 
@@ -16,7 +17,7 @@ main = do
     Left NoGhcError -> putStrLn "Couldn't find ghc-8.8.4"
     Right paths -> do
       packageDb <- findStackPackageDb
-      let config = ProgramConfig (fst paths) (snd paths) packageDb mainProjectExercisesDir stdin stdout stderr
+      let config = ProgramConfig (fst paths) (snd paths) packageDb mainProjectExercisesDir stdin stdout stderr empty
       if null args
         then progPutStrLn config "Haskellings requires a sub-command!"
         else do
