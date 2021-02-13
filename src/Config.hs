@@ -24,6 +24,8 @@ mainProjectExercisesDir = if isWindows
   then "\\src\\exercises\\"
   else "/src/exercises/"
 
+-- TODO: Account for properly appending file paths on windows
+
 data ConfigError = NoProjectRootError | NoGhcError
   deriving (Show)
 
