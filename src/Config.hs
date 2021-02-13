@@ -16,6 +16,11 @@ ghcVersionNumber = "8.8.4"
 projectRootDirName :: String
 projectRootDirName = "haskellings"
 
+mainProjectExercisesDir :: String
+mainProjectExercisesDir = if isWindows
+  then "\\src\\exercises\\"
+  else "/src/exercises/"
+
 data ConfigError = NoProjectRootError | NoGhcError
   deriving (Show)
 
