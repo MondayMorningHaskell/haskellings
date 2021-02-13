@@ -11,17 +11,15 @@ import System.IO
 import System.Process
 
 import Config
+import DirectoryUtils
 import ExerciseList
-
-fpBasename :: FilePath -> FilePath
-fpBasename = takeWhileEnd (/= '/')
 
 isHaskellFile :: FilePath -> Bool
 isHaskellFile = isSuffixOf ".hs"
 
 -- Probably a good idea to first check that it is a Haskell file first
 haskellModuleName :: FilePath -> FilePath
-haskellModuleName fp = dropEnd 3 (fpBasename fp)
+haskellModuleName fp = dropEnd 3 (basename fp)
 
 data RunResult =
   CompileError | TestFailed | RunSuccess
@@ -30,9 +28,9 @@ data RunResult =
 compileExercise :: ProgramConfig -> ExerciseInfo -> IO RunResult
 compileExercise config (ExerciseInfo _ exDirectory exFilename exIsRunnable _) = do
   let root = projectRoot config
-  let fullSourcePath = root ++ exercisesExt config ++ exDirectory ++ "/" ++ exFilename
-  let genDirPath = root ++ "/generated_files/" ++ exDirectory
-  let genExecutablePath = genDirPath ++ "/" ++ (haskellModuleName exFilename)
+  let fullSourcePath = root `pathJoin` exercisesExt config `pathJoin` exDirectory `pathJoin` exFilename
+  let genDirPath = root `pathJoin` "/generated_files/" `pathJoin` exDirectory
+  let genExecutablePath = genDirPath `pathJoin` haskellModuleName exFilename
   createDirectoryIfMissing True genDirPath
   let baseArgs = [fullSourcePath, "-odir", genDirPath, "-hidir", genDirPath]
   let execArgs = if exIsRunnable then baseArgs ++ ["-o", genExecutablePath] else baseArgs
@@ -91,4 +89,4 @@ fileContainsNotDone fullFp = do
     isDoneLine l = (upper . (filter (not . isSpace)) $ l) == "--IAMNOTDONE"
 
 fullExerciseFp :: FilePath -> FilePath -> ExerciseInfo -> FilePath
-fullExerciseFp projectRoot exercisesExt (ExerciseInfo _ exDir exFile _ _) = projectRoot ++ exercisesExt ++ exDir ++ "/" ++ exFile
+fullExerciseFp projectRoot exercisesExt (ExerciseInfo _ exDir exFile _ _) = projectRoot `pathJoin` exercisesExt `pathJoin` exDir `pathJoin` exFile

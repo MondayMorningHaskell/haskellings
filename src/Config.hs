@@ -7,7 +7,7 @@ import qualified Data.Sequence as S
 import System.Directory
 import System.IO
 
-import DirectoryUtils (isWindows)
+import DirectoryUtils
 
 ghcVersion :: String
 ghcVersion = "ghc-8.8.4"
@@ -19,9 +19,7 @@ projectRootDirName :: String
 projectRootDirName = "haskellings"
 
 mainProjectExercisesDir :: String
-mainProjectExercisesDir = if isWindows
-  then "\\src\\exercises\\"
-  else "/src/exercises/"
+mainProjectExercisesDir = makeRelative ("src" `pathJoin` "exercises")
 
 data ConfigError = NoProjectRootError | NoGhcError
   deriving (Show)
