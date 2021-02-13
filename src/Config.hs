@@ -7,6 +7,8 @@ import qualified Data.Sequence as S
 import System.Directory
 import System.IO
 
+import DirectoryUtils
+
 ghcVersion :: String
 ghcVersion = "ghc-8.8.4"
 
@@ -15,6 +17,9 @@ ghcVersionNumber = "8.8.4"
 
 projectRootDirName :: String
 projectRootDirName = "haskellings"
+
+mainProjectExercisesDir :: String
+mainProjectExercisesDir = makeRelative ("src" `pathJoin` "exercises")
 
 data ConfigError = NoProjectRootError | NoGhcError
   deriving (Show)

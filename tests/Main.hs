@@ -8,6 +8,7 @@ import Test.Hspec
 import Test.HUnit
 
 import Config
+import DirectoryUtils
 import ExerciseList
 import Utils
 import Watcher
@@ -18,7 +19,7 @@ main = do
   case loadResult of
     Left _ -> error "Unable to find project root or GHC 8.8.4!"
     Right paths -> do
-      createDirectoryIfMissing True (fst paths ++ "/tests/test_gen")
+      createDirectoryIfMissing True (fst paths `pathJoin` "tests" `pathJoin` "test_gen")
       hspec $ describe "Basic Compile Tests" $ do
         compileTests1 paths
         compileTests2 paths
@@ -30,7 +31,7 @@ main = do
 
 compileBeforeHook :: (FilePath, FilePath) -> ExerciseInfo -> FilePath -> IO (String, RunResult)
 compileBeforeHook (projectRoot, ghcPath) exInfo outFile = do
-  let fullFp = projectRoot ++ "/tests/test_gen/" ++ outFile
+  let fullFp = projectRoot `pathJoin` "tests" `pathJoin` "test_gen" `pathJoin` outFile
   outHandle <- openFile fullFp WriteMode
   packageDb <- findStackPackageDb
   let conf = ProgramConfig projectRoot ghcPath packageDb "/tests/exercises/" stdin outHandle stderr
@@ -170,11 +171,11 @@ beforeWatchHook (projectRoot, ghcPath) outFile = do
   copyFile (addFullDirectory "Types1Orig.hs") fullDest1
   copyFile (addFullDirectory "Types2Orig.hs") fullDest2
   -- Build Configuration
-  let fullFp = projectRoot ++ "/tests/test_gen/" ++ outFile
-  let fullIn = projectRoot ++ "/tests/watcher_tests.in"
+  let fullFp = projectRoot `pathJoin` "tests" `pathJoin` "test_gen" `pathJoin` outFile
+  let fullIn = projectRoot `pathJoin` "tests" `pathJoin` "watcher_tests.in"
   outHandle <- openFile fullFp WriteMode
   inHandle <- openFile fullIn ReadMode
-  let conf = ProgramConfig projectRoot ghcPath Nothing "/tests/exercises/" inHandle outHandle stderr
+  let conf = ProgramConfig projectRoot ghcPath Nothing testExercisesDir inHandle outHandle stderr
   watchTid <- forkIO (runExerciseWatch conf watchTestExercises)
   -- Modify Files
   makeModifications modifications
@@ -186,7 +187,9 @@ beforeWatchHook (projectRoot, ghcPath) outFile = do
   programOutput <- readFile fullFp
   return programOutput
   where
-    addFullDirectory = (++) (projectRoot ++ "/tests/exercises/watcher_types/")
+    testExercisesDir = makeRelative ("tests" `pathJoin` "exercises")
+    watcherTypesDir = "tests" `pathJoin` "exercises" `pathJoin` "watcher_types"
+    addFullDirectory = pathJoin (projectRoot `pathJoin` watcherTypesDir)
     fullDest1 = addFullDirectory "Types1.hs"
     fullDest2 = addFullDirectory "Types2.hs"
     modifications =

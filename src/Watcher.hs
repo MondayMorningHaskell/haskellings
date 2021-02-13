@@ -8,6 +8,7 @@ import System.IO (hIsEOF)
 import qualified Data.Map as M
 
 import Config
+import DirectoryUtils
 import ExerciseList
 import Utils
 
@@ -15,7 +16,7 @@ watchExercises :: ProgramConfig -> IO ()
 watchExercises config = runExerciseWatch config exerciseList
 
 shouldCheckFile :: ExerciseInfo -> Event -> Bool
-shouldCheckFile (ExerciseInfo _ _ exFile _ _) (Modified fp _ _) = fpBasename fp == exFile
+shouldCheckFile (ExerciseInfo _ _ exFile _ _) (Modified fp _ _) = basename fp == exFile
 shouldCheckFile _ _ = False
 
 -- This event should be a modification of one of our exercise files
