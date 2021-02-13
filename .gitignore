@@ -7,3 +7,4 @@ tests/test_gen/
 .idea/
 tests/exercises/watcher_types/Types1.hs
 tests/exercises/watcher_types/Types2.hs
+*.iml
