@@ -8,7 +8,7 @@ import System.Directory
 import System.Info (os)
 
 isWindows :: Bool
-isWindows = os `notElem` ["linux", "macos", "unix"]
+isWindows = os `notElem` ["linux", "unix", "darwin"]
 
 basename :: FilePath -> FilePath
 basename = takeWhileEnd (\c -> c /= '/' && c /= '\\')
