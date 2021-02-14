@@ -1,23 +1,27 @@
 module DirectoryUtils where
 
 import Control.Exception (catch, Exception)
-import Data.List (isInfixOf, isSuffixOf)
+import Data.List (isInfixOf, isSuffixOf, dropWhileEnd)
 import Data.List.Extra (takeWhileEnd)
 import qualified Data.Sequence as S
 import System.Directory
 import System.Info (os)
 
 isWindows :: Bool
-isWindows = os `notElem` ["linux", "macos", "unix"]
+isWindows = os `notElem` ["linux", "unix", "darwin"]
 
 basename :: FilePath -> FilePath
 basename = takeWhileEnd (\c -> c /= '/' && c /= '\\')
+
+-- Like doing "cd .." with this filepath
+dropDirectoryLevel :: FilePath -> FilePath
+dropDirectoryLevel fp = init $ dropWhileEnd (\c -> c /= '/' && c /= '\\') fp
 
 makeRelative :: FilePath -> FilePath
 makeRelative path = if isRelativeBegin path
   then path
   else if isWindows
-    then "\\" ++ path
+    then '\\' : path
     else '/' : path
 
 isRelativeEnd :: FilePath -> Bool

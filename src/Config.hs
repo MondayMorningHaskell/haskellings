@@ -1,8 +1,10 @@
 module Config where
 
+import Control.Concurrent (MVar, putMVar, takeMVar)
 import Control.Monad (forM)
 import Data.List (find, isSuffixOf)
 import Data.Maybe (catMaybes)
+import qualified Data.Map as M
 import qualified Data.Sequence as S
 import System.Directory
 import System.Environment (lookupEnv)
@@ -25,6 +27,17 @@ mainProjectExercisesDir = makeRelative ("src" `pathJoin` "exercises")
 data ConfigError = NoProjectRootError | NoGhcError
   deriving (Show)
 
+type FileLockMap = M.Map FilePath (MVar ())
+
+withFileLock :: FilePath -> ProgramConfig -> IO a -> IO a
+withFileLock fp config action = case M.lookup fp (fileLocks config) of
+  Nothing -> action
+  Just lock -> do
+    putMVar lock ()
+    result <- action
+    takeMVar lock
+    return result
+
 data ProgramConfig = ProgramConfig
   { projectRoot  :: FilePath
   , ghcPath      :: FilePath
@@ -33,6 +46,7 @@ data ProgramConfig = ProgramConfig
   , inHandle     :: Handle
   , outHandle    :: Handle
   , errHandle    :: Handle
+  , fileLocks    :: FileLockMap
   }
 
 progPutStrLn :: ProgramConfig -> String -> IO ()
@@ -80,21 +94,18 @@ findGhc = do
 findStackPackageDb :: IO (Maybe FilePath)
 findStackPackageDb = do
   home <- getHomeDirectory
-  let stackDir = home ++ "/.stack/snapshots"
-  nextDirs <- listDirectory stackDir
-  results <- forM nextDirs $ \subPath -> do
-    -- 'fullPath' is like .stack/snapshots/linux_x86_64
-    let fullPath = stackDir ++ "/" ++ subPath
-    subContents <- listDirectory fullPath
-    results' <- forM subContents $ \hashDirectory -> do
-      -- 'fullHashPath' is like .stack/snapshots/linux_x86_64/77asdfasdf...
-      let fullHashPath = fullPath ++ "/" ++ hashDirectory
-      allGhcDirs <- listDirectory fullHashPath
-      return $ fmap ((++) (fullHashPath ++ "/")) (find (== ghcVersionNumber) allGhcDirs)
-    return $ catMaybes results'
-  case concat results of
-    [] -> return Nothing
-    (pkgPath : _) -> return (Just $ pkgPath ++ "/pkgdb/")
+  stackDir' <- findStackSnapshotsDir
+  case stackDir' of
+    Nothing -> return Nothing
+    Just stackDir -> do
+      ghcVersionDir' <- fpBFS ghcPredicate (S.singleton stackDir)
+      case ghcVersionDir' of
+        Nothing -> return Nothing
+        Just ghcVersionDir -> return $ Just (pathJoin (dropDirectoryLevel (dropDirectoryLevel ghcVersionDir)) "pkgdb")
+  where
+    ghcPredicate fp = return (isSuffixOf ghcVersion fp)
+
+-- c:\sr\snapshots\77asdfasdf\lib\x86_64-windows-ghc-8.8.2
 
 -- BFS
 findProjectRoot :: IO (Maybe FilePath)
@@ -118,7 +129,7 @@ findStackSnapshotsDirWindows = do
   dir' <- lookupEnv "STACK_ROOT"
   case dir' of
     Nothing -> return Nothing
-    Just dir -> returnIfDirExists dir
+    Just dir -> returnIfDirExists (dir `pathJoin` "snapshots")
 
 findGhcSearchDir :: IO (Maybe FilePath)
 findGhcSearchDir = if isWindows
