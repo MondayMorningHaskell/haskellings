@@ -162,6 +162,7 @@ makeModifications _ [] = return ()
 makeModifications conf ((src, dst) : rest) = do
   threadDelay 1000000
   withFileLock dst conf $ do
+    removeFile dst
     copyFile src dst
     getCurrentTime >>= setModificationTime dst
   threadDelay 1000000
