@@ -72,3 +72,18 @@ test-suite haskellings-tests
     , HUnit
     , time
   default-language: Haskell2010
+
+test-suite unit-tests
+  main-is: UnitTests.hs
+  type: exitcode-stdio-1.0
+  hs-source-dirs:
+      tests
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , containers
+    , directory
+    , haskellings
+    , tasty
+    , tasty-hunit
+  default-language: Haskell2010
