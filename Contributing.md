@@ -14,7 +14,7 @@ You can install both of these tools with `stack install`:
 For a complete lint and format run-through, use these commands. You can, of course, exclude files you haven't modified.
 
 ```bash
->> stylish-haskell -i src/ app/Main.hs tests/Main.hs tests/UnitTests.hs
+>> stylish-haskell -i src/*.hs app/Main.hs tests/Main.hs tests/UnitTests.hs
 >> hlint src/ app/Main.hs tests/Main.hs tests/UnitTests.hs
 ```
 
