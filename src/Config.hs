@@ -22,7 +22,7 @@ projectRootDirName :: String
 projectRootDirName = "haskellings"
 
 mainProjectExercisesDir :: String
-mainProjectExercisesDir = makeRelative ("src" `pathJoin` "exercises")
+mainProjectExercisesDir = makeRelative "exercises"
 
 data ConfigError = NoProjectRootError | NoGhcError
   deriving (Show)
@@ -103,7 +103,7 @@ findStackPackageDb = do
         Nothing -> return Nothing
         Just ghcVersionDir -> return $ Just (pathJoin (dropDirectoryLevel (dropDirectoryLevel ghcVersionDir)) "pkgdb")
   where
-    ghcPredicate fp = return (isSuffixOf ghcVersion fp)
+    ghcPredicate fp = return (ghcVersion `isSuffixOf` fp)
 
 -- c:\sr\snapshots\77asdfasdf\lib\x86_64-windows-ghc-8.8.2
 

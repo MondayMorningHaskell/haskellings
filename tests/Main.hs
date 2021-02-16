@@ -45,24 +45,24 @@ isFailureOutput :: String -> Expectation
 isFailureOutput output = do
   let outputLines = lines output
   length outputLines `shouldSatisfy` (> 1)
-  head outputLines `shouldSatisfy` (isPrefixOf "Couldn't compile :")
+  head outputLines `shouldSatisfy` isPrefixOf "Couldn't compile :"
 
 isRunFailureOutput :: String -> Expectation
 isRunFailureOutput output = do
   let outputLines = lines output
   length outputLines `shouldSatisfy` (> 1)
-  head outputLines `shouldSatisfy` (isPrefixOf "Successfully compiled :")
-  outputLines !! 1 `shouldSatisfy` (isPrefixOf "Tests failed on exercise :")
+  head outputLines `shouldSatisfy` isPrefixOf "Successfully compiled :"
+  outputLines !! 1 `shouldSatisfy` isPrefixOf "Tests failed on exercise :"
 
 isSuccessOutput :: String -> Expectation
-isSuccessOutput output = output `shouldSatisfy` (isPrefixOf "Successfully compiled :")
+isSuccessOutput output = output `shouldSatisfy` isPrefixOf "Successfully compiled :"
 
 isSuccessRunOutput :: String -> Expectation
 isSuccessRunOutput output = do
   let outputLines = lines output
   length outputLines `shouldBe` 2
-  head outputLines `shouldSatisfy` (isPrefixOf "Successfully compiled :")
-  outputLines !! 1 `shouldSatisfy` (isPrefixOf "Successfully ran :")
+  head outputLines `shouldSatisfy` isPrefixOf "Successfully compiled :"
+  outputLines !! 1 `shouldSatisfy` isPrefixOf "Successfully ran :"
 
 compileTests1 :: (FilePath, FilePath) -> Spec
 compileTests1 paths = before (compileBeforeHook paths exInfo "types1_bad.output") $
@@ -132,8 +132,7 @@ watchTestExercises =
 watchTests :: (FilePath, FilePath) -> Spec
 watchTests paths = before (beforeWatchHook paths "watcher_tests_.out") $
   describe "When running watcher" $
-    it "Should step the through the watch process in stages" $ \outputs -> do
-      assertSequence expectedSequence (lines outputs)
+    it "Should step the through the watch process in stages" $ \outputs -> assertSequence expectedSequence (lines outputs)
   where
     expectedSequence =
       [ "Couldn't compile : Types1.hs"
@@ -190,8 +189,7 @@ beforeWatchHook (projectRoot, ghcPath) outFile = do
   hClose inHandle
   removeFile fullDest1
   removeFile fullDest2
-  programOutput <- readFile fullFp
-  return programOutput
+  readFile fullFp
   where
     testExercisesDir = makeRelative ("tests" `pathJoin` "exercises")
     watcherTypesDir = "tests" `pathJoin` "exercises" `pathJoin` "watcher_types"

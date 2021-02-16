@@ -1,7 +1,7 @@
 module Watcher where
 
 import Control.Concurrent
-import Control.Monad (forever, when, unless)
+import Control.Monad (forever, when, unless, void)
 import System.Exit
 import System.FSNotify
 import System.IO (hIsEOF)
@@ -64,7 +64,7 @@ watchForUserInput :: ProgramConfig -> ExerciseInfo -> IO ()
 watchForUserInput config exInfo = do
   inIsEnd <- hIsEOF (inHandle config)
   if inIsEnd
-    then threadDelay 1000000 >> return ()
+    then void (threadDelay 1000000)
     else do
       userInput <- progReadLine config
       when (userInput == "hint") $

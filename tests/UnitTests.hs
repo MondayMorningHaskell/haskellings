@@ -94,8 +94,8 @@ fpBFSTests testsRoot = testGroup "fpBFS Tests"
       fpBFS pred3 (S.singleton testsRoot) `shouldReturn` Nothing
   ]
   where
-    pred1 fp = return (isSuffixOf "ghc-8.8.4" fp)
-    pred2 fp = return (isSuffixOf "ghc-8.6.2" fp)
-    pred3 fp = return (isSuffixOf "ghc-8.3.4" fp)
+    pred1 fp = return ("ghc-8.8.4" `isSuffixOf` fp)
+    pred2 fp = return ("ghc-8.6.2" `isSuffixOf` fp)
+    pred3 fp = return ("ghc-8.3.4" `isSuffixOf` fp)
     actual1 = "directory_tests" `pathJoin` "test1" `pathJoin` "linux-x86_64-ghc-8.8.4"
     actual2 = "directory_tests" `pathJoin` "test2" `pathJoin` "windows-x86_64-ghc-8.6.2"

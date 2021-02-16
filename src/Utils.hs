@@ -90,7 +90,7 @@ fileContainsNotDone fullFp = do
   return (any isDoneLine fileLines)
   where
     isDoneLine :: String -> Bool
-    isDoneLine l = (upper . (filter (not . isSpace)) $ l) == "--IAMNOTDONE"
+    isDoneLine l = (upper . filter (not . isSpace) $ l) == "--IAMNOTDONE"
 
 fullExerciseFp :: FilePath -> FilePath -> ExerciseInfo -> FilePath
 fullExerciseFp projectRoot exercisesExt (ExerciseInfo exName exDir _ _) = projectRoot `pathJoin` exercisesExt `pathJoin` exDir `pathJoin` haskellFileName exName
