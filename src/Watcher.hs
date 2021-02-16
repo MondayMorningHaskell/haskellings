@@ -13,11 +13,11 @@ import ExerciseList
 import Utils
 
 watchExercises :: ProgramConfig -> IO ()
-watchExercises config = runExerciseWatch config exerciseList
+watchExercises config = runExerciseWatch config allExercises
 
 shouldCheckFile :: ExerciseInfo -> Event -> Bool
-shouldCheckFile (ExerciseInfo _ _ exFile _ _) (Added fp _ _) = basename fp == exFile
-shouldCheckFile (ExerciseInfo _ _ exFile _ _) (Modified fp _ _) = basename fp == exFile
+shouldCheckFile (ExerciseInfo exName _ _ _) (Added fp _ _) = basename fp == haskellFileName exName
+shouldCheckFile (ExerciseInfo exName _ _ _) (Modified fp _ _) = basename fp == haskellFileName exName
 shouldCheckFile _ _ = False
 
 -- This event should be a modification of one of our exercise files
