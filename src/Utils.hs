@@ -21,12 +21,16 @@ isHaskellFile = isSuffixOf ".hs"
 haskellModuleName :: FilePath -> FilePath
 haskellModuleName fp = dropEnd 3 (basename fp)
 
+haskellFileName :: FilePath -> FilePath
+haskellFileName exName = exName ++ ".hs"
+
 data RunResult =
   CompileError | TestFailed | RunSuccess
   deriving (Show, Eq)
 
 compileExercise :: ProgramConfig -> ExerciseInfo -> IO RunResult
-compileExercise config (ExerciseInfo _ exDirectory exFilename exIsRunnable _) = do
+compileExercise config (ExerciseInfo exerciseName exDirectory exIsRunnable _) = do
+  let exFilename = haskellFileName exerciseName
   let root = projectRoot config
   let fullSourcePath = root `pathJoin` exercisesExt config `pathJoin` exDirectory `pathJoin` exFilename
   let genDirPath = root `pathJoin` "/generated_files/" `pathJoin` exDirectory
@@ -89,4 +93,4 @@ fileContainsNotDone fullFp = do
     isDoneLine l = (upper . (filter (not . isSpace)) $ l) == "--IAMNOTDONE"
 
 fullExerciseFp :: FilePath -> FilePath -> ExerciseInfo -> FilePath
-fullExerciseFp projectRoot exercisesExt (ExerciseInfo _ exDir exFile _ _) = projectRoot `pathJoin` exercisesExt `pathJoin` exDir `pathJoin` exFile
+fullExerciseFp projectRoot exercisesExt (ExerciseInfo exName exDir _ _) = projectRoot `pathJoin` exercisesExt `pathJoin` exDir `pathJoin` haskellFileName exName
