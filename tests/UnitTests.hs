@@ -1,13 +1,13 @@
 module Main where
 
-import Data.List (isSuffixOf)
-import qualified Data.Sequence as S
-import System.Directory
-import Test.Tasty
-import Test.Tasty.HUnit
+import           Data.List        (isSuffixOf)
+import qualified Data.Sequence    as S
+import           System.Directory
+import           Test.Tasty
+import           Test.Tasty.HUnit
 
-import Config
-import DirectoryUtils
+import           Config
+import           DirectoryUtils
 
 main :: IO ()
 main = do

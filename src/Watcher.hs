@@ -1,16 +1,16 @@
 module Watcher where
 
-import Control.Concurrent
-import Control.Monad (forever, when, unless, void)
-import System.Exit
-import System.FSNotify
-import System.IO (hIsEOF)
-import qualified Data.Map as M
+import           Control.Concurrent
+import           Control.Monad      (forever, unless, void, when)
+import qualified Data.Map           as M
+import           System.Exit
+import           System.FSNotify
+import           System.IO          (hIsEOF)
 
-import Config
-import DirectoryUtils
-import ExerciseList
-import Utils
+import           Config
+import           DirectoryUtils
+import           ExerciseList
+import           Utils
 
 watchExercises :: ProgramConfig -> IO ()
 watchExercises config = runExerciseWatch config allExercises

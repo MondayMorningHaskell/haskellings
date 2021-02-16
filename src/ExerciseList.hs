@@ -3,10 +3,10 @@ module ExerciseList where
 import qualified Data.Map as M
 
 data ExerciseInfo = ExerciseInfo
-  { exerciseName :: String
-  , exerciseDirectory :: String
+  { exerciseName       :: String
+  , exerciseDirectory  :: String
   , exerciseIsRunnable :: Bool
-  , exerciseHint :: String
+  , exerciseHint       :: String
   } deriving (Show, Eq)
 
 allExercises :: [ExerciseInfo]

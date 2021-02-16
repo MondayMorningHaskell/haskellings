@@ -1,18 +1,18 @@
 module Utils where
 
-import Control.Monad (void, forM_)
-import Data.Char
-import Data.List
-import Data.List.Extra
-import System.Console.ANSI
-import System.Directory
-import System.Exit
-import System.IO
-import System.Process
+import           Control.Monad       (forM_, void)
+import           Data.Char
+import           Data.List
+import           Data.List.Extra
+import           System.Console.ANSI
+import           System.Directory
+import           System.Exit
+import           System.IO
+import           System.Process
 
-import Config
-import DirectoryUtils
-import ExerciseList
+import           Config
+import           DirectoryUtils
+import           ExerciseList
 
 isHaskellFile :: FilePath -> Bool
 isHaskellFile = isSuffixOf ".hs"
@@ -39,7 +39,7 @@ compileExercise config (ExerciseInfo exerciseName exDirectory exIsRunnable _) = 
   let baseArgs = [fullSourcePath, "-odir", genDirPath, "-hidir", genDirPath]
   let execArgs = if exIsRunnable then baseArgs ++ ["-o", genExecutablePath] else baseArgs
   let finalArgs = case packageDb config of
-        Nothing -> execArgs
+        Nothing      -> execArgs
         Just pkgPath -> execArgs ++ ["-package-db", pkgPath]
   let processSpec = proc (ghcPath config) finalArgs
   (_, _, procStdErr, procHandle) <- createProcess (processSpec { std_out = CreatePipe, std_err = CreatePipe })
@@ -50,7 +50,7 @@ compileExercise config (ExerciseInfo exerciseName exDirectory exIsRunnable _) = 
       progPutStrLn config $ "Couldn't compile : " ++ exFilename
       case procStdErr of
         Nothing -> return ()
-        Just h -> hGetContents h >>= progPutStrLn config
+        Just h  -> hGetContents h >>= progPutStrLn config
       setSGR [Reset]
       removeDirectoryRecursive genDirPath
       return CompileError
@@ -70,7 +70,7 @@ compileExercise config (ExerciseInfo exerciseName exDirectory exIsRunnable _) = 
               progPutStrLn config $ "Tests failed on exercise : " ++ exFilename
               case execStdErr of
                 Nothing -> return ()
-                Just h -> hGetContents h >>= progPutStrLn config
+                Just h  -> hGetContents h >>= progPutStrLn config
               setSGR [Reset]
               removeDirectoryRecursive genDirPath
               return TestFailed

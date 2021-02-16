@@ -1,16 +1,16 @@
 module Config where
 
-import Control.Concurrent (MVar, putMVar, takeMVar)
-import Control.Monad (forM)
-import Data.List (find, isSuffixOf)
-import Data.Maybe (catMaybes)
-import qualified Data.Map as M
-import qualified Data.Sequence as S
-import System.Directory
-import System.Environment (lookupEnv)
-import System.IO
+import           Control.Concurrent (MVar, putMVar, takeMVar)
+import           Control.Monad      (forM)
+import           Data.List          (find, isSuffixOf)
+import qualified Data.Map           as M
+import           Data.Maybe         (catMaybes)
+import qualified Data.Sequence      as S
+import           System.Directory
+import           System.Environment (lookupEnv)
+import           System.IO
 
-import DirectoryUtils
+import           DirectoryUtils
 
 ghcVersion :: String
 ghcVersion = "ghc-8.8.4"
@@ -70,8 +70,8 @@ loadProjectRootAndGhc = do
   ghcPath' <- findGhc
   case (projectRoot', ghcPath') of
     (Just projectRoot, Just ghcPath) -> return (Right (projectRoot, ghcPath))
-    (Just _, Nothing) -> return (Left NoGhcError)
-    (Nothing, _) -> return (Left NoProjectRootError)
+    (Just _, Nothing)                -> return (Left NoGhcError)
+    (Nothing, _)                     -> return (Left NoProjectRootError)
 
 findGhc :: IO (Maybe FilePath)
 findGhc = do
@@ -86,7 +86,7 @@ findGhc = do
         subContents <- safeListDirectory fullPath
         return $ fmap (pathJoin fullPath) (find (==ghcVersion) subContents)
       case catMaybes results of
-        [] -> return Nothing
+        []       -> return Nothing
         (fp : _) -> return $ Just (fp `pathJoin` "bin" `pathJoin` "ghc")
 
 -- TODO: This doesn't necessarily account for having multiple snapshots that
@@ -128,7 +128,7 @@ findStackSnapshotsDirWindows :: IO (Maybe FilePath)
 findStackSnapshotsDirWindows = do
   dir' <- lookupEnv "STACK_ROOT"
   case dir' of
-    Nothing -> return Nothing
+    Nothing  -> return Nothing
     Just dir -> returnIfDirExists (dir `pathJoin` "snapshots")
 
 findGhcSearchDir :: IO (Maybe FilePath)

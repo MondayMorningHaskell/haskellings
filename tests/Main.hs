@@ -1,18 +1,18 @@
-import Control.Concurrent
-import Data.List
-import qualified Data.Map as M
-import Data.Time
-import System.Directory
-import System.Exit
-import System.IO
-import Test.Hspec
-import Test.HUnit
+import           Control.Concurrent
+import           Data.List
+import qualified Data.Map           as M
+import           Data.Time
+import           System.Directory
+import           System.Exit
+import           System.IO
+import           Test.Hspec
+import           Test.HUnit
 
-import Config
-import DirectoryUtils
-import ExerciseList
-import Utils
-import Watcher
+import           Config
+import           DirectoryUtils
+import           ExerciseList
+import           Utils
+import           Watcher
 
 main :: IO ()
 main = do

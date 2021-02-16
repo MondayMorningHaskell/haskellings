@@ -1,11 +1,11 @@
 module DirectoryUtils where
 
-import Control.Exception (catch, Exception)
-import Data.List (isInfixOf, isSuffixOf, dropWhileEnd)
-import Data.List.Extra (takeWhileEnd)
-import qualified Data.Sequence as S
-import System.Directory
-import System.Info (os)
+import           Control.Exception (Exception, catch)
+import           Data.List         (dropWhileEnd, isInfixOf, isSuffixOf)
+import           Data.List.Extra   (takeWhileEnd)
+import qualified Data.Sequence     as S
+import           System.Directory
+import           System.Info       (os)
 
 isWindows :: Bool
 isWindows = os `notElem` ["linux", "unix", "darwin"]
@@ -58,9 +58,9 @@ pathJoinWindows = pathJoin' '\\'
 
 pathJoin' :: Char -> FilePath -> FilePath -> FilePath
 pathJoin' delimiter fp1 fp2 = case (isRelativeEnd fp1, isRelativeBegin fp2) of
-  (True, True) -> fp1 ++ tail fp2
+  (True, True)   -> fp1 ++ tail fp2
   (False, False) -> fp1 ++ makeRelative' delimiter fp2
-  _ -> fp1 ++ fp2
+  _              -> fp1 ++ fp2
 
 returnIfDirExists :: FilePath -> IO (Maybe FilePath)
 returnIfDirExists fp = do
