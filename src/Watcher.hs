@@ -1,16 +1,16 @@
 module Watcher where
 
-import Control.Concurrent
-import Control.Monad (forever, when, unless)
-import System.Exit
-import System.FSNotify
-import System.IO (hIsEOF)
-import qualified Data.Map as M
+import           Control.Concurrent
+import           Control.Monad      (forever, unless, void, when)
+import qualified Data.Map           as M
+import           System.Exit
+import           System.FSNotify
+import           System.IO          (hIsEOF)
 
-import Config
-import DirectoryUtils
-import ExerciseList
-import Utils
+import           Config
+import           DirectoryUtils
+import           ExerciseList
+import           Utils
 
 watchExercises :: ProgramConfig -> IO ()
 watchExercises config = runExerciseWatch config allExercises
@@ -64,7 +64,7 @@ watchForUserInput :: ProgramConfig -> ExerciseInfo -> IO ()
 watchForUserInput config exInfo = do
   inIsEnd <- hIsEOF (inHandle config)
   if inIsEnd
-    then threadDelay 1000000 >> return ()
+    then void (threadDelay 1000000)
     else do
       userInput <- progReadLine config
       when (userInput == "hint") $

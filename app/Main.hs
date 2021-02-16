@@ -1,12 +1,12 @@
 module Main where
 
-import Data.Map (empty)
-import System.Environment
-import System.IO
+import           Data.Map           (empty)
+import           System.Environment
+import           System.IO
 
-import Config
-import RunExercises
-import Watcher
+import           Config
+import           RunExercises
+import           Watcher
 
 main :: IO ()
 main = do
@@ -17,12 +17,12 @@ main = do
     Left NoGhcError -> putStrLn "Couldn't find ghc-8.8.4"
     Right paths -> do
       packageDb <- findStackPackageDb
-      let config = ProgramConfig (fst paths) (snd paths) packageDb mainProjectExercisesDir stdin stdout stderr empty
+      let config = uncurry ProgramConfig paths packageDb mainProjectExercisesDir stdin stdout stderr empty
       if null args
         then progPutStrLn config "Haskellings requires a sub-command!"
         else do
           let command = head args
-          if command == "run" 
+          if command == "run"
             then if length args < 2
               then progPutStrLn config "Run command requires an exercise name!"
               else runExercise config (args !! 1)

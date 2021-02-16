@@ -1,12 +1,12 @@
 module RunExercises where
 
-import           Control.Monad (forM)
-import qualified Data.Map as M
+import           Control.Monad    (forM)
+import qualified Data.Map         as M
 import           System.Directory
 import           System.Process
 
 import           Config
-import           ExerciseList (allExercisesMap)
+import           ExerciseList     (allExercisesMap)
 import           Utils
 
 runExercise :: ProgramConfig -> String -> IO ()
