@@ -17,6 +17,12 @@ allExercises =
   , ExerciseInfo "Types3" "basics" False "Fill in the missing appropriate type signatures and values at the bottom."
   , ExerciseInfo "Types4" "basics" False "Which element of mixedList doesn't belong? How can you fix it?"
   , ExerciseInfo "Types5" "basics" False "What happens when you change 'String' to '[Char]' and vice-versa?"
+  , ExerciseInfo "Functions1" "functions" True "Fill in the missing appropriate type signatures and values at the bottom, following the earlier examples in the module."
+  , ExerciseInfo "Functions2" "functions" True "When taking a tuple as an input, you can assign a name to each element of the tuple: capitalize (c1, c2, c3) = ..."
+  , ExerciseInfo "Functions3" "functions" True "Define the second function by a partial application of the first."
+  , ExerciseInfo "Functions4" "functions" True "Remember to keep parentheses around the operator when defining it!"
+  , ExerciseInfo "Functions5" "functions" True "For the 'sink' functions, think about partial operator application!"
+  , ExerciseInfo "Functions6" "functions" True "Remember that a String is just a list of characters: [Char]."
   , ExerciseInfo "Recursion1" "recursion" True "Start with a base pattern of [], and then define how you would incorporate the first element in the list with the recursive result."
   ]
 
