@@ -11,8 +11,12 @@ data ExerciseInfo = ExerciseInfo
 
 allExercises :: [ExerciseInfo]
 allExercises =
-  [ ExerciseInfo "Types1" "types" False "myFirstVariable is a number. What numeric type can you fill in?"
-  , ExerciseInfo "Types2" "types" False "What are the component types of aTuple? Are the values in aList really 'Int'?"
+  [ ExerciseInfo "Expressions" "basics" True "Fill in numeric values in place of '???' for expression3 and expression4."
+  , ExerciseInfo "Types1" "basics" False "Fill in appropriate type signatures for the expressions at the bottom."
+  , ExerciseInfo "Types2" "basics" False "Fill in the missing appropriate type signatures and values at the bottom."
+  , ExerciseInfo "Types3" "basics" False "Fill in the missing appropriate type signatures and values at the bottom."
+  , ExerciseInfo "Types4" "basics" False "Which element of mixedList doesn't belong? How can you fix it?"
+  , ExerciseInfo "Types5" "basics" False "What happens when you change 'String' to '[Char]' and vice-versa?"
   , ExerciseInfo "Recursion1" "recursion" True "Start with a base pattern of [], and then define how you would incorporate the first element in the list with the recursive result."
   ]
 
