@@ -11,7 +11,7 @@ data ExerciseInfo = ExerciseInfo
 
 allExercises :: [ExerciseInfo]
 allExercises =
-  [ ExerciseInfo "Expressions" "basics" True "Fill in numeric values in place of '???' for expression3 and expression4."
+  [ ExerciseInfo "Expressions" "basics" False "Fill in numeric values in place of '???' for expression3 and expression4."
   , ExerciseInfo "Types1" "basics" False "Fill in appropriate type signatures for the expressions at the bottom."
   , ExerciseInfo "Types2" "basics" False "Fill in the missing appropriate type signatures and values at the bottom."
   , ExerciseInfo "Types3" "basics" False "Fill in the missing appropriate type signatures and values at the bottom."

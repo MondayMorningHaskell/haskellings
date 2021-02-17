@@ -1,3 +1,5 @@
+module Expressions where
+
 -- I AM NOT DONE
 
 -- In Haskell, you can define *expressions* by taking a name and using the
@@ -9,8 +11,7 @@ expression1 = 1
 expression2 = 4.5
 
 -- TODO: To make this module compile, replace the ??? marks with different
--- numeric values. Observe that these values are printed in the
--- program output.
+-- numeric values.
 
 expression3 = ???
 
@@ -27,11 +28,3 @@ expression4 = ???
 -- TODO: Try uncommenting me and compiling! (remove the dashes)
 -- expression1 = 2
 -- (and then re-comment ^^ to compile again)
-
--- Prints the expression values above.
--- (Do not worry about understanding this code for now)
-main = do
-  print expression1
-  print expression2
-  print expression3
-  print expression4
