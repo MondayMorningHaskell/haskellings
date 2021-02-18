@@ -42,6 +42,6 @@ main :: IO ()
 main = defaultMain $ testGroup "Functions3" $
   [ testCase "multiplyAndAdd 1" $ multiplyAndAdd (6, -1) (14, 3) @?= 81
   , testCase "multiplyAndAdd 2" $ multiplyAndAdd (-4, -5) (-1, 3) @?= -11
-  , testCase "multiplyBy3And4AndAdd 1" $ multiplyAndAdd (14, 3) @?= 54
-  , testCase "multiplyBy3And4AndAdd 2" $ multiplyAndAdd (-1, 3) @?= 9
+  , testCase "multiplyBy3And4AndAdd 1" $ multiplyBy3And4AndAdd (14, 3) @?= 54
+  , testCase "multiplyBy3And4AndAdd 2" $ multiplyBy3And4AndAdd (-1, 3) @?= 9
   ]

@@ -58,5 +58,5 @@ main = defaultMain $ testGroup "Functions4" $
   , testCase "capitalizeWord 1" $ capitalizeWord "Hello" @?= "HELLO"
   , testCase "capitalizeWord 2" $ capitalizeWord "abcdefghzyx" @?= "ABCDEFGHZYX"
   , testCase "doubleAndApply 1" $ doubleAndApply (\i -> (i+1, i+2, i+3)) 5 @?= (11, 12, 13)
-  , testCase "doubleAndApply 2" $ doubleAndApply (\i -> (i*2, i*3, i*4)) 5 @?= (10, 15, 20)
+  , testCase "doubleAndApply 2" $ doubleAndApply (\i -> (i*2, i*3, i*4)) 5 @?= (20, 30, 40)
   ]
