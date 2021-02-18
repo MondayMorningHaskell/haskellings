@@ -52,7 +52,7 @@ doubleAndApply = undefined
 
 -- Testing Code
 main :: IO ()
-main = defaultMain $ testGroup "Functions4" $
+main = defaultMain $ testGroup "Functions6" $
   [ testCase "flipBools 1" $ flipBools [True, False, True] @?= [False, True, False]
   , testCase "flipBools 2" $ flipBools [False, False, False, False] @?= [True, True, True, True]
   , testCase "capitalizeWord 1" $ capitalizeWord "Hello" @?= "HELLO"

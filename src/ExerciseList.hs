@@ -24,6 +24,7 @@ allExercises =
   , ExerciseInfo "Functions5" "functions" True "For the 'sink' functions, think about partial operator application!"
   , ExerciseInfo "Functions6" "functions" True "Remember that a String is just a list of characters: [Char]."
   , ExerciseInfo "Syntax1" "syntax" True "There is no 'elif' like in Python. Use 'else' and then another full 'if' statement."
+  , ExerciseInfo "Syntax2" "syntax" True "You don't need a guard branch for every possible case in countTrue!"
   , ExerciseInfo "Recursion1" "recursion" True "Start with a base pattern of [], and then define how you would incorporate the first element in the list with the recursive result."
   ]
 
