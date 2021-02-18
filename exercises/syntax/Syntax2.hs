@@ -54,6 +54,6 @@ main = defaultMain $ testGroup "Syntax1" $
   , testCase "countTrue 3" $ countTrue True False True @?= 2
   , testCase "countTrue 4" $ countTrue True True True @?= 3
   , testCase "numberString 1" $ numberString 1 @?= "One"
-  , testCase "numberString 4" $ numberString 1 @?= "Four"
-  , testCase "numberString 6" $ numberString 1 @?= "Too many!"
+  , testCase "numberString 2" $ numberString 4 @?= "Four"
+  , testCase "numberString 3" $ numberString 6 @?= "Too many!"
   ]
