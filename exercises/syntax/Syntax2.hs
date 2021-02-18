@@ -48,7 +48,7 @@ numberString = undefined
 
 -- Testing Code
 main :: IO ()
-main = defaultMain $ testGroup "Syntax1" $
+main = defaultMain $ testGroup "Syntax2" $
   [ testCase "countTrue 1" $ countTrue True False False @?= 1
   , testCase "countTrue 2" $ countTrue False False False @?= 0
   , testCase "countTrue 3" $ countTrue True False True @?= 2
