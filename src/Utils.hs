@@ -62,13 +62,16 @@ compileExercise config (ExerciseInfo exerciseName exDirectory exIsRunnable _) = 
         then removeDirectoryRecursive genDirPath >> return RunSuccess
         else do
           let execSpec = shell genExecutablePath
-          (_, _, execStdErr, execProcHandle) <- createProcess (execSpec { std_out = CreatePipe, std_err = CreatePipe })
+          (_, execStdOut, execStdErr, execProcHandle) <- createProcess (execSpec { std_out = CreatePipe, std_err = CreatePipe })
           execExit <- waitForProcess execProcHandle
           case execExit of
             ExitFailure code -> do
               setSGR [SetColor Foreground Vivid Red]
               progPutStrLn config $ "Tests failed on exercise : " ++ exFilename
               case execStdErr of
+                Nothing -> return ()
+                Just h  -> hGetContents h >>= progPutStrLn config
+              case execStdOut of
                 Nothing -> return ()
                 Just h  -> hGetContents h >>= progPutStrLn config
               setSGR [Reset]
