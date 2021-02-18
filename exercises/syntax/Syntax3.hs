@@ -51,8 +51,8 @@ main = defaultMain $ testGroup "Syntax3" $
   , testCase "numberString 2" $ numberString 4 @?= "Four"
   , testCase "numberString 3" $ numberString 6 @?= "Too many!"
   , testCase "takeN 0 " $ takeN 0 [1, 2, 3, 4, 5] @?= []
-  , testCase "takeN 1 " $ takeN 0 [1, 2, 3, 4, 5] @?= [1]
-  , testCase "takeN 2 " $ takeN 0 [1, 2, 3, 4, 5] @?= [1, 2]
-  , testCase "takeN 3 " $ takeN 0 [1, 2, 3, 4, 5] @?= [1, 2, 3]
-  , testCase "takeN 6 " $ takeN 0 [1, 2, 3, 4, 5] @?= [1, 2, 3, 4, 5]
+  , testCase "takeN 1 " $ takeN 1 [1, 2, 3, 4, 5] @?= [1]
+  , testCase "takeN 2 " $ takeN 2 [1, 2, 3, 4, 5] @?= [1, 2]
+  , testCase "takeN 3 " $ takeN 3 [1, 2, 3, 4, 5] @?= [1, 2, 3]
+  , testCase "takeN 6 " $ takeN 6 [1, 2, 3, 4, 5] @?= [1, 2, 3, 4, 5]
   ]
