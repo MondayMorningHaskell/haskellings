@@ -1,5 +1,7 @@
 module Data3 where
 
+-- I AM NOT DONE
+
 {-
 
 Suppose we have this basic type for an assignment grade:
