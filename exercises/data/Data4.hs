@@ -62,12 +62,12 @@ adult2 = Adult "Jane" "Smith" 39 Engineer
 
 -- Return a tuple with the 2nd and 3rd elements of the list.
 -- If there are fewer than 3 elements, return Nothing.
-secondAndThird :: [a] -> Maybe (a, a)
+secondAndThird :: [Int] -> Maybe (Int, Int)
 secondAndThird = undefined
 
 -- Like above, but if there aren't enough elements, return a String saying:
 -- "Only {x} element(s) in the list"
-secondAndThird' :: [a] -> Either String (a, a)
+secondAndThird' :: [Int] -> Either String (Int, Int)
 secondAndThird' = undefined
 
 -- Testing Code
@@ -76,13 +76,13 @@ main = defaultMain $ testGroup "Syntax1" $
   [ testCase "secondAndThird 1" $ secondAndThird [] @?= Nothing
   , testCase "secondAndThird 2" $ secondAndThird [1] @?= Nothing
   , testCase "secondAndThird 3" $ secondAndThird [1, 2] @?= Nothing
-  , testCase "secondAndThird 4" $ secondAndThird [1, 2, 3] @?= Just [2, 3]
-  , testCase "secondAndThird 5" $ secondAndThird [1, 2, 3, 4] @?= Just [2, 3]
-  , testCase "secondAndThird 6" $ secondAndThird [5, 3, 1, 4, 5, 6] @?= Just [3, 1]
+  , testCase "secondAndThird 4" $ secondAndThird [1, 2, 3] @?= Just (2, 3)
+  , testCase "secondAndThird 5" $ secondAndThird [1, 2, 3, 4] @?= Just (2, 3)
+  , testCase "secondAndThird 6" $ secondAndThird [5, 3, 1, 4, 5, 6] @?= Just (3, 1)
   , testCase "secondAndThird' 1" $ secondAndThird' [] @?= Left "Only 0 element(s) in the list"
   , testCase "secondAndThird' 2" $ secondAndThird' [1] @?= Left "Only 1 element(s) in the list"
   , testCase "secondAndThird' 3" $ secondAndThird' [1, 2] @?= Left "Only 2 element(s) in the list"
-  , testCase "secondAndThird' 4" $ secondAndThird' [1, 2, 3] @?= Right [2, 3]
-  , testCase "secondAndThird' 5" $ secondAndThird' [1, 2, 3, 4] @?= Right [2, 3]
-  , testCase "secondAndThird' 6" $ secondAndThird' [5, 3, 1, 4, 5, 6] @?= Right [3, 1]
+  , testCase "secondAndThird' 4" $ secondAndThird' [1, 2, 3] @?= Right (2, 3)
+  , testCase "secondAndThird' 5" $ secondAndThird' [1, 2, 3, 4] @?= Right (2, 3)
+  , testCase "secondAndThird' 6" $ secondAndThird' [5, 3, 1, 4, 5, 6] @?= Right (3, 1)
   ]
