@@ -31,6 +31,7 @@ allExercises =
   , ExerciseInfo "Syntax6" "syntax" True "Keeping the start of your definitions aligned helps make 'let' clauses much more readable!"
   , ExerciseInfo "Data1" "data" False "Once you know the types you need, it's simple to add them to a constructor!"
   , ExerciseInfo "Data2" "data" True "On 'giveFullName', remember to use pattern matching, and that '++' can append strings together!"
+  , ExerciseInfo "Data3" "data" False "You can follow your own conventions with spacing and new lines when defining the record names."
   , ExerciseInfo "Recursion1" "recursion" True "Start with a base pattern of [], and then define how you would incorporate the first element in the list with the recursive result."
   ]
 
