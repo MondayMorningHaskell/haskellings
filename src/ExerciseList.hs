@@ -27,6 +27,7 @@ allExercises =
   , ExerciseInfo "Syntax2" "syntax" True "You don't need a guard branch for every possible case in countTrue!"
   , ExerciseInfo "Syntax3" "syntax" True "For your catch-all case, either use an expression name like normal for the input, or use an underscore '_' if you don't need the input."
   , ExerciseInfo "Syntax4" "syntax" True "Split the function up with the boolean and then use a 'case' statement!"
+  , ExerciseInfo "Syntax5" "syntax" True "Split the problem into small chunks, and make an expression for each chunk in the 'where' clause!"
   , ExerciseInfo "Recursion1" "recursion" True "Start with a base pattern of [], and then define how you would incorporate the first element in the list with the recursive result."
   ]
 
