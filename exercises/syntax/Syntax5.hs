@@ -42,7 +42,7 @@ The order in which 'where' statements are defined *does not matter*. However,
 you must make sure to not create a circular dependency between your definitions!
 
 badSum :: Int -> Int -> Int -> Int
-badSum x y z = prod1 + prod2 + prod3 + prod3
+badSum x y z = prod1 + prod2 + prod3 + prod4
   where
     prod2 = prod1 + (y * z) -- < Can use prod1 even though it's defined "after".
     prod1 = x * y
