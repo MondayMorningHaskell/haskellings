@@ -60,8 +60,8 @@ giveFullName = undefined
 -- Testing Code
 main :: IO ()
 main = defaultMain $ testGroup "Syntax1" $
-  [ testCase "giveFullName 1" $ giveFullName adult1 "John Smith"
-  , testCase "giveFullName 2" $ giveFullName adult2 "Jane Smith"
-  , testCase "giveFullName 3" $ giveFullName child1 "Christopher"
-  , testCase "giveFullName 4" $ giveFullName child2 "Stephanie"
+  [ testCase "giveFullName 1" $ giveFullName adult1 @?= "John Smith"
+  , testCase "giveFullName 2" $ giveFullName adult2 @?= "Jane Smith"
+  , testCase "giveFullName 3" $ giveFullName child1 @?= "Christopher"
+  , testCase "giveFullName 4" $ giveFullName child2 @?= "Stephanie"
   ]
