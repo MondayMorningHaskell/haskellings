@@ -30,6 +30,7 @@ allExercises =
   , ExerciseInfo "Syntax5" "syntax" True "Split the problem into small chunks, and make an expression for each chunk in the 'where' clause!"
   , ExerciseInfo "Syntax6" "syntax" True "Keeping the start of your definitions aligned helps make 'let' clauses much more readable!"
   , ExerciseInfo "Data1" "data" False "Once you know the types you need, it's simple to add them to a constructor!"
+  , ExerciseInfo "Data2" "data" True "On 'giveFullName', remember to use pattern matching, and that '++' can append strings together!"
   , ExerciseInfo "Recursion1" "recursion" True "Start with a base pattern of [], and then define how you would incorporate the first element in the list with the recursive result."
   ]
 
