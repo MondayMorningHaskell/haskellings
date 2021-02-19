@@ -66,7 +66,7 @@ sumTuples = undefined
 -- Testing Code
 main :: IO ()
 main = defaultMain $ testGroup "Syntax5" $
-  [ testCase "sumPairProducts 1" $ sumPairProducts (1, 2, 3, 4, 5, 6) @?= 185
+  [ testCase "sumPairProducts 1" $ sumPairProducts (1, 2, 3, 4, 5, 6) @?= 175
   , testCase "sumPairProducts 2" $ sumPairProducts (8, 2, -3, 4, -5, 7) @?= 1
   , testCase "sumTuples 1" $ sumTuples (True, True, True) (1, 2, 3) (4, 5, 6) @?= 21
   , testCase "sumTuples 2" $ sumTuples (True, False, True) (1, 2, 3) (4, 5, 6) @?= 14
