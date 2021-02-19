@@ -23,6 +23,12 @@ allExercises =
   , ExerciseInfo "Functions4" "functions" True "Remember to keep parentheses around the operator when defining it!"
   , ExerciseInfo "Functions5" "functions" True "For the 'sink' functions, think about partial operator application!"
   , ExerciseInfo "Functions6" "functions" True "Remember that a String is just a list of characters: [Char]."
+  , ExerciseInfo "Syntax1" "syntax" True "There is no 'elif' like in Python. Use 'else' and then another full 'if' statement."
+  , ExerciseInfo "Syntax2" "syntax" True "You don't need a guard branch for every possible case in countTrue!"
+  , ExerciseInfo "Syntax3" "syntax" True "For your catch-all case, either use an expression name like normal for the input, or use an underscore '_' if you don't need the input."
+  , ExerciseInfo "Syntax4" "syntax" True "Split the function up with the boolean and then use a 'case' statement!"
+  , ExerciseInfo "Syntax5" "syntax" True "Split the problem into small chunks, and make an expression for each chunk in the 'where' clause!"
+  , ExerciseInfo "Syntax6" "syntax" True "Keeping the start of your definitions aligned helps make 'let' clauses much more readable!"
   , ExerciseInfo "Recursion1" "recursion" True "Start with a base pattern of [], and then define how you would incorporate the first element in the list with the recursive result."
   ]
 

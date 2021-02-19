@@ -61,7 +61,7 @@ addToFirstList = undefined
 
 -- Testing Code
 main :: IO ()
-main = defaultMain $ testGroup "Functions4" $
+main = defaultMain $ testGroup "Functions5" $
   [ testCase "trueSink 1" $ trueSink True @?= True
   , testCase "trueSink 2" $ trueSink False @?= True
   , testCase "falseSink 1" $ falseSink True @?= False
