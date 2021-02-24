@@ -54,15 +54,16 @@ newtype Username = Username { unUsername :: String }
 
 -}
 
--- TODO: There are a few inaccuracies in this code, even though
---       it compiles! 
+-- TODO: There are a few inaccuracies in this code, even though it compiles! 
+--       Turn these type synonyms into newtypes so they cause compilation errors.
+--       Then fix the errors!
 
 type Slope = Double
 type Intercept = Double
 type XCoordinate = Double
 type YCoordinate = Double
 
--- NOTE: Add this line after each newtype declaration (it's needed for the test code):
+-- NOTE: Add this line after the 'YCoordinate' newtype declaration:
 --
 --  -->  deriving (Show, Eq)
 --
@@ -81,7 +82,7 @@ y1 :: YCoordinate
 y1 = calculateY x1 i1 s1
 
 expectedY1 :: YCoordinate
-expectedY1 = -2.0
+expectedY1 = -10.0
 
 calculateY :: Slope -> Intercept -> XCoordinate -> YCoordinate
 calculateY intercept slope x = slope * x + intercept
