@@ -29,6 +29,12 @@ allExercises =
   , ExerciseInfo "Syntax4" "syntax" True "Split the function up with the boolean and then use a 'case' statement!"
   , ExerciseInfo "Syntax5" "syntax" True "Split the problem into small chunks, and make an expression for each chunk in the 'where' clause!"
   , ExerciseInfo "Syntax6" "syntax" True "Keeping the start of your definitions aligned helps make 'let' clauses much more readable!"
+  , ExerciseInfo "Data1" "data" False "Once you know the types you need, it's simple to add them to a constructor!"
+  , ExerciseInfo "Data2" "data" True "On 'giveFullName', remember to use pattern matching, and that '++' can append strings together!"
+  , ExerciseInfo "Data3" "data" False "You can follow your own conventions with spacing and new lines when defining the record names."
+  , ExerciseInfo "Data4" "data" True "Use pattern matching to deal with different sizes of lists."
+  , ExerciseInfo "Data5" "data" False "What should the underlying types be for each name given in the type signatures?"
+  , ExerciseInfo "Data6" "data" True "How can you quickly change the type synonyms to newtypes? What errors are revealed?"
   , ExerciseInfo "Recursion1" "recursion" True "Start with a base pattern of [], and then define how you would incorporate the first element in the list with the recursive result."
   ]
 
