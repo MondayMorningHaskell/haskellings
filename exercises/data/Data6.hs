@@ -103,7 +103,7 @@ y2 = 11.75
 -- Testing Code
 
 main :: IO ()
-main = defaultMain $ testGroup "Syntax1" $
+main = defaultMain $ testGroup "Data6" $
   [ testCase "Slope 1" $ calculateY s1 i1 x1 @?= expectedY1
   , testCase "Slope 2" $ calculateY s2 i2 x2 @?= y2
   ]
