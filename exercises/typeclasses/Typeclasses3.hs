@@ -65,6 +65,8 @@ newtype InterestRate = InterestRate Double
 returnHigherInterestRate :: ???
 returnHigherInterestRate = undefined
 
+-- Test Code
+
 main :: IO ()
 main = defaultMain $ testGroup "Typeclasses3" $
   [ testCase "Ordering Adults 1" $ sort [Adult1 "Zach" "Whittaker" 31, Adult1 "John" "Smith" 45, Adult1 "Thomas" "Allen" 46] @?=
