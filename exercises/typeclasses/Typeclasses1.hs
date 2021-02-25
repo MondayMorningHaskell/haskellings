@@ -44,6 +44,9 @@ objectMessage obj = "Object is: " ++ show obj
 --
 -- data MyType = ...
 --   deriving (Show, Eq)
+--
+-- This will create a "default" instance of the class, which is usually
+-- reasonable enough.
 
 -- TODO: Define instances of 'Show' and 'Eq' for these types and then fill in
 --       'equalMessage' function so they tests can use it on the types.

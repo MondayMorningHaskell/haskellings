@@ -36,6 +36,7 @@ allExercises =
   , ExerciseInfo "Data5" "data" False "What should the underlying types be for each name given in the type signatures?"
   , ExerciseInfo "Data6" "data" True "How can you quickly change the type synonyms to newtypes? What errors are revealed?"
   , ExerciseInfo "Typeclasses1" "typeclasses" True "Use a comma separated list within parens to constrain on multiple classes."
+  , ExerciseInfo "Typeclasses2" "typeclasses" True "Remember the class name, type name, and keyword 'where' in instance definitions!"
   , ExerciseInfo "Recursion1" "recursion" True "Start with a base pattern of [], and then define how you would incorporate the first element in the list with the recursive result."
   ]
 
