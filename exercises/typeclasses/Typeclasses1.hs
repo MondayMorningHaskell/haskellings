@@ -35,7 +35,7 @@ equalMessages x y = if x == y
 -- the 'show' function:
 --
 -- show :: a -> String
-objectMessage :: (Show a) -> String
+objectMessage :: (Show a) => a -> String
 objectMessage obj = "Object is: " ++ show obj
 
 -- If you make your own type, you must make it an 'instance' of the typeclass.
@@ -69,11 +69,11 @@ equalMessage = undefined
 -- Testing Code
 
 main :: IO ()
-main = defaultMain $ testGroup "Syntax1" $
+main = defaultMain $ testGroup "Typeclasses1" $
   [ testCase "Occupation 1" $ equalMessage Lawyer Lawyer @?= "Objects are both 'Lawyer'!"
   , testCase "Occupation 2" $ equalMessage Programmer Engineer @?= "Objects 'Programmer' and 'Engineer' are not equal!"
   , testCase "Person 1" $ equalMessage (Adult "John" "Smith" 32 Doctor) (Adult "Jane" "Smith" 31 Engineer) @?=
-      "Objects 'Adult \"John\" \"Smith\" 32 Doctor' and 'Adult \"John\" \"Smith\" 31 Engineer' are not equal!"
+      "Objects 'Adult \"John\" \"Smith\" 32 Doctor' and 'Adult \"Jane\" \"Smith\" 31 Engineer' are not equal!"
   , testCase "Person 2" $ equalMessage (Adult "John" "Smith" 32 Doctor) (Child "Chris" 12 7) @?=
       "Objects 'Adult \"John\" \"Smith\" 32 Doctor' and 'Child \"Chris\" 12 7' are not equal!"
   , testCase "Person 3" $ equalMessage (Child "Chris" 12 7) (Child "Chris" 12 7) @?=
