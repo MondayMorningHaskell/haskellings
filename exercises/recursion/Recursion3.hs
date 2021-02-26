@@ -26,6 +26,8 @@ sumList xs = sumListTail xs 0 -- < Initial accumulator is 0
     sumListTail (x : xs) accum = sumListTail xs (x + accum) -- < RECURSIVE CASE
 -}
 
+-- TODO:
+
 -- Write a tail-recursive function to reverse the list!
 -- (Note: In real code, you can rely on the 'reverse' library function)
 reverseList :: [a] -> [a]
@@ -40,7 +42,7 @@ evenOdds :: [a] -> ([a], [a])
 evenOdds = undefined
 
 main :: IO ()
-main = defaultMain $ testGroup "Recusion1" $
+main = defaultMain $ testGroup "Recusion3" $
   [ testCase "Reverse 1" $ reverseList [] @?= ([] :: [Int])
   , testCase "Reverse 2" $ reverseList [1] @?= [1]
   , testCase "Reverse 3" $ reverseList [1, 2, 3, 4, 5, 6] @?= [6, 5, 4, 3, 2, 1]

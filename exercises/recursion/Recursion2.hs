@@ -49,7 +49,7 @@ evens :: [Int] -> [Int]
 evens = undefined
 
 main :: IO ()
-main = defaultMain $ testGroup "Recusion1" $
+main = defaultMain $ testGroup "Recusion2" $
   [ testCase "addMod3Is2 1" $ addMod3Is2 [] @?= []
   , testCase "addMod3Is2 2" $ addMod3Is2 [2] @?= [5]
   , testCase "addMod3Is2 3" $ addMod3Is2 [2, 4, 5, 8, 9] @?= [5, 8, 11]
