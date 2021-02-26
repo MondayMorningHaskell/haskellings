@@ -55,6 +55,7 @@ factorial = undefined
 -- The distance from 0 to 1 is 1
 -- If the input n is even, add 1 to the distance to n / 2.
 -- If the input n is odd, add 1 to the distance to 3n + 1.
+--  NOTE: The actual library function for integer division is 'quot'.
 specialDistance :: Word -> Word
 specialDistance = undefined
 
@@ -68,7 +69,7 @@ main = defaultMain $ testGroup "Recusion1" $
   , testCase "Special Distance 0" $ specialDistance 0 @?= 1
   , testCase "Special Distance 1" $ specialDistance 1 @?= 0
   , testCase "Special Distance 2" $ specialDistance 2 @?= 1
-  , testCase "Special Distance 3" $ specialDistance 3 @?= 6
+  , testCase "Special Distance 3" $ specialDistance 3 @?= 7
   , testCase "Special Distance 4" $ specialDistance 19 @?= 20
   , testCase "Special Distance 5" $ specialDistance 128 @?= 7
   ]
