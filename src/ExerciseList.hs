@@ -44,6 +44,7 @@ allExercises =
   , ExerciseInfo "Recursion2" "recursion" True "1. Sometimes there is no work and only a recursive call! 2. Pattern matches can reveal more than just the head of a list!"
   , ExerciseInfo "Recursion3" "recursion" True "You can use multiple accumulator arguments if you want!"
   , ExerciseInfo "Recursion4" "recursion" True "You can't technically use 'tail recursion' but you'll still want a helper function, at least on the second function!"
+  , ExerciseInfo "Lists1" "lists" True "Tail recursion should provide you with some inspiration for your folding functions!"
   ]
 
 allExercisesMap :: M.Map String ExerciseInfo
