@@ -65,8 +65,10 @@ addMod3Is2 = undefined
 sumList :: [Int] -> Int
 sumList = undefined
 
-evenOdds :: [a] -> ([a], [a])
-evenOdds = undefined
+-- Return true if every element is 'True'!
+-- (The empty list should return 'True'!)
+allTrue :: [Bool] -> Bool
+allTrue bs = undefined
 
 main :: IO ()
 main = defaultMain $ testGroup "Lists1" $
@@ -76,9 +78,8 @@ main = defaultMain $ testGroup "Lists1" $
   , testCase "sumList 1" $ sumList [] @?= 0
   , testCase "sumList 2" $ sumList [5, -3] @?= 2
   , testCase "sumList 3" $ sumList [6, 8, 9, -2, 10] @?= 31
-  , testCase "evenOdds 1" $ evenOdds [] @?= ([], [] :: [Int])
-  , testCase "evenOdds 2" $ evenOdds [1] @?= ([], [1])
-  , testCase "evenOdds 3" $ evenOdds [1, 2, 3] @?= ([2], [1, 3])
-  , testCase "evenOdds 4" $ evenOdds [1, 2, 3, 4] @?= ([2, 4], [1, 3])
-  , testCase "evenOdds 5" $ evenOdds [1, 2, 3, 4, 5, 6, 7] @?= ([2, 4, 6], [1, 3, 5, 7])
+  , testCase "allTrue 1" $ allTrue [] @?= True
+  , testCase "allTrue 2" $ allTrue [False] @?= False
+  , testCase "allTrue 3" $ allTrue [False, True, True] @?= False
+  , testCase "allTrue 4" $ allTrue [True, True, True, True] @?= True
   ]
