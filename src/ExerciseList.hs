@@ -42,6 +42,7 @@ allExercises =
   , ExerciseInfo "Typeclasses5" "typeclasses" True "Make use of the existing 'Show' and 'Read' instances of the types."
   , ExerciseInfo "Recursion1" "recursion" True "Remember the base case! Also remember that 'mod' can help you determine if a number is even."
   , ExerciseInfo "Recursion2" "recursion" True "1. Sometimes there is no work and only a recursive call! 2. Pattern matches can reveal more than just the head of a list!"
+  , ExerciseInfo "Recursion3" "recursion" True "You can use multiple accumulator arguments if you want!"
   ]
 
 allExercisesMap :: M.Map String ExerciseInfo
