@@ -66,12 +66,12 @@ isValidBst = undefined
 tree1 :: BinaryTree
 tree1 = ValueNode 8
   (ValueNode 3 (ValueNode 1 EmptyNode EmptyNode) (ValueNode 6 (ValueNode 4 EmptyNode EmptyNode) (ValueNode 7 EmptyNode EmptyNode)))
-  (ValueNode 10 EmptyNode (ValueNode 14 (ValueNode 13 EmptyNode EmptyNode) EmptyNode)
+  (ValueNode 10 EmptyNode (ValueNode 14 (ValueNode 13 EmptyNode EmptyNode) EmptyNode))
 
 tree2 :: BinaryTree
 tree2 = ValueNode 17
   (ValueNode 3 (ValueNode 1 EmptyNode EmptyNode) (ValueNode 6 (ValueNode 4 EmptyNode EmptyNode) (ValueNode 24 EmptyNode EmptyNode)))
-  (ValueNode 10 EmptyNode (ValueNode 14 (ValueNode 13 EmptyNode EmptyNode) EmptyNode)
+  (ValueNode 10 EmptyNode (ValueNode 14 (ValueNode 13 EmptyNode EmptyNode) EmptyNode))
 
 main :: IO ()
 main = defaultMain $ testGroup "Recusion4" $
