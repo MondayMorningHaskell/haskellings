@@ -47,7 +47,7 @@ main = defaultMain $ testGroup "Recusion1" $
   , testCase "Reverse 4" $ reverseList ["Hello", "Goodbye", "There"] @?= ["There", "Goodbye", "Hello"]
   , testCase "evenOdds 1" $ evenOdds [] @?= ([], [] :: [Int])
   , testCase "evenOdds 2" $ evenOdds [1] @?= ([], [1])
-  , testCase "evenOdds 3" $ evenOdds [1, 2, 3] @?= ([1, 3], [2])
-  , testCase "evenOdds 4" $ evenOdds [1, 2, 3, 4] @?= ([1, 3], [2, 4])
-  , testCase "evenOdds 5" $ evenOdds [1, 2, 3, 4, 5, 6, 7] @?= ([1, 3, 5, 7], [2, 4, 6])
+  , testCase "evenOdds 3" $ evenOdds [1, 2, 3] @?= ([2], [1, 3])
+  , testCase "evenOdds 4" $ evenOdds [1, 2, 3, 4] @?= ([2, 4], [1, 3])
+  , testCase "evenOdds 5" $ evenOdds [1, 2, 3, 4, 5, 6, 7] @?= ([2, 4, 6], [1, 3, 5, 7])
   ]
