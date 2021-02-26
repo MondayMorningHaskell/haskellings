@@ -60,6 +60,7 @@ sumTree = undefined
 -- For every ValueNode in the tree:
 --   1. All elements in its left subtree are smaller than the value at the node.
 --   2. All elements in its right subtree are larger than the value at the node.
+-- You might want a helper that takes two 'bounding' elements in addition to a subtree.
 isValidBst :: BinaryTree -> Bool
 isValidBst = undefined
 
