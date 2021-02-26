@@ -40,7 +40,8 @@ allExercises =
   , ExerciseInfo "Typeclasses3" "typeclasses" True "The last function should be polymorphic in both inputs, with different constraints on each!"
   , ExerciseInfo "Typeclasses4" "typeclasses" True "You can use one typeclass function to help with another! Just don't create a dependency loop between them!"
   , ExerciseInfo "Typeclasses5" "typeclasses" True "Make use of the existing 'Show' and 'Read' instances of the types."
-  , ExerciseInfo "Recursion1" "recursion" True "Remember the base case!"
+  , ExerciseInfo "Recursion1" "recursion" True "Remember the base case! Also remember that 'mod' can help you determine if a number is even."
+  , ExerciseInfo "Recursion2" "recursion" True "1. Sometimes there is no work and only a recursive call! 2. Pattern matches can reveal more than just the head of a list!"
   ]
 
 allExercisesMap :: M.Map String ExerciseInfo
