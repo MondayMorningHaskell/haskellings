@@ -45,6 +45,9 @@ allExercises =
   , ExerciseInfo "Recursion3" "recursion" True "You can use multiple accumulator arguments if you want!"
   , ExerciseInfo "Recursion4" "recursion" True "You can't technically use 'tail recursion' but you'll still want a helper function, at least on the second function!"
   , ExerciseInfo "Lists1" "lists" True "Tail recursion should provide you with some inspiration for your folding functions!"
+  , ExerciseInfo "Lists2" "lists" True "Your countdown doesn't need to end exactly with 0."
+  , ExerciseInfo "Lists3" "lists" True "Remember 3 steps for a comprehension: 1. source 2. filter 3. result."
+  , ExerciseInfo "Lists4" "lists" True "Remember 'show' and string appending!"
   ]
 
 allExercisesMap :: M.Map String ExerciseInfo
