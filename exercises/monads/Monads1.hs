@@ -85,5 +85,5 @@ main = defaultMain $ testGroup "Monads1" $
   , testCase "sqrtAndMultiply 6" $ sqrtAndMultiply (-4.0) @?= Nothing
   , testCase "addAndNegate 1" $ addAndNegate [] @?= []
   , testCase "addAndNegate 2" $ addAndNegate [10] @?= [11, -11, 12, -12, 13, -13]
-  , testCase "addAndNegate 1" $ addAndNegate [1, 2] @?= [2, -2, 3, -3, 4, -4, 3, -3, 4, -4, 5, -5]
+  , testCase "addAndNegate 3" $ addAndNegate [1, 2] @?= [2, -2, 3, -3, 4, -4, 3, -3, 4, -4, 5, -5]
   ]
