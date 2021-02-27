@@ -63,24 +63,24 @@ multiplySqrtDouble x y = case safeSquareRoot product of
 
 -- Write a functor instance for this data type!
 
-data Metrics = Metrics
-  { latestMeasurements :: [Double]
-  , average :: Double
-  , max :: Double
-  , min :: Double
-  , mode :: Maybe Double
+data Metrics m = Metrics
+  { latestMeasurements :: [m]
+  , average :: m
+  , max :: m
+  , min :: m
+  , mode :: Maybe m
   } deriving (Show, Eq)
 
 -- Now write a simple function with fmap to double the value of all the metrics!
-doubleMetrics :: Metrics -> Metrics
+doubleMetrics :: Metrics Double -> Metrics Double
 doubleMetrics = undefined
 
 -- 
 
-m1 :: Metrics
+m1 :: Metrics Double
 m1 = Metrics [3.0, 6.0] 4.5 6.0 3.0 Nothing
 
-m2 :: Metrics
+m2 :: Metrics Double
 m2 = Metrics [1.0, 1.0, 5.0, 0.5] 1.875 5.0 0.5 (Just 1.0)
 
 main :: IO ()
