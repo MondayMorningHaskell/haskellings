@@ -84,7 +84,7 @@ m2 :: Metrics Double
 m2 = Metrics [1.0, 1.0, 5.0, 0.5] 1.875 5.0 0.5 (Just 1.0)
 
 main :: IO ()
-main = defaultMain $ testGroup "Recusion1" $
+main = defaultMain $ testGroup "Functors" $
   [ testCase "multiplySqrtDouble 1" $ multiplySqrtDouble (-2.0) (-8.0) @?= Just 8.0
   , testCase "multiplySqrtDouble 2" $ multiplySqrtDouble (-2.0) (8.0) @?= Nothing
   , testCase "multiplySqrtDouble 3" $ multiplySqrtDouble (3.0) (3.0) @?= Just 6.0
