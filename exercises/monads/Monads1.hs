@@ -60,6 +60,7 @@ multiplyIfSmall :: Double -> Double -> Maybe Double
 multiplyIfSmall y x = if x < 9.5 then Just (y * x) else Nothing
 
 -- TODO:
+
 -- Using the monad bind operator, apply the safeSquareRoot to the input
 -- and then multiply it by 10 using multiplyIfSmall.
 -- sqrtAndMultiply (-3.0) = Nothing
@@ -68,15 +69,11 @@ multiplyIfSmall y x = if x < 9.5 then Just (y * x) else Nothing
 sqrtAndMultiply :: Double -> Maybe Double
 sqrtAndMultiply = undefined
 
--- In the last exercise, you implemented these functions using
--- the applicative operator <*>. Now change the implementation
--- so that they instead use the monad bind operator!
-
-sumOfSquareRoots :: Double -> Double -> Maybe Double
-sumOfSquareRoots = undefined
-
-generateAllResults :: [Int -> Int -> Int] -> [Int] -> [Int] -> [Int]
-generateAllResults = undefined
+-- Given a list of inputs, produce a new list that adds 1, 2, and 3 to each input
+-- and then for the final result, also includes the negation of every input.
+-- addAndNegate [1, 2] -> [2, -2, 3, -3, 4, -4, 3, -3, 4, -4, 5, -5]
+addAndNegate :: [Int] -> [Int]
+addAndNegate = undefined
 
 main :: IO ()
 main = defaultMain $ testGroup "Monads1" $
@@ -86,14 +83,7 @@ main = defaultMain $ testGroup "Monads1" $
   , testCase "sqrtAndMultiply 4" $ sqrtAndMultiply 121.0 @?= Nothing
   , testCase "sqrtAndMultiply 5" $ sqrtAndMultiply 144.0 @?= Nothing
   , testCase "sqrtAndMultiply 6" $ sqrtAndMultiply (-4.0) @?= Nothing
-  , testCase "sumOfSquareRoots 1" $ sumOfSquareRoots 4.0 9.0 @?= Just 5.0
-  , testCase "sumOfSquareRoots 2" $ sumOfSquareRoots (-4.0) 9.0 @?= Nothing
-  , testCase "sumOfSquareRoots 3" $ sumOfSquareRoots (-4.0) (-9.0) @?= Nothing
-  , testCase "sumOfSquareRoots 4" $ sumOfSquareRoots 4.0 (-9.0) @?= Nothing
-  , testCase "sumOfSquareRoots 5" $ sumOfSquareRoots 4.0 0.0 @?= Just 2.0
-  , testCase "generateAllResults 1" $ generateAllResults ([] :: [Int -> Int -> Int]) [1, 2] [3, 4] @?= []
-  , testCase "generateAllResults 2" $ generateAllResults [(+) :: Int -> Int -> Int, (*)] [] [3, 4] @?= []
-  , testCase "generateAllResults 3" $ generateAllResults [(+)] [1, 2] [3, 4] @?= [4, 5, 5, 6]
-  , testCase "generateAllResults 4" $ generateAllResults [(+), (*)] [1, 2] [3, 4] @?= [4, 5, 5, 6, 3, 4, 6, 8]
-  , testCase "generateAllResults 5" $ generateAllResults [(+), (*), (-)] [10] [3, 4, 5] @?= [13, 14, 15, 30, 40, 50, 7, 6, 5]
+  , testCase "addAndNegate 1" $ addAndNegate [] @?= []
+  , testCase "addAndNegate 2" $ addAndNegate [10] @?= [11, -11, 12, -12, 13, -13]
+  , testCase "addAndNegate 1" $ addAndNegate [1, 2] @?= [2, -2, 3, -3, 4, -4, 3, -3, 4, -4, 5, -5]
   ]
