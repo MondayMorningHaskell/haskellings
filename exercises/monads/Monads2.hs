@@ -69,6 +69,14 @@ finalOp input = do
 
 -}
 
+safeSquareRoot :: Double -> Maybe Double
+safeSquareRoot x = if x < 0 then Nothing else Just (sqrt x)
+
+multiplyIfSmall :: Double -> Double -> Maybe Double
+multiplyIfSmall y x = if x < 9.5 then Just (y * x) else Nothing
+
+-- TODO:
+
 -- In the last couple exercises, you've implemented these functions either
 -- using the applicative operator <*> or the monadic bind operator >>=.
 -- Re-implement them all now using do-syntax!
