@@ -49,7 +49,7 @@ allExercises =
   , ExerciseInfo "Lists3" "lists" True "Remember 3 steps for a comprehension: 1. source 2. filter 3. result."
   , ExerciseInfo "Lists4" "lists" True "Remember 'show' and string appending!"
   , ExerciseInfo "Functors" "monads" True "You can use the underlying functor instances when creating your functor!"
-  , ExerciseInfo "Applicatives" "monads" True "Try to get a feel for how the `<*>` operator works!"
+  , ExerciseInfo "Applicatives" "monads" True "You can use 'fmap' (<$>) to wrap a function in the Applicative before applying <*>!"
   ]
 
 allExercisesMap :: M.Map String ExerciseInfo

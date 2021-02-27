@@ -74,7 +74,7 @@ generateSums = undefined
 
 -- Given a list of operations and two lists, generate all combinations of
 -- those operations with each pair of numbers from the two lists.
--- generateAllResults [(+), (*)] [1, 2] [3, 4] -> [4, 5, 3, 4, 5, 6, 6, 8]
+-- generateAllResults [(+), (*)] [1, 2] [3, 4] -> [4, 5, 5, 6, 3, 4, 6, 8]
 generateAllResults :: [Int -> Int -> Int] -> [Int] -> [Int] -> [Int]
 generateAllResults = undefined
 
@@ -94,6 +94,6 @@ main = defaultMain $ testGroup "Applicatives" $
   , testCase "generateAllResults 1" $ generateAllResults ([] :: [Int -> Int -> Int]) [1, 2] [3, 4] @?= []
   , testCase "generateAllResults 2" $ generateAllResults [(+) :: Int -> Int -> Int, (*)] [] [3, 4] @?= []
   , testCase "generateAllResults 3" $ generateAllResults [(+)] [1, 2] [3, 4] @?= [4, 5, 5, 6]
-  , testCase "generateAllResults 4" $ generateAllResults [(+), (*)] [1, 2] [3, 4] @?= [4, 5, 3, 4, 5, 6, 6, 8]
-  , testCase "generateAllResults 5" $ generateAllResults [(+), (*), (-)] [10] [3, 4, 5] @?= [13, 30, 7, 14, 40, 6, 15, 50, 5]
+  , testCase "generateAllResults 4" $ generateAllResults [(+), (*)] [1, 2] [3, 4] @?= [4, 5, 5, 6, 3, 4, 6, 8]
+  , testCase "generateAllResults 5" $ generateAllResults [(+), (*), (-)] [10] [3, 4, 5] @?= [13, 14, 15, 30, 40, 50, 7, 6, 5]
   ]
