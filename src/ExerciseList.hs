@@ -48,6 +48,7 @@ allExercises =
   , ExerciseInfo "Lists2" "lists" True "Your countdown doesn't need to end exactly with 0."
   , ExerciseInfo "Lists3" "lists" True "Remember 3 steps for a comprehension: 1. source 2. filter 3. result."
   , ExerciseInfo "Lists4" "lists" True "Remember 'show' and string appending!"
+  , ExerciseInfo "Functors" "monads" True "You can use the underlying functor instances when creating your functor!"
   ]
 
 allExercisesMap :: M.Map String ExerciseInfo
