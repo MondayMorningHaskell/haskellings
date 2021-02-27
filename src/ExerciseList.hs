@@ -51,6 +51,7 @@ allExercises =
   , ExerciseInfo "Functors" "monads" True "You can use the underlying functor instances when creating your functor!"
   , ExerciseInfo "Applicatives" "monads" True "You can use 'fmap' (<$>) to wrap a function in the Applicative before applying <*>!"
   , ExerciseInfo "Monads1" "monads" True "The bind operator (>>=) allows us to pass values from one monadic function to another without needing to unwrap in between!"
+  , ExerciseInfo "Monads2" "monads" True "The key is understanding what goes on each side of '<-' operator. The wrapped computation goes on the right, the unwrapped result goes on the left."
   ]
 
 allExercisesMap :: M.Map String ExerciseInfo
