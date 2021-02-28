@@ -52,6 +52,7 @@ allExercises =
   , ExerciseInfo "Applicatives" "monads" True "You can use 'fmap' (<$>) to wrap a function in the Applicative before applying <*>!"
   , ExerciseInfo "Monads1" "monads" True "The bind operator (>>=) allows us to pass values from one monadic function to another without needing to unwrap in between!"
   , ExerciseInfo "Monads2" "monads" True "The key is understanding what goes on each side of '<-' operator. The wrapped computation goes on the right, the unwrapped result goes on the left."
+  , ExerciseInfo "Monads3" "monads" True "You can still use an 'if' inside do-syntax! Just make sure that both branches are monadic actions!"
   ]
 
 allExercisesMap :: M.Map String ExerciseInfo
