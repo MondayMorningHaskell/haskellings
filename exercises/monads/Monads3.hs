@@ -113,7 +113,7 @@ u2 = User "kate@test.com" "abcdefgh" "Kate Smith" 32 "Kate writes code."
 
 main :: IO ()
 main = defaultMain $ testGroup "Monads3" $
-  [ testCase "add2AndShowDouble 1" $ runReader add2AndShowDouble 1 @?= "3,5"
+  [ testCase "add2AndShowDouble 1" $ runReader add2AndShowDouble 1 @?= "3,4"
   , testCase "add2AndShowDouble 2" $ runReader add2AndShowDouble 7 @?= "9,16"
   , testCase "Validate Account 1" $ runReader (validateAccount "john@test.com" "password") u1 @?= True
   , testCase "Validate Account 2" $ runReader (validateAccount "john@test.com" "abcdefgh") u1 @?= False
@@ -121,10 +121,10 @@ main = defaultMain $ testGroup "Monads3" $
   , testCase "Validate Account 4" $ runReader (validateAccount "kate@test.com" "password") u2 @?= False
   , testCase "Validate Account 5" $ runReader (validateAccount "kate@test.com" "abcdefgh") u2 @?= True
   , testCase "Validate Account 6" $ runReader (validateAccount "kate@test.com" "abcdefgh") u1 @?= False
-  , testCase "Display Profile 1" $ runReader displayProfile u1 @?= ["Name: John Smith", "Age: 35", "Bio: John is a Doctor at the hospital"]
+  , testCase "Display Profile 1" $ runReader displayProfile u1 @?= ["Name: John Smith", "Age: 35", "Bio: John is a Doctor at the Hospital"]
   , testCase "Display Profile 2" $ runReader displayProfile u2 @?= ["Name: Kate Smith", "Age: 32", "Bio: Kate writes code."]
   , testCase "Auth and Display Profile 1" $ authAndDisplayProfile u1 ("john@test.com", "password") @?=
-      Just ["Name: John Smith", "Age: 35", "Bio: John is a Doctor at the hospital"]
+      Just ["Name: John Smith", "Age: 35", "Bio: John is a Doctor at the Hospital"]
   , testCase "Auth and Display Profile 2" $ authAndDisplayProfile u1 ("john@test.com", "abcdefgh") @?= Nothing
   , testCase "Auth and Display Profile 3" $ authAndDisplayProfile u2 ("john@test.com", "password") @?= Nothing
   , testCase "Auth and Display Profile 4" $ authAndDisplayProfile u2 ("kate@test.com", "password") @?= Nothing
