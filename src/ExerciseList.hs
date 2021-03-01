@@ -50,6 +50,7 @@ allExercises =
   , ExerciseInfo "Lists4" "lists" True "Remember 'show' and string appending!"
   , ExerciseInfo "Functors" "monads" True "You can use the underlying functor instances when creating your functor!"
   , ExerciseInfo "Applicatives" "monads" True "You can use 'fmap' (<$>) to wrap a function in the Applicative before applying <*>!"
+  , ExerciseInfo "Monoids" "monads" True "Think about what you would use as the identity element for each item!"
   , ExerciseInfo "Monads1" "monads" True "The bind operator (>>=) allows us to pass values from one monadic function to another without needing to unwrap in between!"
   , ExerciseInfo "Monads2" "monads" True "The key is understanding what goes on each side of '<-' operator. The wrapped computation goes on the right, the unwrapped result goes on the left."
   , ExerciseInfo "Monads3" "monads" True "You can still use an 'if' inside do-syntax! Just make sure that both branches are monadic actions!"
