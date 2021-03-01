@@ -44,7 +44,7 @@ instance Monoid [a] where
 -- In the first, "appending" should work like addition.
 -- In the second, "appending" should work like multiplication.
 
-newtype IntAdd = IntAdder Int
+newtype IntAdd = IntAdd Int
 
 newtype IntMultiply = IntMultiply Int
 
@@ -60,12 +60,12 @@ main :: IO ()
 main = defaultMain $ testGroup "Monoids" $
   [ testCase "IntAdd 1" $ (IntAdd 5) <> (IntAdd 6) @?= (IntAdd 11)
   , testCase "IntAdd 2" $ (IntAdd 3) <> (IntAdd (-11)) @?= (IntAdd (-8))
-  , testCase "IntAdd 3" $ mempty :: IntAdd @?= (IntAdd 0)
+  , testCase "IntAdd 3" $ (mempty :: IntAdd) @?= (IntAdd 0)
   , testCase "IntMultiply 1" $ (IntMultiply 5) <> (IntMultiply 6) @?= (IntMultiply 30)
   , testCase "IntMultiply 2" $ (IntMultiply 3) <> (IntMultiply (-11)) @?= (IntMultiply (-33))
-  , testCase "IntMultiply 3" $ mempty :: IntMultiply @?= (IntMultiply 1)
+  , testCase "IntMultiply 3" $ (mempty :: IntMultiply) @?= (IntMultiply 1)
   , testCase "abba 1" $ abba (IntAdd 5) (IntAdd 6) @?= (IntAdd 22)
-  , testCase "abba 2" $ abba (IntMultiply 5) (IntMultiply 6) @?= (IntMultiply 30)
+  , testCase "abba 2" $ abba (IntMultiply 5) (IntMultiply 6) @?= (IntMultiply 900)
   , testCase "abba 3" $ abba [1, 2, 3] [4, 5, 6] @?= [1, 2, 3, 4, 5, 6, 4, 5, 6, 1, 2, 3]
   , testCase "abba 4" $ abba "Hello " "Goodbye " @?= "Hello Goodbye Goodbye Hello "
   ]
