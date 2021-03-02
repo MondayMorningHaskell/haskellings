@@ -1,9 +1,10 @@
 module Utils where
 
-import           Control.Monad       (forM_, void)
+import           Control.Monad       (forM_, void, when)
 import           Data.Char
 import           Data.List
 import           Data.List.Extra
+import           Data.Maybe          (fromJust, isJust)
 import           System.Console.ANSI
 import           System.Directory
 import           System.Exit
@@ -28,6 +29,7 @@ data RunResult =
   CompileError | TestFailed | RunSuccess
   deriving (Show, Eq)
 
+-- TODO: This function is officially monstrous and needs to be refactored.
 compileExercise :: ProgramConfig -> ExerciseInfo -> IO RunResult
 compileExercise config (ExerciseInfo exerciseName exDirectory exType _) = do
   let exIsRunnable = exType /= CompileOnly
@@ -59,9 +61,9 @@ compileExercise config (ExerciseInfo exerciseName exDirectory exType _) = do
       setSGR [SetColor Foreground Vivid Green]
       progPutStrLn config $ "Successfully compiled : " ++ exFilename
       setSGR [Reset]
-      if not exIsRunnable
-        then removeDirectoryRecursive genDirPath >> return RunSuccess
-        else do
+      case exType of
+        CompileOnly -> removeDirectoryRecursive genDirPath >> return RunSuccess
+        UnitTests -> do
           let execSpec = shell genExecutablePath
           (_, execStdOut, execStdErr, execProcHandle) <- createProcess (execSpec { std_out = CreatePipe, std_err = CreatePipe })
           execExit <- waitForProcess execProcHandle
@@ -84,6 +86,41 @@ compileExercise config (ExerciseInfo exerciseName exDirectory exType _) = do
               setSGR [Reset]
               removeDirectoryRecursive genDirPath
               return RunSuccess
+        Executable inputs outputPred -> do
+          let execSpec = shell genExecutablePath
+          (execStdIn, execStdOut, execStdErr, execProcHandle) <- createProcess
+            (execSpec { std_out = CreatePipe, std_err = CreatePipe, std_in = CreatePipe })
+          when (isJust execStdIn) $ forM_ inputs $ \i -> hPutStrLn (fromJust execStdIn) i
+          execExit <- waitForProcess execProcHandle
+          case execExit of
+            ExitFailure code -> do
+              setSGR [SetColor Foreground Vivid Red]
+              progPutStrLn config "Unexpected output for exercise: " ++ exFilename
+              progPutStrLn config "Check the Sample Input and Sample Output in the file."
+              progPutStrLn config $ "Then try running it for yourself with 'haskellings exec" ++ haskellModuleName exFilename ++ "'."
+              setSGR [Reset]
+              removeDirectoryRecursive genDirPath
+              return TestFailed
+            ExitSuccess -> do
+              passes <- case execStdOut of
+                Nothing -> return (outputPred [])
+                Just h  -> (lines <$> hGetContents h) >>= (return . outputPred)
+              if passes
+                then do
+                  setSGR [SetColor Foreground Vivid Green]
+                  progPutStrLn config $ "Successfully ran : " ++ exFilename
+                  progPutStrLn config $ "You can run this code for yourself with 'haskellings exec " ++ haskellModuleName exFilename ++ "'."
+                  setSGR [Reset]
+                  removeDirectoryRecursive genDirPath
+                  return RunSuccess
+                else do
+                  setSGR [SetColor Foreground Vivid Red]
+                  progPutStrLn config "Unexpected output for exercise: " ++ exFilename
+                  progPutStrLn config "Check the Sample Input and Sample Output in the file."
+                  progPutStrLn config $ "Then try running it for yourself with 'haskellings exec " ++ haskellModuleName exFilename ++ "'."
+                  setSGR [Reset]
+                  removeDirectoryRecursive genDirPath
+                  return TestFailed
 
 compileExercise_ :: ProgramConfig -> ExerciseInfo -> IO ()
 compileExercise_ config ex = void $ compileExercise config ex

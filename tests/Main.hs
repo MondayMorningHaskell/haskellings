@@ -149,7 +149,7 @@ compileAndExecFail1 paths = before (compileBeforeHook paths exInfo "io_bad1.outp
 
 compileAndExecFail2 :: (FilePath, FilePath) -> Spec
 compileAndExecFail2 paths = before (compileBeforeHook paths exInfo "io_bad1.output") $
-  describe "When running 'compileExercise' with a non-compiling executable exercise" $
+  describe "When running 'compileExercise' with a compiling executable exercise that doesn't pass." $
     it "Should indicate failure to compile and return a failing exit code" $ \(output, exit) -> do
       exit `shouldBe` TestFailed
       isExecFailureOutput output
