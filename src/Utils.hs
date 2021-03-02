@@ -44,10 +44,6 @@ executeExercise config exInfo@(ExerciseInfo exerciseName _ _ _) = do
         (_, _, _, execProcHandle) <- createProcess execSpec
         void $ waitForProcess execProcHandle
 
--- processSpec
--- genExecutablePath
--- exFilename (or just pass exerciseInfo?)
-
 -- Produces 3 Elements for running our exercise:
 -- 1. The 'CreateProcess' that we can run for the compilation.
 -- 2. The directory path for the generated files
