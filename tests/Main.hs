@@ -28,6 +28,10 @@ main = do
         compileAndRunTestFail2 paths
         compileAndRunTestPass paths
         compileAndRunTestPass2 paths
+        compileAndExecFail1 paths
+        compileAndExecFail2 paths
+        compileAndExecFail3 paths
+        compileAndExecPass paths
         watchTests paths
 
 compileBeforeHook :: (FilePath, FilePath) -> ExerciseInfo -> FilePath -> IO (String, RunResult)
@@ -36,7 +40,7 @@ compileBeforeHook (projectRoot, ghcPath) exInfo outFile = do
   outHandle <- openFile fullFp WriteMode
   packageDb <- findStackPackageDb
   let conf = ProgramConfig projectRoot ghcPath packageDb "/tests/exercises/" stdin outHandle stderr M.empty
-  resultExit <- compileExercise conf exInfo
+  resultExit <- compileAndRunExercise conf exInfo
   hClose outHandle
   programOutput <- readFile fullFp
   return (programOutput, resultExit)
@@ -54,6 +58,24 @@ isRunFailureOutput output = do
   head outputLines `shouldSatisfy` isPrefixOf "Successfully compiled :"
   outputLines !! 1 `shouldSatisfy` isPrefixOf "Tests failed on exercise :"
 
+isExecRunFailureOutput :: String -> Expectation
+isExecRunFailureOutput output = do
+  let outputLines = lines output
+  length outputLines `shouldSatisfy` (> 4)
+  head outputLines `shouldSatisfy` isPrefixOf "Successfully compiled :"
+  outputLines !! 1 `shouldSatisfy` isPrefixOf "Encountered error running exercise:"
+  last (init outputLines) `shouldBe` "Check the Sample Input and Sample Output in the file."
+  last outputLines `shouldSatisfy` isPrefixOf "Then try running it for yourself with 'haskellings exec"
+
+isExecTestFailureOutput :: String -> Expectation
+isExecTestFailureOutput output = do
+  let outputLines = lines output
+  length outputLines `shouldSatisfy` (== 4)
+  head outputLines `shouldSatisfy` isPrefixOf "Successfully compiled :"
+  outputLines !! 1 `shouldSatisfy` isPrefixOf "Unexpected output for exercise:"
+  outputLines !! 2 `shouldBe` "Check the Sample Input and Sample Output in the file."
+  outputLines !! 3 `shouldSatisfy` isPrefixOf "Then try running it for yourself with 'haskellings exec"
+
 isSuccessOutput :: String -> Expectation
 isSuccessOutput output = output `shouldSatisfy` isPrefixOf "Successfully compiled :"
 
@@ -64,69 +86,110 @@ isSuccessRunOutput output = do
   head outputLines `shouldSatisfy` isPrefixOf "Successfully compiled :"
   outputLines !! 1 `shouldSatisfy` isPrefixOf "Successfully ran :"
 
+isSuccessExecOutput :: String -> Expectation
+isSuccessExecOutput output = do
+  let outputLines = lines output
+  length outputLines `shouldBe` 3
+  head outputLines `shouldSatisfy` isPrefixOf "Successfully compiled :"
+  outputLines !! 1 `shouldSatisfy` isPrefixOf "Successfully ran :"
+  outputLines !! 2 `shouldSatisfy` isPrefixOf "You can run this code for yourself with 'haskellings exec"
+
 compileTests1 :: (FilePath, FilePath) -> Spec
 compileTests1 paths = before (compileBeforeHook paths exInfo "types1_bad.output") $
-  describe "When running 'compileExercise' with non-compiling file" $
+  describe "When running 'compileAndRunExercise' with non-compiling file" $
     it "Should indicate failure to compile and return a failing exit code" $ \(output, exit) -> do
       exit `shouldBe` CompileError
       isFailureOutput output
   where
-    exInfo = ExerciseInfo "Types1Bad" "types" False ""
+    exInfo = ExerciseInfo "Types1Bad" "types" CompileOnly ""
 
 compileTests2 :: (FilePath, FilePath) -> Spec
 compileTests2 paths = before (compileBeforeHook paths exInfo "types1_good.output") $
-  describe "When running 'compileExercise' with compiling file" $
+  describe "When running 'compileAndRunExercise' with compiling file" $
     it "Should indicate successful compilation and return a success exit code" $ \(output, exit) -> do
       exit `shouldBe` RunSuccess
       isSuccessOutput output
   where
-    exInfo = ExerciseInfo "Types1Good" "types" False ""
+    exInfo = ExerciseInfo "Types1Good" "types" CompileOnly ""
 
 compileAndRunTestFail1 :: (FilePath, FilePath) -> Spec
 compileAndRunTestFail1 paths = before (compileBeforeHook paths exInfo "recursion1_bad1.output") $
-  describe "When running 'compileExercise' with non-compiling and runnable file" $
+  describe "When running 'compileAndRunExercise' with non-compiling and runnable file" $
     it "Should indicate failure to compile and return a failing exit code" $ \(output, exit) -> do
       exit `shouldBe` CompileError
       isFailureOutput output
   where
-    exInfo = ExerciseInfo "Recursion1Bad1" "recursion" True ""
+    exInfo = ExerciseInfo "Recursion1Bad1" "recursion" UnitTests ""
 
 compileAndRunTestFail2 :: (FilePath, FilePath) -> Spec
 compileAndRunTestFail2 paths = before (compileBeforeHook paths exInfo "recursion1_bad2.output") $
-  describe "When running 'compileExercise' with compiling but incorrect file" $
+  describe "When running 'compileAndRunExercise' with compiling but incorrect file" $
     it "Should indicate test failures and return a failing exit code" $ \(output, exit) -> do
       isRunFailureOutput output
       exit `shouldBe` TestFailed
   where
-    exInfo = ExerciseInfo "Recursion1Bad2" "recursion" True ""
+    exInfo = ExerciseInfo "Recursion1Bad2" "recursion" UnitTests ""
 
 compileAndRunTestPass :: (FilePath, FilePath) -> Spec
 compileAndRunTestPass paths = before (compileBeforeHook paths exInfo "recursion1_good.output") $
-  describe "When running 'compileExercise' with compiling and runnable file" $
+  describe "When running 'compileAndRunExercise' with compiling and runnable file" $
     it "Should indicate successful compilation and return a success exit code" $ \(output, exit) -> do
       exit `shouldBe` RunSuccess
       isSuccessRunOutput output
   where
-    exInfo = ExerciseInfo "Recursion1Good" "recursion" True ""
+    exInfo = ExerciseInfo "Recursion1Good" "recursion" UnitTests ""
 
 compileAndRunTestPass2 :: (FilePath, FilePath) -> Spec
 compileAndRunTestPass2 paths = before (compileBeforeHook paths exInfo "recursion2.output") $
-  describe "When running 'compileExercise' with compiling and runnable file that has a unit testing library" $
+  describe "When running 'compileAndRunExercise' with compiling and runnable file that has a unit testing library" $
     it "Should indicate successful compilation and return a success exit code" $ \(output, exit) -> do
       exit `shouldBe` RunSuccess
       isSuccessRunOutput output
   where
-    exInfo = ExerciseInfo "Recursion2" "recursion" True ""
+    exInfo = ExerciseInfo "Recursion2" "recursion" UnitTests ""
+
+compileAndExecFail1 :: (FilePath, FilePath) -> Spec
+compileAndExecFail1 paths = before (compileBeforeHook paths exInfo "io_bad1.output") $
+  describe "When running 'compileAndRunExercise' with a non-compiling executable exercise" $
+    it "Should indicate failure to compile and return a failing exit code" $ \(output, exit) -> do
+      exit `shouldBe` CompileError
+      isFailureOutput output
+  where
+    exInfo = ExerciseInfo "IOBad1" "io" (Executable ["John"] (== ["Hello, please enter your name!", "Hello, John"])) ""
+
+compileAndExecFail2 :: (FilePath, FilePath) -> Spec
+compileAndExecFail2 paths = before (compileBeforeHook paths exInfo "io_bad2.output") $
+  describe "When running 'compileAndRunExercise' with a compiling executable exercise that errors." $
+    it "Should indicate failure to compile and return a failing exit code" $ \(output, exit) -> do
+      exit `shouldBe` TestFailed
+      isExecRunFailureOutput output
+  where
+    exInfo = ExerciseInfo "IOBad2" "io" (Executable ["John"] (== ["Hello, please enter your name!", "Hello, John"])) ""
+
+compileAndExecFail3 :: (FilePath, FilePath) -> Spec
+compileAndExecFail3 paths = before (compileBeforeHook paths exInfo "io_bad3.output") $
+  describe "When running 'compileAndRunExercise' with a compiling executable exercise that doesn't pass the tests." $
+    it "Should indicate failure to compile and return a failing exit code" $ \(output, exit) -> do
+      exit `shouldBe` TestFailed
+      isExecTestFailureOutput output
+  where
+    exInfo = ExerciseInfo "IOBad3" "io" (Executable ["John"] (== ["Hello, please enter your name!", "Hello, John"])) ""
+
+compileAndExecPass :: (FilePath, FilePath) -> Spec
+compileAndExecPass paths = before (compileBeforeHook paths exInfo "io_good.output") $
+  describe "When running 'compileAndRunExercise' with a passing executable exercise" $
+    it "Should indicate successful compilation and return a success exit code" $ \(output, exit) -> do
+      exit `shouldBe` RunSuccess
+      isSuccessExecOutput output
+  where
+    exInfo = ExerciseInfo "IOGood" "io" (Executable ["John"] (== ["Hello, please enter your name!", "Hello, John"])) ""
 
 
-
-
-
-
+-- Watcher Tests
 watchTestExercises :: [ExerciseInfo]
 watchTestExercises =
-  [ ExerciseInfo "Types1" "watcher_types" False "What type should you fill in for the variable?"
-  , ExerciseInfo "Types2" "watcher_types" False "What type can you fill in for the tuple?"
+  [ ExerciseInfo "Types1" "watcher_types" CompileOnly "What type should you fill in for the variable?"
+  , ExerciseInfo "Types2" "watcher_types" CompileOnly "What type can you fill in for the tuple?"
   ]
 
 watchTests :: (FilePath, FilePath) -> Spec

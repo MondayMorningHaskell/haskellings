@@ -1,13 +1,15 @@
 module Config where
 
-import           Control.Concurrent (MVar, putMVar, takeMVar)
-import           Control.Monad      (forM)
-import           Data.List          (find, isSuffixOf)
-import qualified Data.Map           as M
-import           Data.Maybe         (catMaybes)
-import qualified Data.Sequence      as S
+
+import           Control.Concurrent  (MVar, putMVar, takeMVar)
+import           Control.Monad       (forM)
+import           Data.List           (find, isSuffixOf)
+import qualified Data.Map            as M
+import           Data.Maybe          (catMaybes)
+import qualified Data.Sequence       as S
+import           System.Console.ANSI
 import           System.Directory
-import           System.Environment (lookupEnv)
+import           System.Environment  (lookupEnv)
 import           System.IO
 
 import           DirectoryUtils
@@ -63,6 +65,39 @@ progPrintErr pc = hPrint (errHandle pc)
 
 progReadLine :: ProgramConfig -> IO String
 progReadLine pc = hGetLine (inHandle pc)
+
+-- Perform an action with 'Green' Terminal Text
+withTerminalSuccess :: IO a -> IO a
+withTerminalSuccess = withTerminalColor Green
+
+-- Perform an action with 'Red' Terminal Text
+withTerminalFailure :: IO a -> IO a
+withTerminalFailure = withTerminalColor Red
+
+-- Perform an action with printed output given a color.
+withTerminalColor :: Color -> IO a -> IO a
+withTerminalColor color action = do
+  setSGR [SetColor Foreground Vivid color]
+  res <- action
+  setSGR [Reset]
+  return res
+
+-- Print a line, but in Green
+progPutStrLnSuccess :: ProgramConfig -> String -> IO ()
+progPutStrLnSuccess pc output = withTerminalSuccess (progPutStrLn pc output)
+
+-- Print a line, but in Red
+progPutStrLnFailure :: ProgramConfig -> String -> IO ()
+progPutStrLnFailure pc output = withTerminalFailure (progPutStrLn pc output)
+
+-- Create a directory. Run the action depending on that directory,
+-- and then clean the directory up.
+withDirectory :: FilePath -> IO a -> IO a
+withDirectory dirPath action = do
+  createDirectoryIfMissing True dirPath
+  res <- action
+  removeDirectoryRecursive dirPath
+  return res
 
 loadProjectRootAndGhc :: IO (Either ConfigError (FilePath, FilePath))
 loadProjectRootAndGhc = do

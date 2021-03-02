@@ -25,7 +25,7 @@ processEvent :: ProgramConfig -> ExerciseInfo -> MVar () -> Event -> IO ()
 processEvent config exerciseInfo signalMVar _ = do
   progPutStrLn config $ "Running exercise: " ++ exerciseName exerciseInfo
   withFileLock fullFp config $ do
-    runResult <- compileExercise config exerciseInfo
+    runResult <- compileAndRunExercise config exerciseInfo
     case runResult of
       RunSuccess -> do
         isNotDone <- fileContainsNotDone fullFp
@@ -40,7 +40,7 @@ runExerciseWatch :: ProgramConfig -> [ExerciseInfo] -> IO ()
 runExerciseWatch config [] = progPutStrLn config "Congratulations, you've completed all the exercises!"
 runExerciseWatch config (firstEx : restExs) = do
   (runResult, isDone) <- withFileLock fullFp config $ do
-    runResult <- compileExercise config firstEx
+    runResult <- compileAndRunExercise config firstEx
     isDone <- not <$> fileContainsNotDone fullFp
     return (runResult, isDone)
   if runResult == RunSuccess && isDone
