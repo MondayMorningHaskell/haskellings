@@ -55,6 +55,7 @@ allExercises =
   , ExerciseInfo "Monads2" "monads" True "The key is understanding what goes on each side of '<-' operator. The wrapped computation goes on the right, the unwrapped result goes on the left."
   , ExerciseInfo "Monads3" "monads" True "You can still use an 'if' inside do-syntax! Just make sure that both branches are monadic actions!"
   , ExerciseInfo "Monads4" "monads" True "You'll have to wrap the string values in their own lists to use the monoid instance!"
+  , ExerciseInfo "Monads5" "monads" True "Remember that 'execState' will discard the computation result!"
   ]
 
 allExercisesMap :: M.Map String ExerciseInfo
