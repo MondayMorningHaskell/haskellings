@@ -60,6 +60,13 @@ opCost (Multiply _) = IntAdd 5
 opCost (Divide _) = IntAdd 10
 opCost Sqrt = IntAdd 20
 
+instance Show Op where
+  show (Add x) = "Adding " ++ show x
+  show (Subtract x) = "Subtracting " ++ show x
+  show (Multiply x) = "Multiplying by " ++ show x
+  show (Divide x) = "Dividing by " ++ show x
+  show Sqrt = "Taking Square Root"
+
 -- TODO:
 
 -- Rewrite these functions from last time, but use the State monad
