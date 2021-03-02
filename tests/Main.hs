@@ -71,7 +71,7 @@ compileTests1 paths = before (compileBeforeHook paths exInfo "types1_bad.output"
       exit `shouldBe` CompileError
       isFailureOutput output
   where
-    exInfo = ExerciseInfo "Types1Bad" "types" False ""
+    exInfo = ExerciseInfo "Types1Bad" "types" CompileOnly ""
 
 compileTests2 :: (FilePath, FilePath) -> Spec
 compileTests2 paths = before (compileBeforeHook paths exInfo "types1_good.output") $
@@ -80,7 +80,7 @@ compileTests2 paths = before (compileBeforeHook paths exInfo "types1_good.output
       exit `shouldBe` RunSuccess
       isSuccessOutput output
   where
-    exInfo = ExerciseInfo "Types1Good" "types" False ""
+    exInfo = ExerciseInfo "Types1Good" "types" CompileOnly ""
 
 compileAndRunTestFail1 :: (FilePath, FilePath) -> Spec
 compileAndRunTestFail1 paths = before (compileBeforeHook paths exInfo "recursion1_bad1.output") $
@@ -89,7 +89,7 @@ compileAndRunTestFail1 paths = before (compileBeforeHook paths exInfo "recursion
       exit `shouldBe` CompileError
       isFailureOutput output
   where
-    exInfo = ExerciseInfo "Recursion1Bad1" "recursion" True ""
+    exInfo = ExerciseInfo "Recursion1Bad1" "recursion" UnitTests ""
 
 compileAndRunTestFail2 :: (FilePath, FilePath) -> Spec
 compileAndRunTestFail2 paths = before (compileBeforeHook paths exInfo "recursion1_bad2.output") $
@@ -98,7 +98,7 @@ compileAndRunTestFail2 paths = before (compileBeforeHook paths exInfo "recursion
       isRunFailureOutput output
       exit `shouldBe` TestFailed
   where
-    exInfo = ExerciseInfo "Recursion1Bad2" "recursion" True ""
+    exInfo = ExerciseInfo "Recursion1Bad2" "recursion" UnitTests ""
 
 compileAndRunTestPass :: (FilePath, FilePath) -> Spec
 compileAndRunTestPass paths = before (compileBeforeHook paths exInfo "recursion1_good.output") $
@@ -107,7 +107,7 @@ compileAndRunTestPass paths = before (compileBeforeHook paths exInfo "recursion1
       exit `shouldBe` RunSuccess
       isSuccessRunOutput output
   where
-    exInfo = ExerciseInfo "Recursion1Good" "recursion" True ""
+    exInfo = ExerciseInfo "Recursion1Good" "recursion" UnitTests ""
 
 compileAndRunTestPass2 :: (FilePath, FilePath) -> Spec
 compileAndRunTestPass2 paths = before (compileBeforeHook paths exInfo "recursion2.output") $
@@ -116,7 +116,7 @@ compileAndRunTestPass2 paths = before (compileBeforeHook paths exInfo "recursion
       exit `shouldBe` RunSuccess
       isSuccessRunOutput output
   where
-    exInfo = ExerciseInfo "Recursion2" "recursion" True ""
+    exInfo = ExerciseInfo "Recursion2" "recursion" UnitTests ""
 
 
 
@@ -125,8 +125,8 @@ compileAndRunTestPass2 paths = before (compileBeforeHook paths exInfo "recursion
 
 watchTestExercises :: [ExerciseInfo]
 watchTestExercises =
-  [ ExerciseInfo "Types1" "watcher_types" False "What type should you fill in for the variable?"
-  , ExerciseInfo "Types2" "watcher_types" False "What type can you fill in for the tuple?"
+  [ ExerciseInfo "Types1" "watcher_types" CompileOnly "What type should you fill in for the variable?"
+  , ExerciseInfo "Types2" "watcher_types" CompileOnly "What type can you fill in for the tuple?"
   ]
 
 watchTests :: (FilePath, FilePath) -> Spec

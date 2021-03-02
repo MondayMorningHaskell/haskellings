@@ -29,7 +29,8 @@ data RunResult =
   deriving (Show, Eq)
 
 compileExercise :: ProgramConfig -> ExerciseInfo -> IO RunResult
-compileExercise config (ExerciseInfo exerciseName exDirectory exIsRunnable _) = do
+compileExercise config (ExerciseInfo exerciseName exDirectory exType _) = do
+  let exIsRunnable = exType /= CompileOnly
   let exFilename = haskellFileName exerciseName
   let root = projectRoot config
   let fullSourcePath = root `pathJoin` exercisesExt config `pathJoin` exDirectory `pathJoin` exFilename
