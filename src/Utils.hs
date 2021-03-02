@@ -95,7 +95,13 @@ compileExercise config (ExerciseInfo exerciseName exDirectory exType _) = do
           case execExit of
             ExitFailure code -> do
               setSGR [SetColor Foreground Vivid Red]
-              progPutStrLn config "Unexpected output for exercise: " ++ exFilename
+              progPutStrLn config $ "Encountered error running exercise: " ++ exFilename
+              case execStdOut of
+                Nothing -> return ()
+                Just h  -> hGetContents h >>= progPutStrLn config
+              case execStdErr of
+                Nothing -> return ()
+                Just h  -> hGetContents h >>= progPutStrLn config
               progPutStrLn config "Check the Sample Input and Sample Output in the file."
               progPutStrLn config $ "Then try running it for yourself with 'haskellings exec" ++ haskellModuleName exFilename ++ "'."
               setSGR [Reset]
@@ -115,7 +121,7 @@ compileExercise config (ExerciseInfo exerciseName exDirectory exType _) = do
                   return RunSuccess
                 else do
                   setSGR [SetColor Foreground Vivid Red]
-                  progPutStrLn config "Unexpected output for exercise: " ++ exFilename
+                  progPutStrLn config $ "Unexpected output for exercise: " ++ exFilename
                   progPutStrLn config "Check the Sample Input and Sample Output in the file."
                   progPutStrLn config $ "Then try running it for yourself with 'haskellings exec " ++ haskellModuleName exFilename ++ "'."
                   setSGR [Reset]

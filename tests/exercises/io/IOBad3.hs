@@ -4,7 +4,7 @@ main :: IO ()
 main = do
   putStrLn "Hello, please enter your name!"
   name <- getLine
-  putStrLn undefined
+  putStrLn name
 
 {-
 
