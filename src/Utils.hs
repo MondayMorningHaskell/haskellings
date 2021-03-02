@@ -29,7 +29,20 @@ data RunResult =
   deriving (Show, Eq)
 
 executeExercise :: ProgramConfig -> ExerciseInfo -> IO ()
-executeExercise config (ExerciseInfo exerciseName exDirectory exType _) = undefined
+executeExercise config exInfo@(ExerciseInfo exerciseName _ _ _) = do
+  let (processSpec, genDirPath, genExecutablePath) = createExerciseProcess config exInfo
+  let exFilename = haskellFileName exerciseName
+  withDirectory genDirPath $ do
+    (_, _, procStdErr, procHandle) <- createProcess (processSpec { std_out = CreatePipe, std_err = CreatePipe })
+    exitCode <- waitForProcess procHandle
+    case exitCode of
+      ExitFailure code -> void $ onCompileFailure config exFilename procStdErr
+      ExitSuccess -> do
+        progPutStrLnSuccess config $ "Successfully compiled: " ++ exFilename
+        progPutStrLn config $ "----- Executing file: " ++ exFilename ++ " -----"
+        let execSpec = shell genExecutablePath
+        (_, _, _, execProcHandle) <- createProcess execSpec
+        void $ waitForProcess execProcHandle
 
 -- processSpec
 -- genExecutablePath
@@ -123,7 +136,6 @@ runExecutableExercise config genExecutablePath exFilename inputs outputPred = do
           progPutStrLn config $ "Then try running it for yourself with 'haskellings exec " ++ haskellModuleName exFilename ++ "'."
           return TestFailed
 
--- TODO: This function is officially monstrous and needs to be refactored.
 compileAndRunExercise :: ProgramConfig -> ExerciseInfo -> IO RunResult
 compileAndRunExercise config exInfo@(ExerciseInfo exerciseName exDirectory exType _) = do
   let (processSpec, genDirPath, genExecutablePath) = createExerciseProcess config exInfo

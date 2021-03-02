@@ -1,5 +1,6 @@
 module Config where
 
+
 import           Control.Concurrent  (MVar, putMVar, takeMVar)
 import           Control.Monad       (forM)
 import           Data.List           (find, isSuffixOf)
@@ -67,14 +68,14 @@ progReadLine pc = hGetLine (inHandle pc)
 
 -- Perform an action with 'Green' Terminal Text
 withTerminalSuccess :: IO a -> IO a
-withTerminalSuccess action = withTerminalColor Green
+withTerminalSuccess = withTerminalColor Green
 
 -- Perform an action with 'Red' Terminal Text
 withTerminalFailure :: IO a -> IO a
 withTerminalFailure = withTerminalColor Red
 
 -- Perform an action with printed output given a color.
-withTerminalColor :: SGR -> IO a -> IO a
+withTerminalColor :: Color -> IO a -> IO a
 withTerminalColor color action = do
   setSGR [SetColor Foreground Vivid color]
   res <- action
