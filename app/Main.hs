@@ -22,10 +22,12 @@ main = do
         then progPutStrLn config "Haskellings requires a sub-command!"
         else do
           let command = head args
-          if command == "run"
-            then if length args < 2
+          case command of
+            "run" -> if length args < 2
               then progPutStrLn config "Run command requires an exercise name!"
               else runExercise config (args !! 1)
-          else if command == "watch"
-            then watchExercises config
-            else progPutStrLn config $ command ++ " is not implemented yet!"
+            "watch" -> watchExercises config
+            "exec" -> if length args < 2
+              then progPutStrLn config "Exec command requires an exercise name!"
+              else execExercise config (args !! 1)
+            _ -> progPutStrLn config $ command ++ " is not implemented yet!"

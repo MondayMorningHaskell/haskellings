@@ -6,10 +6,16 @@ import           System.Directory
 import           System.Process
 
 import           Config
-import           ExerciseList     (allExercisesMap)
+import           ExerciseList
 import           Utils
 
 runExercise :: ProgramConfig -> String -> IO ()
 runExercise config exerciseName = case M.lookup exerciseName allExercisesMap of
   Nothing -> progPutStrLn config $ "Could not find exercise: " ++ exerciseName ++ "!"
-  Just exInfo -> compileExercise_ config exInfo
+  Just exInfo -> compileAndRunExercise_ config exInfo
+
+execExercise :: ProgramConfig -> String -> IO ()
+execExercise config exerciseName = case M.lookup exerciseName allExercisesMap of
+  Nothing -> progPutStrLn config $ "Could not find exercise: " ++ exerciseName ++ "!"
+  Just exInfo@(ExerciseInfo _ _ (Executable _ _) _) -> executeExercise config exInfo
+  _ -> progPutStrLn config $ "Exercise " ++ exerciseName ++ " is not executable!"
