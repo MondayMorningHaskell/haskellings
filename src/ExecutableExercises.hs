@@ -12,3 +12,18 @@ io1Pred output = case output of
     isPrefixOf "Home directory is:" o3 &&
     isPrefixOf "Home directory contains " o4
   _ -> False
+
+io2Inputs :: [String]
+io2Inputs = ["4", "5", "Hello"]
+
+io2Pred :: [String] -> Bool
+io2Pred = (==)
+  [ "Please enter a number."
+  , "Received 4."
+  , "Please enter a number."
+  , "Received 5."
+  , "The sum of these is 9."
+  , "Please enter a number."
+  , "Could not read that as an integer."
+  , "Sum is not possible."
+  ]

@@ -83,6 +83,7 @@ allExercises =
   , ExerciseInfo "Monads4" "monads" UnitTests "You'll have to wrap the string values in their own lists to use the monoid instance!"
   , ExerciseInfo "Monads5" "monads" UnitTests "Remember that 'execState' will discard the computation result!"
   , ExerciseInfo "IO1" "monads" (Executable [] io1Pred) "Remember how to use do-syntax to retrieve the results of computations!"
+  , ExerciseInfo "IO2" "monads" (Executable [] io2Pred) "Using fmap (<$>) and the bind operator (>>=) can help you write fewer lines of code!"
   ]
 
 allExercisesMap :: M.Map String ExerciseInfo
