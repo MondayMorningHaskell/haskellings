@@ -2,6 +2,8 @@ module ExerciseList where
 
 import qualified Data.Map as M
 
+import ExecutableExercises
+
 -- There are three types of exercises.
 -- 1. Some succeed once they have compiled (CompileOnly).
 -- 2. Some require that unit tests pass on the exercise functions (UnitTests)
@@ -80,6 +82,7 @@ allExercises =
   , ExerciseInfo "Monads3" "monads" UnitTests "You can still use an 'if' inside do-syntax! Just make sure that both branches are monadic actions!"
   , ExerciseInfo "Monads4" "monads" UnitTests "You'll have to wrap the string values in their own lists to use the monoid instance!"
   , ExerciseInfo "Monads5" "monads" UnitTests "Remember that 'execState' will discard the computation result!"
+  , ExerciseInfo "IO1" "monads" (Executable [] io1Pred) "Remember how to use do-syntax to retrieve the results of computations!"
   ]
 
 allExercisesMap :: M.Map String ExerciseInfo
