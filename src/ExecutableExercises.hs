@@ -27,3 +27,16 @@ io2Pred = (==)
   , "Could not read that as an integer."
   , "Sum is not possible."
   ]
+
+transformers1Inputs :: [String]
+transformers1Inputs = ["2.0", "Add 4.0", "Multiply 6.0", "Sqrt"]
+
+transformers1Pred :: [String] -> Bool
+transformers1Pred = (==)
+  [ "Please enter a number."
+  , "Please enter three operations."
+  , "Adding 4.0"
+  , "Multiplying 6.0"
+  , "Taking Square Root"
+  , "Result: (6.0, 26)"
+  ]
