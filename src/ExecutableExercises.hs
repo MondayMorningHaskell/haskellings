@@ -19,9 +19,9 @@ io2Inputs = ["4", "5", "Hello"]
 io2Pred :: [String] -> Bool
 io2Pred = (==)
   [ "Please enter a number."
-  , "Received 4."
+  , "Received 4"
   , "Please enter a number."
-  , "Received 5."
+  , "Received 5"
   , "The sum of these is 9."
   , "Please enter a number."
   , "Could not read that as an integer."

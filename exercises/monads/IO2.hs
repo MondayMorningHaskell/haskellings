@@ -24,6 +24,8 @@ badRead = read "Hello"
 - To fix this, use 'readMaybe'. Then you can provide a more appropriate
   failure mechanism.
 
+readMaybe :: (Read a) => String -> Maybe a
+
 -}
 
 -- TODO:
@@ -51,9 +53,9 @@ Sample Input:
 
 Sample Output:
 Please enter a number.
-Received 4.
+Received 4
 Please enter a number.
-Received 5.
+Received 5
 The sum of these is 9.
 Please enter a number.
 Could not read that as an integer.
