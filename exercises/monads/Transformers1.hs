@@ -76,6 +76,13 @@ instance Show Op where
   show (Divide x) = "Dividing by " ++ show x
   show Sqrt = "Taking Square Root"
 
+applyOp :: Op -> Double -> Double
+applyOp (Add x) y = x + y
+applyOp (Subtract x) y = y - x
+applyOp (Multiply x) y = x * y
+applyOp (Divide x) y = y / x
+applyOp Sqrt y = if y < 0 then y else sqrt y
+
 -- TODO:
 
 -- Replicate the logic of applyAndCountOperations from the Monads4 exercise.
@@ -107,7 +114,7 @@ Sample Output:
 Please enter a number.
 Please enter three operations.
 Adding 4.0
-Multiplying 6.0
+Multiplying by 6.0
 Taking Square Root
 Result: (6.0, 26)
 

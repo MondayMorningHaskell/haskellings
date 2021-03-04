@@ -36,7 +36,7 @@ transformers1Pred = (==)
   [ "Please enter a number."
   , "Please enter three operations."
   , "Adding 4.0"
-  , "Multiplying 6.0"
+  , "Multiplying by 6.0"
   , "Taking Square Root"
-  , "Result: (6.0, 26)"
+  , "Result: (6.0,26)"
   ]
