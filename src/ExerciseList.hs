@@ -1,8 +1,8 @@
 module ExerciseList where
 
-import qualified Data.Map as M
+import qualified Data.Map            as M
 
-import ExecutableExercises
+import           ExecutableExercises
 
 -- There are three types of exercises.
 -- 1. Some succeed once they have compiled (CompileOnly).

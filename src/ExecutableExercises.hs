@@ -1,6 +1,6 @@
 module ExecutableExercises where
 
-import Data.List (isPrefixOf)
+import           Data.List (isPrefixOf)
 
 -- Predicates for Executable exercises
 
