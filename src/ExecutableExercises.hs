@@ -28,6 +28,15 @@ io2Pred = (==)
   , "Sum is not possible."
   ]
 
+io3Pred :: [String] -> Bool
+io3Pred = (==)
+  [ "First line!"
+  , "Second line."
+  , "Third line..."
+  , "Final line!"
+  , "First line!"
+  ]
+
 transformers1Inputs :: [String]
 transformers1Inputs = ["2.0", "Add 4.0", "Multiply 6.0", "Sqrt"]
 
