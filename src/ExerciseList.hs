@@ -85,6 +85,7 @@ allExercises =
   , ExerciseInfo "IO1" "monads" (Executable [] io1Pred) "Remember how to use do-syntax to retrieve the results of computations!"
   , ExerciseInfo "IO2" "monads" (Executable io2Inputs io2Pred) "Using fmap (<$>) and the bind operator (>>=) can help you write fewer lines of code!"
   , ExerciseInfo "Transformers1" "monads" (Executable transformers1Inputs transformers1Pred) "Understand how 'runStateT' extends the idea of 'runState'."
+  , ExerciseInfo "Transformers2" "monads" (Executable transformers2Inputs transformers2Pred) "You can combine 'MaybeT' actions in the same do-syntax block!"
   ]
 
 allExercisesMap :: M.Map String ExerciseInfo

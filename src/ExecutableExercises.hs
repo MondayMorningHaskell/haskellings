@@ -40,3 +40,18 @@ transformers1Pred = (==)
   , "Taking Square Root"
   , "Result: (6.0,26)"
   ]
+
+transformers2Inputs :: [String]
+transformers2Inputs =
+  ["stephanie@test.com", "password", "31", "john@test.com", "short"]
+
+transformers2Pred :: [String] -> Bool
+transformers2Pred = (==)
+  [ "Please enter your email"
+  , "Please enter your password"
+  , "Please enter your age"
+  , "Just (User \"stephanie@test.com\" \"password\" 31)"
+  , "Please enter your email"
+  , "Please enter your password"
+  , "Nothing"
+  ]
