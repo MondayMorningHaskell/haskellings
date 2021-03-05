@@ -83,7 +83,7 @@ Sample Output:
 Please enter your email
 Please enter your password
 Please enter your age
-Just (User "stephanie@test.com" "password" 31)
+Just (User {email = "stephanie@test.com", password = "password", age = 31})
 Please enter your email
 Please enter your password
 Nothing
