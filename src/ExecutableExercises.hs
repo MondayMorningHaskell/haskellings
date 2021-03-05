@@ -30,10 +30,7 @@ io2Pred = (==)
 
 io3Pred :: [String] -> Bool
 io3Pred = (==)
-  [ "First line!"
-  , "Second line."
-  , "Third line..."
-  , "Final line!"
+  [ "[\"First line!\",\"Second line.\",\"Third line...\",\"Final line!\"]"
   , "First line!"
   ]
 

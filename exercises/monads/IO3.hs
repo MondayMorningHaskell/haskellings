@@ -65,6 +65,8 @@ getAllLines fp = ???
 readFirstLine :: FilePath -> IO String
 readFirstLine fp = ???
 
+-- NOTE: This will create a file in your home directory,
+--       but delete it once it successfully runs.
 main :: IO ()
 main = do
   home <- getHomeDirectory
@@ -79,10 +81,7 @@ main = do
 
 Sample Output:
 
-First line!
-Second line.
-Third line...
-Final line!
+["First line!","Second line.","Third line...","Final line!"]
 First line!
 
 -}
