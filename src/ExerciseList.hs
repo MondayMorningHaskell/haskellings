@@ -1,6 +1,8 @@
 module ExerciseList where
 
-import qualified Data.Map as M
+import qualified Data.Map            as M
+
+import           ExecutableExercises
 
 -- There are three types of exercises.
 -- 1. Some succeed once they have compiled (CompileOnly).
@@ -80,6 +82,11 @@ allExercises =
   , ExerciseInfo "Monads3" "monads" UnitTests "You can still use an 'if' inside do-syntax! Just make sure that both branches are monadic actions!"
   , ExerciseInfo "Monads4" "monads" UnitTests "You'll have to wrap the string values in their own lists to use the monoid instance!"
   , ExerciseInfo "Monads5" "monads" UnitTests "Remember that 'execState' will discard the computation result!"
+  , ExerciseInfo "IO1" "monads" (Executable [] io1Pred) "Remember how to use do-syntax to retrieve the results of computations!"
+  , ExerciseInfo "IO2" "monads" (Executable io2Inputs io2Pred) "Using fmap (<$>) and the bind operator (>>=) can help you write fewer lines of code!"
+  , ExerciseInfo "IO3" "monads" (Executable [] io3Pred) "Remember you can either read the file all at once or line-by-line!"
+  , ExerciseInfo "Transformers1" "monads" (Executable transformers1Inputs transformers1Pred) "Understand how 'runStateT' extends the idea of 'runState'."
+  , ExerciseInfo "Transformers2" "monads" (Executable transformers2Inputs transformers2Pred) "You can combine 'MaybeT' actions in the same do-syntax block!"
   ]
 
 allExercisesMap :: M.Map String ExerciseInfo
