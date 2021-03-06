@@ -6,15 +6,15 @@ Haskellings is an open source project, so you are welcome to contribute and we t
 
 I want to...
 
-1. Add an exercise - [Read this](#adding-an-exercise), and then [Open a Pull Request](#open-a-pull-request).
-2. Update an existing exercise - [Open a Pull Request](#open-a-pull-request).
-3. Report a bug - [Open an Issue](#open-an-issue).
-4. Fix a bug - [Open a Pull Request](#open-a-pull-request).
-5. Implement a new feature - [Open an Issue] for discussion, then [Open a Pull Request](#open-a-pull-request).
+1. Add an exercise - [Read this](#adding-an-exercise), and then [Open a Pull Request](#opening-a-pull-request).
+2. Update an existing exercise - [Open a Pull Request](#opening-a-pull-request).
+3. Report a bug - [Open an Issue](#opening-an-issue).
+4. Fix a bug - [Open a Pull Request](#opening-a-pull-request).
+5. Implement a new feature - [Open an Issue](#opening-an-issue) for discussion, then [Open a Pull Request](#opening-a-pull-request).
 
 ## Opening an Issue
 
-You can open an issue [here](https://github.com/MondayMorningHaskell/issues/new). If reporting a bug, please include several details:
+You can open an issue [here](https://github.com/MondayMorningHaskell/haskellings/issues/new). If reporting a bug, please include several details:
 
 1. The command you ran
 2. The output of the command
@@ -22,11 +22,11 @@ You can open an issue [here](https://github.com/MondayMorningHaskell/issues/new)
 
 ## Opening a Pull Request
 
-To open a pull request, you should fork the repository and make your commits. There are a few things to check for
+To open a pull request, you should fork the repository and make your commits. There are a few things to check for before you open the PR against the main repository.
 
 ### Run Tests
 
-There are currently test suites. The `unit-tests` are simple tests mostly related to directory and file path utilities. Then `haskellings-tests` focus on compiling and running code. You can run both suites with `stack test`. When you open a pull request, they tests will also be run on Circle CI.
+There are currently two test suites. The [`unit-tests`](https://github.com/MondayMorningHaskell/haskellings/tests/UnitTests.hs) are simple tests mostly related to directory and file path utilities. Then [`haskellings-tests`](https://github.com/MondayMorningHaskell/haskellings/tests/UnitTests.hs) focus on compiling and running code. You can run both suites with `stack test`. When you open a pull request, they tests will also be run on Circle CI.
 
 ### Linting and Formatting
 
@@ -54,7 +54,7 @@ Once you've opened your pull request, you should add the "Ready for Review" labe
 
 ## Adding an Exercise
 
-The first step in adding your exercise is to make the exercise file itself in the appropriate sub-directory of [exercises](https://github.com/MondayMorningHaskell/haskellings/tree/master/exercises). You should include a section at the top either with a "lesson" explaining the concept the user is supposed to implement. Or alternatively, you can link to the appropriate section of a useful online book or blog, such as [Monday Morning Haskell](https://mmhaskell.com), [Learn You a Haskell](https://learnyouahaskell.com), etc.
+The first step in adding your exercise is to make the exercise file itself in the appropriate sub-directory of [exercises](https://github.com/MondayMorningHaskell/haskellings/tree/master/exercises). You should include a section at the top either with a "lesson" explaining the concept the user is supposed to implement. Or alternatively, you can link to the appropriate section of a useful online book or blog, such as [Monday Morning Haskell](https://mmhaskell.com), [Learn You a Haskell](http://www.learnyouahaskell.com), etc.
 
 For some extra guidelines, recall then that there are three types of exercises: Compile-Only, Unit-Tested, and Executable, as you can see in the [code here](https://github.com/MondayMorningHaskell/haskellings/blob/master/src/ExerciseList.hs#L13-L17).
 
@@ -64,14 +64,14 @@ A Compile-Only exercise should have a module name at the top that matches the ex
 
 ### Unit Tested
 
-Most exercises that involve function implementations should be unit-tested. These *do not* need a module declaration at the top (it will be `Main`). Instead you should include the following imports:
+Most exercises that involve function implementations should be unit-tested. These *do not* need a module declaration at the top (it will be `Main`, which is the case by default). Instead you should include the following imports:
 
 ```haskell
 import Test.Tasty
 import Test.Tasty.HUnit
 ```
 
-Then at the bottom you should write a `main` function that will run a series of test cases using the Tasty-HUnit library. These should exercise the functions the user filled in. You don't need to create different test groups for each function, and you don't need to go overboard with test cases. Usually 2-5 cases is enough. Here is an example:
+Then at the bottom you should write a `main` function that will run a series of test cases using the Tasty-HUnit library. These should exercise the functions the user filled in. You don't need to create different test groups for each function, and you don't need to go overboard with test cases. Usually 2-5 cases per function is enough. Here is an example:
 
 ```haskell
 main :: IO ()
@@ -117,6 +117,7 @@ Sample Input:
 John
 
 Sample Output:
+
 What is your name?
 Hello, John!
 
@@ -136,7 +137,7 @@ io1Predicate = (==) ["What is your name?", "Hello, John!"]
 ### Guidelines for All Exercises
 
 1. Your exercise should include a comment `-- I AM NOT DONE` so the Watcher doesn't skip it prematurely.
-2. Your exercise should not compile initially, even if there are unit tests (i.e. prefer using `???` to `undefined` for functions the user should fill in). These prevents the possibibility that someone using the Watcher sees a large number of failing test cases and needing to scroll up just to figure out which exercise they are working on.
+2. Your exercise should not compile initially, even if there are unit tests (i.e. prefer using `???` to `undefined` for functions the user should fill in). These prevents the possibibility that someone using the Watcher sees a large number of failing test cases and needs to scroll up just to figure out which exercise they are working on.
 3. You exercise should include a `TODO` comment where the user is supposed to start working.
 4. You can import other library modules you need at the top of the files. But if they are not already in one of the packages included by the [`haskellings` library](https://github.com/MondayMorningHaskell/haskellings/blob/master/haskellings.cabal#L35), you should add that dependency. This ensures the import will be visible in the Package DB used by GHC when running the exercise.
 
@@ -153,7 +154,7 @@ Creating this object should be pretty straightforward, following the examples al
 
 After you've taken these steps, you should be able to run `stack build` and then run your exercise! Please take the time to fill in your sample solution to verify that all the test cases work as expected.
 
-Once you've done this, you should be ready to [Open a Pull Request](#open-a-pull-request)! In your PR description, please include the sample solution you would provide for the exercise so reviewers can test it!
+Once you've done this, you should be ready to [Open a Pull Request](#opening-a-pull-request)! In your PR description, please include the sample solution you would provide for the exercise so reviewers can test it!
 
 ### Exercise Ideas
 

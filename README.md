@@ -1,4 +1,4 @@
-# haskellings
+# Haskellings
 
 Welcome to Haskellings, an automated Haskell tutorial program (inspired by [Rustlings](https://www.github.com/rust-lang/rustlings)). This program has dozens of small exercises where you can read about the basic ideas of the Haskell language and then implement some simple functions.
 
@@ -87,7 +87,7 @@ These represent the bulk of exercises. You'll see a `main` function at the botto
 
 ### Executable Exercises
 
-There are also a few _executable_ exercises. These are most prevalent when you are learning about the `IO` monad. In these exercises, you will fill in the definition of the `main` function near the bottom of the file. This will be runnable IO code that can print to the terminal and, if necessary, read user input.
+There are also a few _executable_ exercises. These are most prevalent when you are learning about the `IO` monad. In these exercises, you will fill in the definition of the `main` function near the bottom of the file, as well as other `IO` functions in the file. This will be runnable IO code that can print to the terminal and, if necessary, read user input.
 
 When you use `haskellings run`, it will run your program on one set of possible inputs and check if the output matches what we expect.
 
@@ -97,7 +97,7 @@ If it does not, you can run the executable using `haskellings exec`:
 haskellings exec IO1
 ```
 
-You can run this entering your own custom inputs. But to see why it is not "passing", you can enter in the "Sample Inputs" at the bottom of the file (if there are any). You should then compare your output to the Sample Output. It should usually (but not always) be a direct match.
+You can run this entering your own custom inputs. But to see why it is not "passing", you can enter in the **Sample Inputs** at the bottom of the file (if there are any). You should then compare your output to the **Sample Output**. It should usually (but not always) be a direct match.
 
 ## Contributing
 
