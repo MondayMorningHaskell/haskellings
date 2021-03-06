@@ -140,8 +140,6 @@ findStackPackageDb = do
   where
     ghcPredicate fp = return (ghcVersion `isSuffixOf` fp)
 
--- c:\sr\snapshots\77asdfasdf\lib\x86_64-windows-ghc-8.8.2
-
 -- BFS
 findProjectRoot :: IO (Maybe FilePath)
 findProjectRoot = do
