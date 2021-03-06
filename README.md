@@ -99,6 +99,10 @@ haskellings exec IO1
 
 You can run this entering your own custom inputs. But to see why it is not "passing", you can enter in the "Sample Inputs" at the bottom of the file (if there are any). You should then compare your output to the Sample Output. It should usually (but not always) be a direct match.
 
+## Contributing
+
+Haskellings is an open source project. If you've found a bug, have any suggestions for improvements or just want to help, let us know! Take a look at the [CONTRIBUTING](./CONTRIBUTING.md) doc to learn how!
+
 ## Configuration
 
 Haskellings needs to be able to find the appropriate version of GHC to actually compile and run individual exercises. It also needs to find Stack package databases to enable dependencies. Right now, we only look for these in the default locations, such as `~/.stack` on Posix systems and `%LOCALAPPDATA%\\sr` on Windows. In the future we will allow the program to be configured to use different paths if your installation is different. See [this issue](https://github.com/MondayMorningHaskell/haskellings/issues/16).
