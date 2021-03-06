@@ -26,7 +26,7 @@ To open a pull request, you should fork the repository and make your commits. Th
 
 ### Run Tests
 
-There are currently two test suites. The [`unit-tests`](https://github.com/MondayMorningHaskell/haskellings/blob/master/tests/UnitTests.hs) are simple tests mostly related to directory and file path utilities. Then [`haskellings-tests`](https://github.com/MondayMorningHaskell/haskellings/blob/master/tests/UnitTests.hs) focus on compiling and running code. You can run both suites with `stack test`. When you open a pull request, they tests will also be run on Circle CI.
+There are currently two test suites. The [`unit-tests`](https://github.com/MondayMorningHaskell/haskellings/blob/master/tests/UnitTests.hs) are simple tests mostly related to directory and file path utilities. Then [`haskellings-tests`](https://github.com/MondayMorningHaskell/haskellings/blob/master/tests/Main.hs) focus on compiling and running code. You can run both suites with `stack test`. When you open a pull request, they tests will also be run on Circle CI.
 
 ### Linting and Formatting
 
