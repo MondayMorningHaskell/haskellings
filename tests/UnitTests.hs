@@ -20,6 +20,7 @@ main = do
     , pathJoinTests
     , searchForDirectoryTests testsRoot
     , fpBFSTests testsRoot
+    , snapshotPackagePredicateTests testsRoot
     ]
   where
     findProjectRootBackwards "" = error "Couldn't find project root!"
@@ -99,3 +100,14 @@ fpBFSTests testsRoot = testGroup "fpBFS Tests"
     pred3 fp = return ("ghc-8.3.4" `isSuffixOf` fp)
     actual1 = "directory_tests" `pathJoin` "test1" `pathJoin` "linux-x86_64-ghc-8.8.4"
     actual2 = "directory_tests" `pathJoin` "test2" `pathJoin` "windows-x86_64-ghc-8.6.2"
+
+snapshotPackagePredicateTests :: FilePath -> TestTree
+snapshotPackagePredicateTests testsRoot = testGroup "snapshotPackagePredicate Tests"
+  [ testCase "snapshotPackagePredicate 1" $ snapshotPackagePredicate path1 `shouldReturn` True
+  , testCase "snapshotPackagePredicate 2" $ snapshotPackagePredicate path2 `shouldReturn` False
+  ]
+  where
+    path1 = testsRoot `pathJoin` "directory_tests" `pathJoin` "package_test" `pathJoin`
+                "hash1" `pathJoin` "8.8.4" `pathJoin` "lib" `pathJoin` "x86_64-linux-ghc-8.8.4"
+    path2 = testsRoot `pathJoin` "directory_tests" `pathJoin` "package_test" `pathJoin`
+                "hash2" `pathJoin` "8.8.4" `pathJoin` "lib" `pathJoin` "x86_64-linux-ghc-8.8.4"

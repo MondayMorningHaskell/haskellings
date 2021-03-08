@@ -3,7 +3,7 @@ module Config where
 
 import           Control.Concurrent  (MVar, putMVar, takeMVar)
 import           Control.Monad       (forM)
-import           Data.List           (find, isSuffixOf)
+import           Data.List           (all, any, find, isPrefixOf, isSuffixOf)
 import qualified Data.Map            as M
 import           Data.Maybe          (catMaybes)
 import qualified Data.Sequence       as S
@@ -25,6 +25,14 @@ projectRootDirName = "haskellings"
 
 mainProjectExercisesDir :: String
 mainProjectExercisesDir = makeRelative "exercises"
+
+-- A listing of packages required by exercises, so we can use them
+-- to filter Stack snapshots
+requiredLibs :: [String]
+requiredLibs =
+  [ "tasty"
+  , "tasty-hunit"
+  ]
 
 data ConfigError = NoProjectRootError | NoGhcError
   deriving (Show)
@@ -124,8 +132,6 @@ findGhc = do
         []       -> return Nothing
         (fp : _) -> return $ Just (fp `pathJoin` "bin" `pathJoin` "ghc")
 
--- TODO: This doesn't necessarily account for having multiple snapshots that
---       both use 8.8.4. This logic definitely needs to be tighter.
 findStackPackageDb :: IO (Maybe FilePath)
 findStackPackageDb = do
   home <- getHomeDirectory
@@ -133,12 +139,25 @@ findStackPackageDb = do
   case stackDir' of
     Nothing -> return Nothing
     Just stackDir -> do
-      ghcVersionDir' <- fpBFS ghcPredicate (S.singleton stackDir)
+      ghcVersionDir' <- fpBFS snapshotPackagePredicate (S.singleton stackDir)
       case ghcVersionDir' of
         Nothing -> return Nothing
-        Just ghcVersionDir -> return $ Just (pathJoin (dropDirectoryLevel (dropDirectoryLevel ghcVersionDir)) "pkgdb")
-  where
-    ghcPredicate fp = return (ghcVersion `isSuffixOf` fp)
+        Just ghcVersionDir -> return $ Just (pkgPathFromGhcPath ghcVersionDir)
+
+-- The GHC version path might look like {hash}/8.8.4/lib/x86_64-linux-ghc-8.8.4
+-- We want to get the package path, at {hash}/8.8.4/pkgdb
+pkgPathFromGhcPath :: FilePath -> FilePath
+pkgPathFromGhcPath ghcVersionDir = pathJoin (dropDirectoryLevel (dropDirectoryLevel ghcVersionDir)) "pkgdb"
+
+snapshotPackagePredicate :: FilePath -> IO Bool
+snapshotPackagePredicate fp = if not (ghcVersion `isSuffixOf` fp)
+  then return False
+  else do
+    let fullDir = pkgPathFromGhcPath fp
+    contents <- safeListDirectory fullDir
+    -- Each required library must have a subpackage directory in the package DB.
+    let containsLib lib = any (isPrefixOf lib) contents
+    return $ all containsLib requiredLibs
 
 -- BFS
 findProjectRoot :: IO (Maybe FilePath)
