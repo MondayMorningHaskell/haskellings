@@ -132,8 +132,6 @@ findGhc = do
         []       -> return Nothing
         (fp : _) -> return $ Just (fp `pathJoin` "bin" `pathJoin` "ghc")
 
--- TODO: This doesn't necessarily account for having multiple snapshots that
---       both use 8.8.4. This logic definitely needs to be tighter.
 findStackPackageDb :: IO (Maybe FilePath)
 findStackPackageDb = do
   home <- getHomeDirectory
