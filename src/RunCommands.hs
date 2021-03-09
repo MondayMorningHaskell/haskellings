@@ -38,7 +38,7 @@ listExercises' exercises config = do
   threadDelay 2000000
   let maxNameSize = maximum (length . exerciseName <$> exercises)
   forM_ (zip [1..] exercises) $ \(i, exInfo) -> do
-    let fullFp = fullExerciseFp (projectRoot config) mainProjectExercisesDir exInfo
+    let fullFp = fullExerciseFp (projectRoot config) (exercisesExt config) exInfo
     let name = exerciseName exInfo
     isNotDone <- fileContainsNotDone fullFp
     let printNameAndDots = do
@@ -48,8 +48,8 @@ listExercises' exercises config = do
           progPutStr config name
           progPutStr config $ replicate (maxNameSize - length name) '.'
     if isNotDone
-      then withTerminalFailure $ printNameAndDots >> putStrLn "...NOT DONE"
-      else withTerminalSuccess $ printNameAndDots >> putStrLn ".......DONE"
+      then withTerminalFailure $ printNameAndDots >> progPutStrLn config "...NOT DONE"
+      else withTerminalSuccess $ printNameAndDots >> progPutStrLn config ".......DONE"
 
 runHelp :: IO ()
 runHelp = mapM_ putStrLn
