@@ -23,6 +23,13 @@ ghcVersionNumber = "8.8.4"
 projectRootDirName :: String
 projectRootDirName = "haskellings"
 
+-- On CircleCI, the root directory shows up as "project'
+ciEnvName :: String
+ciEnvName = "HASKELLINGS_CI_ENV"
+
+ciProjectRootDirName :: String
+ciProjectRootDirName = "project"
+
 haskellingsVersion :: String
 haskellingsVersion = "0.8.0.0"
 
@@ -169,7 +176,10 @@ snapshotPackagePredicate fp = if not (ghcVersion `isSuffixOf` fp)
 findProjectRoot :: IO (Maybe FilePath)
 findProjectRoot = do
   home <- getHomeDirectory
-  searchForDirectoryContaining home projectRootDirName
+  isCiEnv <- lookupEnv ciEnvName
+  case isCiEnv of
+    Just _  -> searchForDirectoryContaining home ciProjectRootDirName
+    Nothing -> searchForDirectoryContaining home projectRootDirName
 
 findStackSnapshotsDir :: IO (Maybe FilePath)
 findStackSnapshotsDir = if isWindows
