@@ -1,4 +1,4 @@
-module RunExercises where
+module RunCommands where
 
 import           Control.Concurrent (threadDelay)
 import           Control.Monad      (forM, forM_, mapM_, when)

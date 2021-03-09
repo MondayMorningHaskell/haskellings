@@ -5,7 +5,7 @@ import           System.Environment
 import           System.IO
 
 import           Config
-import           RunExercises
+import           RunCommands
 import           Watcher
 
 main :: IO ()
