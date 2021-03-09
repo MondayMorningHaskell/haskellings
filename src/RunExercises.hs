@@ -1,7 +1,7 @@
 module RunExercises where
 
 import           Control.Concurrent (threadDelay)
-import           Control.Monad      (forM, forM_, when)
+import           Control.Monad      (forM, forM_, mapM_, when)
 import           Data.List          (maximumBy)
 import qualified Data.Map           as M
 import           System.Directory
@@ -50,3 +50,15 @@ listExercises' exercises config = do
     if isNotDone
       then withTerminalFailure $ printNameAndDots >> putStrLn "...NOT DONE"
       else withTerminalSuccess $ printNameAndDots >> putStrLn ".......DONE"
+
+runHelp :: IO ()
+runHelp = mapM_ putStrLn
+  [ "Available commands:"
+  , "  haskellings watch             -- Run the Watcher for continuous exercise checking."
+  , "  haskellings run {exercise}    -- Run an individual exercise."
+  , "  haskellings exec {exercise}   -- Run an 'executable' exercise with custom input."
+  , "  haskellings hint {exercise}   -- Display a hint for the exercise."
+  , "  haskellings list              -- List all exercises and their status."
+  , "  haskellings version           -- Display the current version of the program."
+  , "  haskellings help (-h, --help) -- Display this help message."
+  ]
