@@ -1,0 +1,22 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: fpco/stack-build:lts-16.16
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - haskellings-{{checksum "stack.yaml"}}-{{checksum "haskellings.cabal"}}
+      - run:
+          name: Resolve/Update Dependencies
+          command: stack setup
+      - run:
+          name: Build
+          command: stack build
+      - run:
+          name: Run tests
+          command: stack test
+      - save_cache:
+          key: haskellings-{{checksum "stack.yaml"}}-{{checksum "haskellings.cabal"}}
+          paths: ["/root/.stack", ".stack-work"]
