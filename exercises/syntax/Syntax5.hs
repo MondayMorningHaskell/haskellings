@@ -54,14 +54,14 @@ badSum x y z = prod1 + prod2 + prod3 + prod4
 
 -- Take the sum of each pairwise product of inputs.
 sumPairProducts :: (Int, Int, Int, Int, Int, Int) -> Int
-sumPairProducts = undefined
+sumPairProducts = ???
 
 -- Take the sum of corresponding elements of the tuples, but only include each
 -- pair when the corresponding bool is true.
 -- e.g. sumTuples (True, False, False) (1, 2, 3) (4, 5, 6) = 5
 --      sumTuples (True, False, True)  (1, 2, 3) (4, 5, 6) = 14
 sumTuples :: (Bool, Bool, Bool) -> (Int, Int, Int) -> (Int, Int, Int) -> Int
-sumTuples = undefined
+sumTuples = ???
 
 -- Testing Code
 main :: IO ()

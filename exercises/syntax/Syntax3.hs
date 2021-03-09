@@ -35,14 +35,14 @@ countTrue _ _ = 1
 
 -- Rewrite numberString from last time, but use a pattern match instead of guards!
 numberString :: Word -> String
-numberString = undefined
+numberString = ???
 
 -- If the input number is 0-3, return the first, corresponding number of elements
 -- in the list. e.g. takeN 0 [1,2,3,4] = [], takeN 2 [1,2,3,4] = [1,2]
 -- If the input number is larger, return the whole list.
 -- You can assume the input has at least 4 elements.
 takeN :: Word -> [Int] -> [Int]
-takeN = undefined
+takeN = ???
 
 -- Testing Code
 main :: IO ()

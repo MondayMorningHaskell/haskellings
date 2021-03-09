@@ -67,19 +67,19 @@ instance Show Op where
 -- its cost to the monad (using 'opCost' above).
 -- (If the input to 'Sqrt' is negative, just return the original value)
 applyOpCount :: Op -> Double -> Writer IntAdd Double
-applyOpCount = undefined
+applyOpCount = ???
 
 -- Now apply a series of operations to an input value using the 'Writer' monad!
 applyAndCountOperations :: [Op] -> Double -> (Double, IntAdd)
-applyAndCountOperations = undefined
+applyAndCountOperations = ???
 
 -- Do the same as above, except instead of counting the cost, log the
 -- string associated with 'showing' the operation.
 applyOpLog :: Op -> Double -> Writer [String] Double
-applyOpLog = undefined
+applyOpLog = ???
 
 applyAndLogOperations :: [Op] -> Double -> (Double, [String])
-applyAndLogOperations = undefined
+applyAndLogOperations = ???
 
 -- Test Code
 

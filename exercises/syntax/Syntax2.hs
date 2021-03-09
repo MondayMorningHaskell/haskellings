@@ -38,13 +38,13 @@ Note: The cases are evaluated in the order they are listed.
 
 -- Rewrite 'countTrue', except this it takes 3 inputs, so use guards!
 countTrue :: Bool -> Bool -> Bool -> Int
-countTrue = undefined
+countTrue = ???
 
 -- Return a string representation of the (positive) input number,
 -- from 0 = "Zero" up through 5 = "Five".
 -- If it's larger than 5, return "Too many!"
 numberString :: Word -> String
-numberString = undefined
+numberString = ???
 
 -- Testing Code
 main :: IO ()

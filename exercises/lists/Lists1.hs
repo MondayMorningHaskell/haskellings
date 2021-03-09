@@ -60,15 +60,15 @@ foldr min 9999 [5, 7, 2, 9, 1]
 -- higher order helper functions instead!
 
 addMod3Is2 :: [Int] -> [Int]
-addMod3Is2 = undefined
+addMod3Is2 = ???
 
 sumList :: [Int] -> Int
-sumList = undefined
+sumList = ???
 
 -- Return true if every element is 'True'!
 -- (The empty list should return 'True'!)
 allTrue :: [Bool] -> Bool
-allTrue bs = undefined
+allTrue bs = ???
 
 main :: IO ()
 main = defaultMain $ testGroup "Lists1" $

@@ -67,13 +67,13 @@ multiplyIfSmall y x = if x < 9.5 then Just (y * x) else Nothing
 -- sqrtAndMultiply 25.0 = Just 50.0
 -- sqrtAndMultiply 121.0 = Nothing
 sqrtAndMultiply :: Double -> Maybe Double
-sqrtAndMultiply = undefined
+sqrtAndMultiply = ???
 
 -- Given a list of inputs, produce a new list that adds 1, 2, and 3 to each input
 -- and then for the final result, also includes the negation of every input.
 -- addAndNegate [1, 2] -> [2, -2, 3, -3, 4, -4, 3, -3, 4, -4, 5, -5]
 addAndNegate :: [Int] -> [Int]
-addAndNegate = undefined
+addAndNegate = ???
 
 main :: IO ()
 main = defaultMain $ testGroup "Monads1" $

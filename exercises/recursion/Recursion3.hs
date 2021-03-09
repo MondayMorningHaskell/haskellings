@@ -31,7 +31,7 @@ sumList xs = sumListTail xs 0 -- < Initial accumulator is 0
 -- Write a tail-recursive function to reverse the list!
 -- (Note: In real code, you can rely on the 'reverse' library function)
 reverseList :: [a] -> [a]
-reverseList = undefined
+reverseList = ???
 
 -- Given a list, return a tuple of two sub-lists.
 -- The first is the "even" elements like you did in the last exercise!
@@ -39,7 +39,7 @@ reverseList = undefined
 -- Do this tail recursively!
 -- evenOdds [1, 5, 7, 0, 3, 2, 2, 3] = ([5, 0, 2, 3], [1, 7, 3, 2])
 evenOdds :: [a] -> ([a], [a])
-evenOdds = undefined
+evenOdds = ???
 
 main :: IO ()
 main = defaultMain $ testGroup "Recusion3" $

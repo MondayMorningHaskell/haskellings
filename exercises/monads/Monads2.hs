@@ -82,16 +82,16 @@ multiplyIfSmall y x = if x < 9.5 then Just (y * x) else Nothing
 -- Re-implement them all now using do-syntax!
 
 sumOfSquareRoots :: Double -> Double -> Maybe Double
-sumOfSquareRoots = undefined
+sumOfSquareRoots = ???
 
 generateAllResults :: [Int -> Int -> Int] -> [Int] -> [Int] -> [Int]
-generateAllResults = undefined
+generateAllResults = ???
 
 sqrtAndMultiply :: Double -> Maybe Double
-sqrtAndMultiply = undefined
+sqrtAndMultiply = ???
 
 addAndNegate :: [Int] -> [Int]
-addAndNegate = undefined
+addAndNegate = ???
 
 main :: IO ()
 main = defaultMain $ testGroup "Monads1" $

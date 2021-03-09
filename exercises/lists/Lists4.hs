@@ -27,13 +27,13 @@ zip [1, 2, 3] ["Hi", "Bye"] = [(1, "Hi"), (2, "Bye")]
 -- return tuples containing the sum, product, and difference of each pair.
 -- sumProductDifference [4, 3] [1, 2] = [(5, 4, 3), (5, 6, 1)]
 sumProductDifference :: [Int] -> [Int] -> [(Int, Int, Int)]
-sumProductDifference = undefined
+sumProductDifference = ???
 
 -- Given a list of strings, make a new list where each String has been
 -- appended with its index within the list.
 -- addIndices ["Hello", "Bye"] = ["Hello0", "Bye1"]
 addIndices :: [String] -> [String]
-addIndices = undefined
+addIndices = ???
 
 main :: IO ()
 main = defaultMain $ testGroup "Lists4" $

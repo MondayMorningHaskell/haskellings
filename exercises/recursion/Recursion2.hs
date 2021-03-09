@@ -41,12 +41,12 @@ sumList (a : as) = a + sumList as -- < RECURSIVE CASE
 -- Then add 3 to each of them!
 -- addMod3Is2 [2, 3, 4, 8] = [5, 10]
 addMod3Is2 :: [Int] -> [Int]
-addMod3Is2 = undefined
+addMod3Is2 = ???
 
 -- Take only the 'even' index elements of the list (the second, fourth, sixth, etc.)
 -- evens [1, 5, 7, 0, 3, 2, 2, 3] = [5, 0, 2, 3]
 evens :: [Int] -> [Int]
-evens = undefined
+evens = ???
 
 main :: IO ()
 main = defaultMain $ testGroup "Recusion2" $

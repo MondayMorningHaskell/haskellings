@@ -39,7 +39,7 @@ multiplicationFunc x = if mod x 3 == 0
 -- TODO: Fill in these functions!
 -- Of the two inputs, return how many are "True"
 countTrue :: Bool -> Bool -> Int
-countTrue b1 b2 = undefined
+countTrue b1 b2 = ???
 
 -- What is the type signature of this function?
 evalInput :: ???

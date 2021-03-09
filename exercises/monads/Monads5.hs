@@ -73,25 +73,25 @@ instance Show Op where
 -- instead of the Writer monad! Notice however, that you do not
 -- need a 'Monoid' instance for the "IntAdd" state!
 applyOpCount :: Op -> Double -> State IntAdd Double
-applyOpCount = undefined
+applyOpCount = ???
 
 applyAndCountOperations :: [Op] -> Double -> (Double, IntAdd)
-applyAndCountOperations = undefined
+applyAndCountOperations = ???
 
 applyOpLog :: Op -> Double -> State [String] Double
-applyOpLog = undefined
+applyOpLog = ???
 
 applyAndLogOperations :: [Op] -> Double -> (Double, [String])
-applyAndLogOperations = undefined
+applyAndLogOperations = ???
 
 -- Now write these in a simpler way, where the 'State' is the
 -- Double itself that you are tracking with the operations.
 -- This spares you from needing to track it as a separate input!
 applyOpSimple :: Op -> State Double ()
-applyOpSimple = undefined
+applyOpSimple = ???
 
 applySimpleOperations :: [Op] -> Double -> Double
-applySimpleOperations = undefined
+applySimpleOperations = ???
 
 -- Test Code
 

@@ -40,16 +40,16 @@ Here are a few examples:
 -- Add the heads of the two inputs together. Return this as the first element
 -- of the tuple. Then you should also return the tail of each list.
 addHeads :: ([Int], [Int]) -> (Int, [Int], [Int])
-addHeads = undefined
+addHeads = ???
 
 -- Produce a new tuple containing the three *second* elements of each of
 -- the input tuples.
 takeSeconds :: (Int, Int) -> (Int, Int) -> (Int, Int) -> (Int, Int, Int)
-takeSeconds = undefined
+takeSeconds = ???
 
 -- Capitalize each of the three characters
 capitalize :: (Char, Char, Char) -> (Char, Char, Char)
-capitalize = undefined
+capitalize = ???
 
 -- Testing Code, You can ignore this:
 main :: IO ()

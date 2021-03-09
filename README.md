@@ -37,7 +37,7 @@ Within the [exercises directory](https://github.com/MondayMorningHaskell/haskell
 
 This will run the [`Types1`](https://github.com/MondayMorningHaskell/haskellings/blob/master/exercises/basics/Types1.hs) exercise.
 
-Initially, exercises will not compile. You'll want to open the file, read the information at the top, and then fill in the code as indicated by the `TODO` comments.
+Initially, exercises will not compile. You'll want to open the file, read the information at the top, and then fill in the code as indicated by the `TODO` comments. You'll usually be replacing the question marks `???` with your function implementations and type declarations.
 
 You can re-run the exercise, and the output will let you know when you're done!
 
@@ -47,6 +47,26 @@ If you're stuck, each exercise also has a hint you can see by running `haskellin
 >> haskellings hint Types1
 Fill in appropriate type signatures for the expressions at the bottom.
 ```
+
+Sometimes you might want to compile and run code you've written for one function without filling in the rest. When this happens, you can usually replace the question marks `???` for function implementations with the phrase `undefined`. Using `undefined` lets your code compile, though that particular function won't run:
+
+```haskell
+-- BEFORE:
+subtract7 :: Int -> Int
+subtract7 = ???
+
+multiplyBy7 :: Int -> Int
+multiplyBy7 = ???
+
+-- AFTER:
+subtract7 :: Int -> Int
+subtract7 x = x - 7
+
+multiplyBy7 :: Int -> Int
+multiplyBy7 = undefined
+```
+
+For example, after making the above change, you'll be able to run the tests for the `subtract7` function. You'll still see errors while running the tests for `multiplyBy7`, but they will compile. Sometimes the implementation will start as `undefined` rather than `???`, in which case it's still your job to replace it!
 
 ## Using the Watcher
 

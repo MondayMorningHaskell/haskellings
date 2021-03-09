@@ -50,12 +50,12 @@ shortWords = ["HELLO", "BYE", "CIAO"]
 
 -- Implement addMod3Is2, except now use a list comprehension.
 addMod3Is2 :: [Int] -> [Int]
-addMod3Is2 = undefined
+addMod3Is2 = ???
 
 -- Take every pairwise product of the numbers, as long as their
 -- sum is less than 30.
 smallPairwiseProducts :: [Int] -> [Int] -> [Int]
-smallPairwiseProducts = undefined
+smallPairwiseProducts = ???
 
 main :: IO ()
 main = defaultMain $ testGroup "Lists3" $

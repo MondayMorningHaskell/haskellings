@@ -65,18 +65,18 @@ safeSquareRoot x = if x < 0 then Nothing else Just (sqrt x)
 -- Return the sum of the square roots of the two inputs, using
 -- 'safeSquareRoot' to check for negatives.
 sumOfSquareRoots :: Double -> Double -> Maybe Double
-sumOfSquareRoots = undefined
+sumOfSquareRoots = ???
 
 -- Generate all combinations of sums between the first list and the second list.
 -- (avoid using a list comprehension)
 generateSums :: [Int] -> [Int] -> [Int]
-generateSums = undefined
+generateSums = ???
 
 -- Given a list of operations and two lists, generate all combinations of
 -- those operations with each pair of numbers from the two lists.
 -- generateAllResults [(+), (*)] [1, 2] [3, 4] -> [4, 5, 5, 6, 3, 4, 6, 8]
 generateAllResults :: [Int -> Int -> Int] -> [Int] -> [Int] -> [Int]
-generateAllResults = undefined
+generateAllResults = ???
 
 main :: IO ()
 main = defaultMain $ testGroup "Applicatives" $
