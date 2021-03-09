@@ -5,7 +5,7 @@ import           Control.Concurrent  (MVar, putMVar, takeMVar)
 import           Control.Monad       (forM)
 import           Data.List           (all, any, find, isPrefixOf, isSuffixOf)
 import qualified Data.Map            as M
-import           Data.Maybe          (catMaybes)
+import           Data.Maybe          (catMaybes, isJust)
 import qualified Data.Sequence       as S
 import           System.Console.ANSI
 import           System.Directory
@@ -26,6 +26,9 @@ projectRootDirName = "haskellings"
 -- On CircleCI, the root directory shows up as "project'
 ciEnvName :: String
 ciEnvName = "HASKELLINGS_CI_ENV"
+
+envIsCi :: IO Bool
+envIsCi = isJust <$> lookupEnv ciEnvName
 
 ciProjectRootDirName :: String
 ciProjectRootDirName = "project"
@@ -176,10 +179,10 @@ snapshotPackagePredicate fp = if not (ghcVersion `isSuffixOf` fp)
 findProjectRoot :: IO (Maybe FilePath)
 findProjectRoot = do
   home <- getHomeDirectory
-  isCiEnv <- lookupEnv ciEnvName
-  case isCiEnv of
-    Just _  -> searchForDirectoryContaining home ciProjectRootDirName
-    Nothing -> searchForDirectoryContaining home projectRootDirName
+  isCi <- envIsCi
+  if isCi
+    then searchForDirectoryContaining home ciProjectRootDirName
+    else searchForDirectoryContaining home projectRootDirName
 
 findStackSnapshotsDir :: IO (Maybe FilePath)
 findStackSnapshotsDir = if isWindows
@@ -206,7 +209,11 @@ findGhcSearchDir = if isWindows
 
 findGhcSearchDirUnix :: IO (Maybe FilePath)
 findGhcSearchDirUnix = do
-  homeDir <- getHomeDirectory
+  isCi <- envIsCi
+  homeDir <- if isCi
+    -- Unintuitively, "/home" is not the same as "~" on Circle CI
+    then return ("/home" `pathJoin` "stackage")
+    else getHomeDirectory
   let dir = homeDir `pathJoin` ".stack" `pathJoin` "programs"
   returnIfDirExists dir
 
