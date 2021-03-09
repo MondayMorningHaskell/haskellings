@@ -23,6 +23,9 @@ ghcVersionNumber = "8.8.4"
 projectRootDirName :: String
 projectRootDirName = "haskellings"
 
+haskellingsVersion :: String
+haskellingsVersion = "0.8.0.0"
+
 mainProjectExercisesDir :: String
 mainProjectExercisesDir = makeRelative "exercises"
 
@@ -58,6 +61,9 @@ data ProgramConfig = ProgramConfig
   , errHandle    :: Handle
   , fileLocks    :: FileLockMap
   }
+
+progPutStr :: ProgramConfig -> String -> IO ()
+progPutStr pc = hPutStr (outHandle pc)
 
 progPutStrLn :: ProgramConfig -> String -> IO ()
 progPutStrLn pc = hPutStrLn (outHandle pc)
