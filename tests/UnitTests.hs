@@ -24,7 +24,7 @@ main = do
     ]
   where
     findProjectRootBackwards "" = error "Couldn't find project root!"
-    findProjectRootBackwards dir = if basename dir == projectRootDirName
+    findProjectRootBackwards dir = if basename dir == projectRootDirName || basename dir == ciProjectRootDirName
       then dir
       else findProjectRootBackwards (dropDirectoryLevel dir)
 
