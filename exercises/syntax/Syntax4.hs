@@ -44,7 +44,7 @@ evalList mylist = case myList of
 -- sum of the first elements. But if there are at least 4 elements,
 -- you can simply return 10.
 evalList :: Bool -> [Int] -> Int
-evalList = undefined
+evalList = ???
 
 -- Testing Code
 main :: IO ()

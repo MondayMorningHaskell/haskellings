@@ -77,7 +77,7 @@ add2AndShow = do
 -- result on the original int as well as twice it's value!
 -- runReader add2AndShowDouble 3 -> "(5,8)"
 add2AndShowDouble :: Reader Int String
-add2AndShowDouble = undefined
+add2AndShowDouble = ???
 
 data User = User
   { userEmail :: String
@@ -89,19 +89,19 @@ data User = User
 
 -- Validate that the entered password is equal to the stored user's password.
 validateAccount :: String -> String -> Reader User Bool
-validateAccount = undefined
+validateAccount = ???
 
 -- Given a user, display the lines of a "profile page" of the form:
 -- Name: {name}
 -- Age: {age}
 -- Bio: {bio}
 displayProfile :: Reader User [String]
-displayProfile = undefined
+displayProfile = ???
 
 -- Given a User, and the entered credentials, return their profile
 -- string if the authentication is valid, or otherwise return nothing.
 authAndDisplayProfile :: User -> (String, String) -> Maybe [String]
-authAndDisplayProfile = undefined
+authAndDisplayProfile = ???
 
 -- Test Code
 

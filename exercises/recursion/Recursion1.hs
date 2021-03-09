@@ -48,7 +48,7 @@ quotient dividend divisor = if dividend < divisor
 -- factorial 3 = 6 -- (1 * 2 * 3)
 -- ...
 factorial :: Int -> Int
-factorial = undefined
+factorial = ???
 
 -- Calculate the 'specialDistance' to 1, according to these rules:
 -- The distance from 1 to itself is 0
@@ -57,7 +57,7 @@ factorial = undefined
 -- If the input n is odd, add 1 to the distance to 3n + 1.
 --  NOTE: The actual library function for integer division is 'quot'.
 specialDistance :: Word -> Word
-specialDistance = undefined
+specialDistance = ???
 
 main :: IO ()
 main = defaultMain $ testGroup "Recusion1" $

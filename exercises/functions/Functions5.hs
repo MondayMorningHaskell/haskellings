@@ -41,15 +41,15 @@ the front of a list:
 -- This should take any boolean value and return True!
 -- (There are two easy ways to do this, try both!)
 trueSink :: Bool -> Bool
-trueSink = undefined
+trueSink = ???
 
 -- This should take any boolean value and return False!
 falseSink :: Bool -> Bool
-falseSink = undefined
+falseSink = ???
 
 -- Return True if and only if all three inputs are true.
 tripleAnd :: Bool -> Bool -> Bool -> Bool
-tripleAnd = undefined
+tripleAnd = ???
 
 -- Take two lists. Remove the first element from each list and add them together.
 -- The first output should be like the first list except with this new sum at the
@@ -57,7 +57,7 @@ tripleAnd = undefined
 -- original second input.
 -- addToFirstList [1, 2] [9, 8] = ([10, 2], [8])
 addToFirstList :: [Int] -> [Int] -> ([Int], [Int])
-addToFirstList = undefined
+addToFirstList = ???
 
 -- Testing Code
 main :: IO ()

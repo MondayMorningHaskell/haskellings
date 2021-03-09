@@ -49,11 +49,11 @@ cycle [1, 2, 3, 4] -- < [1, 2, 3, 4, 1, 2, 3, 4, 1 ...]
 -- Given a particular number, give a list of the numbers starting
 -- there and counting down by 5 until you get to 0.
 countdownBy5 :: Word -> [Word]
-countdownBy5 = undefined
+countdownBy5 = ???
 
 -- Given a particular Int, create a list with 100 copies of it.
 give100 :: Int -> [Int]
-give100 = undefined
+give100 = ???
 
 main :: IO ()
 main = defaultMain $ testGroup "Lists2" $

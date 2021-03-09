@@ -54,7 +54,7 @@ data BinaryTree = BinaryTree
 -- Take the sum of all the values in a BinaryTree!
 -- You'll need to make multiple recursive calls at once!
 sumTree :: BinaryTree -> Int
-sumTree = undefined
+sumTree = ???
 
 -- Determine if your tree is a valid Binary Search Tree (BST)
 -- For every ValueNode in the tree:
@@ -62,7 +62,7 @@ sumTree = undefined
 --   2. All elements in its right subtree are larger than the value at the node.
 -- You might want a helper that takes two 'bounding' elements in addition to a subtree.
 isValidBst :: BinaryTree -> Bool
-isValidBst = undefined
+isValidBst = ???
 
 tree1 :: BinaryTree
 tree1 = ValueNode 8

@@ -36,11 +36,11 @@ doubleList xs = map double xs
 
 -- Flip the boolean value of each input
 flipBools :: [Bool] -> [Bool]
-flipBools input = undefined
+flipBools input = ???
 
 -- Uppercase all the letters in this word!
 capitalizeWord :: String -> String
-capitalizeWord input = undefined
+capitalizeWord input = ???
 
 -- TODO: Create your own higher order function, doubleAndApply.
 -- The input function should take a single integer
