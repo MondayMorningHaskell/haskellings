@@ -11,6 +11,7 @@ import           Test.HUnit
 import           Config
 import           DirectoryUtils
 import           ExerciseList
+import           RunCommands
 import           Utils
 import           Watcher
 
@@ -33,6 +34,7 @@ main = do
         compileAndExecFail3 paths
         compileAndExecPass paths
         watchTests paths
+        listTest paths
 
 compileBeforeHook :: (FilePath, FilePath) -> ExerciseInfo -> FilePath -> IO (String, RunResult)
 compileBeforeHook (projectRoot, ghcPath) exInfo outFile = do
@@ -264,4 +266,40 @@ beforeWatchHook (projectRoot, ghcPath) outFile = do
       , (addFullDirectory "Types1Mod2.hs", fullDest1)
       , (addFullDirectory "Types2Mod1.hs", fullDest2)
       , (addFullDirectory "Types2Mod2.hs", fullDest2)
+      ]
+
+-- Test 'list' commands
+
+listTestExercises :: [ExerciseInfo]
+listTestExercises =
+  [ ExerciseInfo "Types1Bad" "types" CompileOnly ""
+  , ExerciseInfo "Types1Good" "types" CompileOnly ""
+  , ExerciseInfo "Recursion1Bad1" "recursion" UnitTests ""
+  , ExerciseInfo "Recursion1Bad2" "recursion" UnitTests ""
+  , ExerciseInfo "Recursion1Good" "recursion" UnitTests ""
+  , ExerciseInfo "Recursion2" "recursion" UnitTests ""
+  ]
+
+listBeforeHook :: (FilePath, FilePath) -> FilePath -> IO String
+listBeforeHook (projectRoot, ghcPath) outFile = do
+  let fullFp = projectRoot `pathJoin` "tests" `pathJoin` "test_gen" `pathJoin` outFile
+  outHandle <- openFile fullFp WriteMode
+  let conf = ProgramConfig projectRoot ghcPath Nothing ("tests" `pathJoin` "exercises") stdin outHandle stderr M.empty
+  listExercises' listTestExercises conf
+  hClose outHandle
+  readFile fullFp
+
+listTest :: (FilePath, FilePath) -> Spec
+listTest paths = before (listBeforeHook paths "list.output") $
+  describe "When running 'listExercises'" $
+    it "Should print the proper status" $ \output -> lines output `shouldBe` expectedOutput
+  where
+    expectedOutput =
+      [ "Listing exercises...(must remove \"I AM NOT DONE\" comment to indicate as done)"
+      , " 1: Types1Bad........NOT DONE"
+      , " 2: Types1Good...........DONE"
+      , " 3: Recursion1Bad1...NOT DONE"
+      , " 4: Recursion1Bad2...NOT DONE"
+      , " 5: Recursion1Good...NOT DONE"
+      , " 6: Recursion2...........DONE"
       ]
