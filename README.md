@@ -126,3 +126,13 @@ Haskellings is an open source project. If you've found a bug, have any suggestio
 ## Configuration
 
 Haskellings needs to be able to find the appropriate version of GHC to actually compile and run individual exercises. It also needs to find Stack package databases to enable dependencies. Right now, we only look for these in the default locations, such as `~/.stack` on Posix systems and `%LOCALAPPDATA%\\sr` on Windows. In the future we will allow the program to be configured to use different paths if your installation is different. See [this issue](https://github.com/MondayMorningHaskell/haskellings/issues/16).
+
+## Other Beginner Material
+
+At [Monday Morning Haskell](https://mmhaskell.com), one of our core principles is that Haskell shouldn't be as hard to learn as people think it is. Accordingly, we have a wealth of other materials to help you get started learning the language!
+
+1. [Beginners Checklist](https://mmhaskell.com/beginners-checklist) - This guide will point you to some other resources that can help you kickstart your Haskell journey!
+2. [Recursion Workbook](https://mmhaskell.com/workbook) - Haskellings has several different exercises to help you learn about recursion. But this workbook has 2 in-depth chapters on the topic and offers 10 more practice problems that will help you master this vital skill!
+3. [Liftoff Series](https://mmhaskell.com/liftoff) - This series is another good starting point for your learning experience. It covers a lot of the same ground you'll cover in the Haskellings exercises, but offers a bit more depth and continuity. Plus it will help you get familiar with GHCI!
+4. [Other Beginners Series](https://mmhaskell.com/monads) - There are also several other complete series aimed at beginners! Take a look at these to learn more about monads, unit testing, and data structures!
+5. [Haskell From Scratch Course](https://academy.mondaymorninghaskell.com/p/haskell-from-scratch) - If you're ready for a more in-depth approach to Haskell foundations, this is the place to go. Our beginners course will illumine a lot more details about Haskell's basics for you. Through hours of video content, dozens more exercises, and a final project, you'll leave this course with the confidence to start your own Haskell projects.
