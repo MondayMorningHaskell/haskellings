@@ -17,7 +17,7 @@ import           Watcher
 
 main :: IO ()
 main = do
-  loadResult <- loadProjectRootAndGhc
+  loadResult <- loadBaseConfigPaths
   case loadResult of
     Left _ -> error "Unable to find project root or GHC 8.8.4!"
     Right paths@(root, _, _) -> do
