@@ -17,10 +17,11 @@ main = do
     else if head args == "configure"
       then runConfigure
       else do
-        loadResult <- loadProjectRootAndGhc
+        loadResult <- loadBaseConfigPaths
         case loadResult of
           Left NoProjectRootError -> putStrLn "Couldn't find project root!"
           Left NoGhcError -> putStrLn $ "Couldn't find " ++ ghcVersion
+          Left NoStackPackageDbError -> putStrLn "Couldn't find an appropriate stack package DB!"
           Right paths -> do
             packageDb <- findStackPackageDb
             let config = uncurry3 ProgramConfig paths mainProjectExercisesDir stdin stdout stderr empty

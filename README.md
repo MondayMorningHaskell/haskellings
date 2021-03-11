@@ -156,10 +156,10 @@ These directories contain all your snapshots, each indicated by a hash value. Ha
 
 ### Custom Configuration
 
-If you have Stack setup in such a way that these items are stored somewhere else on your system, you can customize these by creating a simple YAML file at the project root. This file should be called `.config.yaml` and it should have one or both of the keys `ghc_path` and `stack_package_db_path`:
+If you have Stack setup in such a way that these items are stored somewhere else on your system, you can customize these by creating a simple YAML file at the project root. This file should be called `config.yaml` and it should have one or both of the keys `ghc_path` and `stack_package_db_path`:
 
 ```yaml
-# haskellings/.config.yaml
+# haskellings/config.yaml
 ghc_path: /bin/ghc-8.8.4
 stack_package_db_path: /lib/stack_snapshots/8.8.4/pkgdb
 ```

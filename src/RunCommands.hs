@@ -71,9 +71,9 @@ runConfigure = do
   case projectRoot' of
     Nothing -> putStrLn "Could not find project root. Please move the repository so that it is somewhere within the 'home' directory on your system."
     Just projectRoot -> do
-      putStr "Please enter GHC Path (or leave blank for default): "
+      putStrLn "Please enter GHC Path (or leave blank for default): "
       ghc <- getLine
-      putStr "Please enter Stack package DB path (or leave blank): "
+      putStrLn "Please enter Stack package DB path (or leave blank): "
       stackPath <- getLine
       let configPath = projectRoot `pathJoin` configFileName
       alreadyExists <- doesFileExist configPath

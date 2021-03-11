@@ -10,6 +10,7 @@ import           Data.List           (all, any, find, isPrefixOf, isSuffixOf)
 import qualified Data.Map            as M
 import           Data.Maybe          (catMaybes, isJust)
 import qualified Data.Sequence       as S
+import           Data.Yaml           (decodeFileEither)
 import           System.Console.ANSI
 import           System.Directory
 import           System.Environment  (lookupEnv)
@@ -27,7 +28,7 @@ projectRootDirName :: String
 projectRootDirName = "haskellings"
 
 configFileName :: String
-configFileName = ".config"
+configFileName = "config.yaml"
 
 -- On CircleCI, the root directory shows up as "project'
 ciEnvName :: String
@@ -67,7 +68,10 @@ withFileLock fp config action = case M.lookup fp (fileLocks config) of
     takeMVar lock
     return result
 
-data BaseConfig = BaseConfig (Maybe FilePath) (Maybe FilePath)
+data BaseConfig = BaseConfig
+  { baseConfigGhcPath   :: Maybe FilePath
+  , baseConfigStackPath :: Maybe FilePath
+  }
 
 instance ToJSON BaseConfig where
   toJSON (BaseConfig ghc stackPackageDb) = object
@@ -143,16 +147,31 @@ withDirectory dirPath action = do
   removeDirectoryRecursive dirPath
   return res
 
-loadProjectRootAndGhc :: IO (Either ConfigError (FilePath, FilePath, FilePath))
-loadProjectRootAndGhc = do
+loadBaseConfigPaths :: IO (Either ConfigError (FilePath, FilePath, FilePath))
+loadBaseConfigPaths = do
   projectRoot' <- findProjectRoot
-  ghcPath' <- findGhc
-  stackPath' <- findStackPackageDb
-  case (projectRoot', ghcPath', stackPath') of
-    (Just projectRoot, Just ghcPath, Just stackPath) -> return (Right (projectRoot, ghcPath, stackPath))
-    (Just _, Just _, Nothing)        -> return (Left NoStackPackageDbError)
-    (Just _, Nothing, _)             -> return (Left NoGhcError)
-    (Nothing, _, _)                  -> return (Left NoProjectRootError)
+  case projectRoot' of
+    Nothing -> return (Left NoProjectRootError)
+    Just projectRoot -> do
+      let configPath = projectRoot `pathJoin` configFileName
+      configExists <- doesFileExist configPath
+      baseConfig <- if configExists
+        then do
+          fileResult <- decodeFileEither configPath
+          case fileResult of
+            (Left _) -> return (BaseConfig Nothing Nothing)
+            (Right config) -> return config
+        else return (BaseConfig Nothing Nothing)
+      ghcPath' <- case baseConfigGhcPath baseConfig of
+        Nothing -> findGhc
+        Just p -> return (Just p)
+      stackPath' <- case baseConfigStackPath baseConfig of
+        Nothing -> findStackPackageDb
+        Just p -> return (Just p)
+      case (ghcPath', stackPath') of
+        (Just ghcPath, Just stackPath) -> return (Right (projectRoot, ghcPath, stackPath))
+        (Just _, Nothing)        -> return (Left NoStackPackageDbError)
+        (Nothing, _)             -> return (Left NoGhcError)
 
 findGhc :: IO (Maybe FilePath)
 findGhc = do

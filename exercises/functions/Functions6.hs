@@ -20,6 +20,15 @@ map :: (a -> b) -> [a] -> [b]
 The first input is a function between two types (they can be the same type).
 The second input is the list of items
 
+- **Lambda** syntax allows us to define a function as an expression in the
+  middle of our code! This is like writing a normal function, except prefixing
+  with a backslash and then listing the arguments, followed by an arrow!
+  This technique allows you to use custom functions with other higher order
+  functions, like `map`.
+
+altAdder :: Int -> Int -> Int
+altAdder = \a b -> a + b
+
 -}
 
 -- So for example, we make a function that transforms integers by doubling them.
@@ -31,6 +40,7 @@ double = (*) 2
 doubleList :: [Int] -> [Int]
 doubleList xs = map double xs
 -- We could also just do: map ((*) 2) xs
+-- With **lambda** syntax, we would have: map (\x -> 2 * x) xs
 
 -- TODO: Fill in these functions using map!
 
