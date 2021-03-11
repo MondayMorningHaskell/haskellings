@@ -4,10 +4,12 @@ import           Control.Concurrent (threadDelay)
 import           Control.Monad      (forM, forM_, mapM_, when)
 import           Data.List          (maximumBy)
 import qualified Data.Map           as M
+import           Data.Yaml          (encodeFile)
 import           System.Directory
 import           System.Process
 
 import           Config
+import           DirectoryUtils
 import           ExerciseList
 import           Utils
 
@@ -62,3 +64,23 @@ runHelp = mapM_ putStrLn
   , "  haskellings version           -- Display the current version of the program."
   , "  haskellings help (-h, --help) -- Display this help message."
   ]
+
+runConfigure :: IO ()
+runConfigure = do
+  projectRoot' <- findProjectRoot
+  case projectRoot' of
+    Nothing -> putStrLn "Could not find project root. Please move the repository so that it is somewhere within the 'home' directory on your system."
+    Just projectRoot -> do
+      putStrLn "Please enter GHC Path (or leave blank for default): "
+      ghc <- getLine
+      putStrLn "Please enter Stack package DB path (or leave blank): "
+      stackPath <- getLine
+      let configPath = projectRoot `pathJoin` configFileName
+      alreadyExists <- doesFileExist configPath
+      when alreadyExists $ removeFile configPath
+      let config = BaseConfig
+                     (if null ghc then Nothing else Just ghc)
+                     (if null stackPath then Nothing else Just stackPath)
+      if null ghc && null stackPath
+        then putStrLn "No configuration information given, will rely on defaults."
+        else encodeFile configPath config >> putStrLn ("Saved configuration to " ++ configPath)

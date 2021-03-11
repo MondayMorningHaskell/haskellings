@@ -60,9 +60,7 @@ createExerciseProcess config (ExerciseInfo exerciseName exDirectory exType _) =
     genExecutablePath = genDirPath `pathJoin` haskellModuleName exFilename
     baseArgs = [fullSourcePath, "-odir", genDirPath, "-hidir", genDirPath]
     execArgs = if exIsRunnable then baseArgs ++ ["-o", genExecutablePath] else baseArgs
-    finalArgs = case packageDb config of
-        Nothing      -> execArgs
-        Just pkgPath -> execArgs ++ ["-package-db", pkgPath]
+    finalArgs = execArgs ++ ["-package-db", packageDb config]
     processSpec = proc (ghcPath config) finalArgs
 
 onCompileFailure :: ProgramConfig -> String -> Maybe Handle -> IO RunResult

@@ -1,12 +1,16 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Config where
 
 
 import           Control.Concurrent  (MVar, putMVar, takeMVar)
 import           Control.Monad       (forM)
+import           Data.Aeson
 import           Data.List           (all, any, find, isPrefixOf, isSuffixOf)
 import qualified Data.Map            as M
 import           Data.Maybe          (catMaybes, isJust)
 import qualified Data.Sequence       as S
+import           Data.Yaml           (decodeFileEither)
 import           System.Console.ANSI
 import           System.Directory
 import           System.Environment  (lookupEnv)
@@ -22,6 +26,9 @@ ghcVersionNumber = "8.8.4"
 
 projectRootDirName :: String
 projectRootDirName = "haskellings"
+
+configFileName :: String
+configFileName = "config.yaml"
 
 -- On CircleCI, the root directory shows up as "project'
 ciEnvName :: String
@@ -47,7 +54,7 @@ requiredLibs =
   , "tasty-hunit"
   ]
 
-data ConfigError = NoProjectRootError | NoGhcError
+data ConfigError = NoProjectRootError | NoGhcError | NoStackPackageDbError
   deriving (Show)
 
 type FileLockMap = M.Map FilePath (MVar ())
@@ -61,10 +68,27 @@ withFileLock fp config action = case M.lookup fp (fileLocks config) of
     takeMVar lock
     return result
 
+data BaseConfig = BaseConfig
+  { baseConfigGhcPath   :: Maybe FilePath
+  , baseConfigStackPath :: Maybe FilePath
+  }
+
+instance ToJSON BaseConfig where
+  toJSON (BaseConfig ghc stackPackageDb) = object
+    [ "ghc_path" .= ghc
+    , "stack_package_db_path" .= stackPackageDb
+    ]
+
+instance FromJSON BaseConfig where
+  parseJSON = withObject "BaseConfig" $ \o -> do
+    ghc <- o .:? "ghc_path"
+    stackPackageDb <- o .:? "stack_package_db_path"
+    return $ BaseConfig ghc stackPackageDb
+
 data ProgramConfig = ProgramConfig
   { projectRoot  :: FilePath
   , ghcPath      :: FilePath
-  , packageDb    :: Maybe FilePath
+  , packageDb    :: FilePath
   , exercisesExt :: FilePath
   , inHandle     :: Handle
   , outHandle    :: Handle
@@ -123,14 +147,31 @@ withDirectory dirPath action = do
   removeDirectoryRecursive dirPath
   return res
 
-loadProjectRootAndGhc :: IO (Either ConfigError (FilePath, FilePath))
-loadProjectRootAndGhc = do
+loadBaseConfigPaths :: IO (Either ConfigError (FilePath, FilePath, FilePath))
+loadBaseConfigPaths = do
   projectRoot' <- findProjectRoot
-  ghcPath' <- findGhc
-  case (projectRoot', ghcPath') of
-    (Just projectRoot, Just ghcPath) -> return (Right (projectRoot, ghcPath))
-    (Just _, Nothing)                -> return (Left NoGhcError)
-    (Nothing, _)                     -> return (Left NoProjectRootError)
+  case projectRoot' of
+    Nothing -> return (Left NoProjectRootError)
+    Just projectRoot -> do
+      let configPath = projectRoot `pathJoin` configFileName
+      configExists <- doesFileExist configPath
+      baseConfig <- if configExists
+        then do
+          fileResult <- decodeFileEither configPath
+          case fileResult of
+            (Left _)       -> return (BaseConfig Nothing Nothing)
+            (Right config) -> return config
+        else return (BaseConfig Nothing Nothing)
+      ghcPath' <- case baseConfigGhcPath baseConfig of
+        Nothing -> findGhc
+        Just p  -> return (Just p)
+      stackPath' <- case baseConfigStackPath baseConfig of
+        Nothing -> findStackPackageDb
+        Just p  -> return (Just p)
+      case (ghcPath', stackPath') of
+        (Just ghcPath, Just stackPath) -> return (Right (projectRoot, ghcPath, stackPath))
+        (Just _, Nothing)        -> return (Left NoStackPackageDbError)
+        (Nothing, _)             -> return (Left NoGhcError)
 
 findGhc :: IO (Maybe FilePath)
 findGhc = do
