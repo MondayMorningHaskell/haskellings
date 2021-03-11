@@ -159,15 +159,15 @@ loadBaseConfigPaths = do
         then do
           fileResult <- decodeFileEither configPath
           case fileResult of
-            (Left _) -> return (BaseConfig Nothing Nothing)
+            (Left _)       -> return (BaseConfig Nothing Nothing)
             (Right config) -> return config
         else return (BaseConfig Nothing Nothing)
       ghcPath' <- case baseConfigGhcPath baseConfig of
         Nothing -> findGhc
-        Just p -> return (Just p)
+        Just p  -> return (Just p)
       stackPath' <- case baseConfigStackPath baseConfig of
         Nothing -> findStackPackageDb
-        Just p -> return (Just p)
+        Just p  -> return (Just p)
       case (ghcPath', stackPath') of
         (Just ghcPath, Just stackPath) -> return (Right (projectRoot, ghcPath, stackPath))
         (Just _, Nothing)        -> return (Left NoStackPackageDbError)
