@@ -20,8 +20,8 @@ main = do
   loadResult <- loadProjectRootAndGhc
   case loadResult of
     Left _ -> error "Unable to find project root or GHC 8.8.4!"
-    Right paths -> do
-      createDirectoryIfMissing True (fst paths `pathJoin` "tests" `pathJoin` "test_gen")
+    Right paths@(root, _, _) -> do
+      createDirectoryIfMissing True (root `pathJoin` "tests" `pathJoin` "test_gen")
       hspec $ describe "Basic Compile Tests" $ do
         compileTests1 paths
         compileTests2 paths
@@ -36,11 +36,10 @@ main = do
         watchTests paths
         listTest paths
 
-compileBeforeHook :: (FilePath, FilePath) -> ExerciseInfo -> FilePath -> IO (String, RunResult)
-compileBeforeHook (projectRoot, ghcPath) exInfo outFile = do
+compileBeforeHook :: (FilePath, FilePath, FilePath) -> ExerciseInfo -> FilePath -> IO (String, RunResult)
+compileBeforeHook (projectRoot, ghcPath, packageDb) exInfo outFile = do
   let fullFp = projectRoot `pathJoin` "tests" `pathJoin` "test_gen" `pathJoin` outFile
   outHandle <- openFile fullFp WriteMode
-  packageDb <- findStackPackageDb
   let conf = ProgramConfig projectRoot ghcPath packageDb "/tests/exercises/" stdin outHandle stderr M.empty
   resultExit <- compileAndRunExercise conf exInfo
   hClose outHandle
@@ -96,7 +95,7 @@ isSuccessExecOutput output = do
   outputLines !! 1 `shouldSatisfy` isPrefixOf "Successfully ran :"
   outputLines !! 2 `shouldSatisfy` isPrefixOf "You can run this code for yourself with 'haskellings exec"
 
-compileTests1 :: (FilePath, FilePath) -> Spec
+compileTests1 :: (FilePath, FilePath, FilePath) -> Spec
 compileTests1 paths = before (compileBeforeHook paths exInfo "types1_bad.output") $
   describe "When running 'compileAndRunExercise' with non-compiling file" $
     it "Should indicate failure to compile and return a failing exit code" $ \(output, exit) -> do
@@ -105,7 +104,7 @@ compileTests1 paths = before (compileBeforeHook paths exInfo "types1_bad.output"
   where
     exInfo = ExerciseInfo "Types1Bad" "types" CompileOnly ""
 
-compileTests2 :: (FilePath, FilePath) -> Spec
+compileTests2 :: (FilePath, FilePath, FilePath) -> Spec
 compileTests2 paths = before (compileBeforeHook paths exInfo "types1_good.output") $
   describe "When running 'compileAndRunExercise' with compiling file" $
     it "Should indicate successful compilation and return a success exit code" $ \(output, exit) -> do
@@ -114,7 +113,7 @@ compileTests2 paths = before (compileBeforeHook paths exInfo "types1_good.output
   where
     exInfo = ExerciseInfo "Types1Good" "types" CompileOnly ""
 
-compileAndRunTestFail1 :: (FilePath, FilePath) -> Spec
+compileAndRunTestFail1 :: (FilePath, FilePath, FilePath) -> Spec
 compileAndRunTestFail1 paths = before (compileBeforeHook paths exInfo "recursion1_bad1.output") $
   describe "When running 'compileAndRunExercise' with non-compiling and runnable file" $
     it "Should indicate failure to compile and return a failing exit code" $ \(output, exit) -> do
@@ -123,7 +122,7 @@ compileAndRunTestFail1 paths = before (compileBeforeHook paths exInfo "recursion
   where
     exInfo = ExerciseInfo "Recursion1Bad1" "recursion" UnitTests ""
 
-compileAndRunTestFail2 :: (FilePath, FilePath) -> Spec
+compileAndRunTestFail2 :: (FilePath, FilePath, FilePath) -> Spec
 compileAndRunTestFail2 paths = before (compileBeforeHook paths exInfo "recursion1_bad2.output") $
   describe "When running 'compileAndRunExercise' with compiling but incorrect file" $
     it "Should indicate test failures and return a failing exit code" $ \(output, exit) -> do
@@ -132,7 +131,7 @@ compileAndRunTestFail2 paths = before (compileBeforeHook paths exInfo "recursion
   where
     exInfo = ExerciseInfo "Recursion1Bad2" "recursion" UnitTests ""
 
-compileAndRunTestPass :: (FilePath, FilePath) -> Spec
+compileAndRunTestPass :: (FilePath, FilePath, FilePath) -> Spec
 compileAndRunTestPass paths = before (compileBeforeHook paths exInfo "recursion1_good.output") $
   describe "When running 'compileAndRunExercise' with compiling and runnable file" $
     it "Should indicate successful compilation and return a success exit code" $ \(output, exit) -> do
@@ -141,7 +140,7 @@ compileAndRunTestPass paths = before (compileBeforeHook paths exInfo "recursion1
   where
     exInfo = ExerciseInfo "Recursion1Good" "recursion" UnitTests ""
 
-compileAndRunTestPass2 :: (FilePath, FilePath) -> Spec
+compileAndRunTestPass2 :: (FilePath, FilePath, FilePath) -> Spec
 compileAndRunTestPass2 paths = before (compileBeforeHook paths exInfo "recursion2.output") $
   describe "When running 'compileAndRunExercise' with compiling and runnable file that has a unit testing library" $
     it "Should indicate successful compilation and return a success exit code" $ \(output, exit) -> do
@@ -150,7 +149,7 @@ compileAndRunTestPass2 paths = before (compileBeforeHook paths exInfo "recursion
   where
     exInfo = ExerciseInfo "Recursion2" "recursion" UnitTests ""
 
-compileAndExecFail1 :: (FilePath, FilePath) -> Spec
+compileAndExecFail1 :: (FilePath, FilePath, FilePath) -> Spec
 compileAndExecFail1 paths = before (compileBeforeHook paths exInfo "io_bad1.output") $
   describe "When running 'compileAndRunExercise' with a non-compiling executable exercise" $
     it "Should indicate failure to compile and return a failing exit code" $ \(output, exit) -> do
@@ -159,7 +158,7 @@ compileAndExecFail1 paths = before (compileBeforeHook paths exInfo "io_bad1.outp
   where
     exInfo = ExerciseInfo "IOBad1" "io" (Executable ["John"] (== ["Hello, please enter your name!", "Hello, John"])) ""
 
-compileAndExecFail2 :: (FilePath, FilePath) -> Spec
+compileAndExecFail2 :: (FilePath, FilePath, FilePath) -> Spec
 compileAndExecFail2 paths = before (compileBeforeHook paths exInfo "io_bad2.output") $
   describe "When running 'compileAndRunExercise' with a compiling executable exercise that errors." $
     it "Should indicate failure to compile and return a failing exit code" $ \(output, exit) -> do
@@ -168,7 +167,7 @@ compileAndExecFail2 paths = before (compileBeforeHook paths exInfo "io_bad2.outp
   where
     exInfo = ExerciseInfo "IOBad2" "io" (Executable ["John"] (== ["Hello, please enter your name!", "Hello, John"])) ""
 
-compileAndExecFail3 :: (FilePath, FilePath) -> Spec
+compileAndExecFail3 :: (FilePath, FilePath, FilePath) -> Spec
 compileAndExecFail3 paths = before (compileBeforeHook paths exInfo "io_bad3.output") $
   describe "When running 'compileAndRunExercise' with a compiling executable exercise that doesn't pass the tests." $
     it "Should indicate failure to compile and return a failing exit code" $ \(output, exit) -> do
@@ -177,7 +176,7 @@ compileAndExecFail3 paths = before (compileBeforeHook paths exInfo "io_bad3.outp
   where
     exInfo = ExerciseInfo "IOBad3" "io" (Executable ["John"] (== ["Hello, please enter your name!", "Hello, John"])) ""
 
-compileAndExecPass :: (FilePath, FilePath) -> Spec
+compileAndExecPass :: (FilePath, FilePath, FilePath) -> Spec
 compileAndExecPass paths = before (compileBeforeHook paths exInfo "io_good.output") $
   describe "When running 'compileAndRunExercise' with a passing executable exercise" $
     it "Should indicate successful compilation and return a success exit code" $ \(output, exit) -> do
@@ -194,7 +193,7 @@ watchTestExercises =
   , ExerciseInfo "Types2" "watcher_types" CompileOnly "What type can you fill in for the tuple?"
   ]
 
-watchTests :: (FilePath, FilePath) -> Spec
+watchTests :: (FilePath, FilePath, FilePath) -> Spec
 watchTests paths = before (beforeWatchHook paths "watcher_tests_.out") $
   describe "When running watcher" $
     it "Should step the through the watch process in stages" $ \outputs -> assertSequence expectedSequence (lines outputs)
@@ -232,8 +231,8 @@ makeModifications conf ((src, dst) : rest) = do
   threadDelay 1000000
   makeModifications conf rest
 
-beforeWatchHook :: (FilePath, FilePath) -> FilePath -> IO String
-beforeWatchHook (projectRoot, ghcPath) outFile = do
+beforeWatchHook :: (FilePath, FilePath, FilePath) -> FilePath -> IO String
+beforeWatchHook (projectRoot, ghcPath, stackPackageDb) outFile = do
   -- Copy Original Files
   copyFile (addFullDirectory "Types1Orig.hs") fullDest1
   copyFile (addFullDirectory "Types2Orig.hs") fullDest2
@@ -245,7 +244,7 @@ beforeWatchHook (projectRoot, ghcPath) outFile = do
   lock1 <- newEmptyMVar
   lock2 <- newEmptyMVar
   let locks = M.fromList [(fullDest1, lock1), (fullDest2, lock2)]
-  let conf = ProgramConfig projectRoot ghcPath Nothing testExercisesDir inHandle outHandle stderr locks
+  let conf = ProgramConfig projectRoot ghcPath stackPackageDb testExercisesDir inHandle outHandle stderr locks
   watchTid <- forkIO (runExerciseWatch conf watchTestExercises)
   -- Modify Files
   makeModifications conf modifications
@@ -280,16 +279,16 @@ listTestExercises =
   , ExerciseInfo "Recursion2" "recursion" UnitTests ""
   ]
 
-listBeforeHook :: (FilePath, FilePath) -> FilePath -> IO String
-listBeforeHook (projectRoot, ghcPath) outFile = do
+listBeforeHook :: (FilePath, FilePath, FilePath) -> FilePath -> IO String
+listBeforeHook (projectRoot, ghcPath, stackPackageDb) outFile = do
   let fullFp = projectRoot `pathJoin` "tests" `pathJoin` "test_gen" `pathJoin` outFile
   outHandle <- openFile fullFp WriteMode
-  let conf = ProgramConfig projectRoot ghcPath Nothing ("tests" `pathJoin` "exercises") stdin outHandle stderr M.empty
+  let conf = ProgramConfig projectRoot ghcPath stackPackageDb ("tests" `pathJoin` "exercises") stdin outHandle stderr M.empty
   listExercises' listTestExercises conf
   hClose outHandle
   readFile fullFp
 
-listTest :: (FilePath, FilePath) -> Spec
+listTest :: (FilePath, FilePath, FilePath) -> Spec
 listTest paths = before (listBeforeHook paths "list.output") $
   describe "When running 'listExercises'" $
     it "Should print the proper status" $ \output -> lines output `shouldBe` expectedOutput

@@ -13,7 +13,7 @@ Next, you'll need to clone this repository and then build the code using `stack`
 >> stack build
 ```
 
-You can then install the `haskellings` executable to your local path using `stack install`. This will let you run `haskellings` from anywhere on your system:
+Note that you **must** clone it somewhere within your "home" directory (e.g. `~/haskellings`, or `~/haskell_projects/haskellings`). You can then install the `haskellings` executable to your local path using `stack install`. This will let you run `haskellings` from anywhere on your system:
 
 ```bash
 >> stack install
@@ -124,6 +124,53 @@ You can run this entering your own custom inputs. But to see why it is not "pass
 Haskellings is an open source project. If you've found a bug, have any suggestions for improvements or just want to help, let us know! Take a look at the [CONTRIBUTING](./CONTRIBUTING.md) doc to learn how!
 
 ## Configuration
+
+If you have a normal installation of the Haskell Platform, you probably **do not need** to read this section. Configuration happens automatically. But feel free to read on if you want to know more about the details and how you can customize them!
+
+In order to run exercises, Haskellings needs to know two paths on the local system.
+
+1. The path to the appropriate version of GHC (currently 8.8.4)
+2. The path to a Stack snapshot package DB for that GHC version. This package DB must contain any dependencies that are needed for the exercises, particularly `tasty` and `tasty-hunit` which are used for unit testing exercise functions.
+
+### Default Configuration
+
+By default, Haskellings will search for these in particular locations. We search for the GHC path by starting at Stack's programs:
+
+1. `~/.stack/programs` on Posix systems
+2. `%LOCALAPPDATA%\Programs\stack` on Windows
+
+Then we do a breadth-first-search of these directories until we locate `ghc-8.8.4`. Typical results for this look like:
+
+1. `~/.stack/programs/x86_64-linux/ghc-8.8.4/bin/ghc` on Linux
+2. `Users\username\AppData\Local\Programs\stack\x86_64-windows\ghc-8.8.4\bin\ghc` on Windows
+
+Then to find the Stack snapshots directory, we use similar starting points:
+
+1. `~/.stack/snapshots` on Posix systems
+2. `%STACK_ROOT\snapshots` on Windows
+
+These directories contain all your snapshots, each indicated by a hash value. Haskellings performs a BFS on these different hashes until it finds one contains `lib/{os}-ghc-8.8.4`, and then backtracks to find the corresponding `pkgdb`. Typical results look like:
+
+1. `~/.stack/snapshots/x86_64-linux/{hash}/8.8.4/pkgdb` on Linux
+2. `sr\snapshots\{hash}\pkgdb` on Windows
+
+### Custom Configuration
+
+If you have Stack setup in such a way that these items are stored somewhere else on your system, you can customize these by creating a simple YAML file at the project root. This file should be called `.config.yaml` and it should have one or both of the keys `ghc_path` and `stack_package_db_path`:
+
+```yaml
+# haskellings/.config.yaml
+ghc_path: /bin/ghc-8.8.4
+stack_package_db_path: /lib/stack_snapshots/8.8.4/pkgdb
+```
+
+Note these paths should be absolute and not relative! You can also produce this file by running the `haskellings configure` command like so:
+
+```bash
+>> haskellings configure
+Please enter GHC Path (or leave blank for default): /bin/ghc-8.8.4
+Please enter Stack package DB path (or leave blank): /lib/stack_snapshots/8.8.4/pkgdb
+```
 
 Haskellings needs to be able to find the appropriate version of GHC to actually compile and run individual exercises. It also needs to find Stack package databases to enable dependencies. Right now, we only look for these in the default locations, such as `~/.stack` on Posix systems and `%LOCALAPPDATA%\\sr` on Windows. In the future we will allow the program to be configured to use different paths if your installation is different. See [this issue](https://github.com/MondayMorningHaskell/haskellings/issues/16).
 
