@@ -23,7 +23,6 @@ main = do
           Left NoGhcError -> putStrLn $ "Couldn't find " ++ ghcVersion
           Left NoStackPackageDbError -> putStrLn "Couldn't find an appropriate stack package DB!"
           Right paths -> do
-            packageDb <- findStackPackageDb
             let config = uncurry3 ProgramConfig paths mainProjectExercisesDir stdin stdout stderr empty
             runCommand config (tail args) (head args)
 
