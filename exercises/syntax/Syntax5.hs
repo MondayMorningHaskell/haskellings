@@ -5,20 +5,20 @@ import Test.Tasty.HUnit
 
 {-
 
-So far our functions have been very simple. So we've been able to write the whole
-result on a single line without re-using sub-expressions. But often this isn't the case.
-Suppose we want to use some part of our answer multiple times. It would make our code
-more readable to be able to "save" this value:
+- So far our functions have been very simple. So we've been able to write the whole
+  result on a single line without re-using sub-expressions. But often this isn't the case.
+  Suppose we want to use some part of our answer multiple times. It would make our code
+  more readable to be able to "save" this value:
 
 sumEarlyDigits :: Bool -> [Int] -> Int
 sumEarlyDigits bool ls = if bool
   then head ls + head (tail ls)
   else head (tail ls) + head (tail (tail ls))
 
-A 'where' clause allows us to save expressions like 'tail ls' here.
-We indicate this section of our function with the 'where' keyword
-and add a series of expression definitions, which we can then use in our function.
-Notice how we can use 'tail1' within another variable definition!
+- A 'where' clause allows us to save expressions like 'tail ls' here.
+  We indicate this section of our function with the 'where' keyword
+  and add a series of expression definitions, which we can then use in our function.
+  Notice how we can use 'tail1' within another variable definition!
 
 sumEarlyDigits :: Bool -> [Int] -> Int
 sumEarlyDigits bool ls = if bool
@@ -28,8 +28,8 @@ sumEarlyDigits bool ls = if bool
     tail1 = tail ls
     second = head tail1
 
-A 'where' clause can also allow you to make code more readable, even if
-sub-expressions aren't re-used.
+- A 'where' clause can also allow you to make code more readable, even if
+  sub-expressions aren't re-used.
 
 sumProducts :: Int -> Int -> Int -> Int
 sumProducts x y z = prod1 + prod2 + prod3
@@ -38,8 +38,8 @@ sumProducts x y z = prod1 + prod2 + prod3
     prod2 = y * z
     prod3 = x * z
 
-The order in which 'where' statements are defined *does not matter*. However,
-you must make sure to not create a circular dependency between your definitions!
+- The order in which 'where' statements are defined *does not matter*. However,
+  you must make sure to not create a circular dependency between your definitions!
 
 badSum :: Int -> Int -> Int -> Int
 badSum x y z = prod1 + prod2 + prod3 + prod4

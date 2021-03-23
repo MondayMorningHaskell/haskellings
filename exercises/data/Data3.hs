@@ -4,21 +4,21 @@ module Data3 where
 
 {-
 
-Suppose we have this basic type for an assignment grade:
+- Suppose we have this basic type for an assignment grade:
 
 data Grade = Grade Int Char String
 
-The only way to "unwrap" the values from an object of this type is to
-run a pattern match, unless we write extra function to do the unwrapping for us:
+- The only way to "unwrap" the values from an object of this type is to
+  run a pattern match, unless we write extra function to do the unwrapping for us:
 
 comments :: Grade -> String
 comments (Grade _ _ c) = c
 
-Doing this for every field of every type would be tedious though! So we can let
-Haskell derive these functions for us by using *Record Syntax*. In this way it's
-possible to assign a name to each field so we can use it for future reference.
-You need to use curly braces with this syntax. It is often wise to prefix the
-field names with the (lowercase) type name to prevent conflicts.
+- Doing this for every field of every type would be tedious though! So we can let
+  Haskell derive these functions for us by using *Record Syntax*. In this way it's
+  possible to assign a name to each field so we can use it for future reference.
+  You need to use curly braces with this syntax. It is often wise to prefix the
+  field names with the (lowercase) type name to prevent conflicts.
 
 data Grade = Grade
   { gradeScore :: Int
@@ -26,9 +26,9 @@ data Grade = Grade
   , gradeComments :: String
   }
 
-It is possible, though not usually advisable to have multiple constructors
-with record syntax. This is likely to result in functions that are invalid
-on certain constructors.
+- It is possible, though not usually advisable to have multiple constructors
+  with record syntax. This is likely to result in functions that are invalid
+  on certain constructors.
 
 -}
 

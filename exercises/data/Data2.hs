@@ -5,23 +5,23 @@ import Test.Tasty.HUnit
 
 {-
 
-Haskell data types can also have multiple constructors! When we want
-this, we separate the constructors with a vertical bar character '|'.
+- Haskell data types can also have multiple constructors! When we want
+  this, we separate the constructors with a vertical bar character '|'.
 
-We've already seen an example of this in the "Bool" type.
-'True' and 'False' are its two constructors.
+- We've already seen an example of this in the "Bool" type.
+  'True' and 'False' are its two constructors.
 
 data Bool = True | False
 
-This makes it easy for us to let our data take different forms with
-different associated data.
+- This makes it easy for us to let our data take different forms with
+  different associated data.
 
 data Calculation =
   RawResult Double |
   LoggedResult Double String
 
-You can branch on the constructor of your input with pattern matching
-and case statements:
+- You can branch on the constructor of your input with pattern matching
+  and case statements:
 
 doubleCalculation :: Calculation -> Double
 doubleCalculation (RawResult x) = 2 * x

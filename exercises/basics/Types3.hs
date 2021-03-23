@@ -3,11 +3,11 @@ module Types3 where
 -- I AM NOT DONE
 
 {-
-We can combine values of different types together using *tuples*.
+- We can combine values of different types together using *tuples*.
 
-A tuple consists of 2 or more comma-separated values within parentheses.
+- A tuple consists of 2 or more comma-separated values within parentheses.
 
-The type signature similarly has each individual type within parens.
+- The type signature similarly has each individual type within parens.
 -}
 
 tuple1 :: (Int, Int)

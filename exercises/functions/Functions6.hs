@@ -7,18 +7,18 @@ import Test.Tasty.HUnit
 
 {-
 
-A function can potentially take any expression as an input.
-Remember though that functions are also expressions!
+- A function can potentially take any expression as an input.
+  Remember though that functions are also expressions!
 
-This means we can write a function that takes a different function *as an input*.
-We call this a *higher order function*.
+- This means we can write a function that takes a different function *as an input*.
+  We call this a *higher order function*.
 
-The most simple of these is "map", which transforms every element of a list.
+- The most simple of these is "map", which transforms every element of a list.
 
 map :: (a -> b) -> [a] -> [b]
 
-The first input is a function between two types (they can be the same type).
-The second input is the list of items
+- The first input is a function between two types (they can be the same type).
+  The second input is the list of items
 
 - **Lambda** syntax allows us to define a function as an expression in the
   middle of our code! This is like writing a normal function, except prefixing

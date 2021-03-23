@@ -5,10 +5,10 @@ import Test.Tasty.HUnit
 
 {-
 
-Nested If-Statements can be annoying to write. So Haskell has a few different
-ways to deal with having several condition branches.
+- Nested If-Statements can be annoying to write. So Haskell has a few different
+  ways to deal with having several condition branches.
 
-The first of these are "guards".
+- The first of these are "guards".
 
 function :: InputType -> OutputType
 function x
@@ -28,10 +28,10 @@ example list1
   | head (tail list1) == 4 = 1
   | otherwise = 2
 
-Observe that the "equals" sign goes on each individual line, NOT after the
-initial function name and arguments!
+- Observe that the "equals" sign goes on each individual line, NOT after the
+  initial function name and arguments!
 
-Note: The cases are evaluated in the order they are listed. 
+- Note: The cases are evaluated in the order they are listed. 
 -}
 
 -- TODO:

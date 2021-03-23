@@ -5,13 +5,13 @@ import Test.Tasty.HUnit
 
 {-
 
-Pattern Matching is a another powerful tool to branch our code behavior based
-on the values or structure of our input elements.
+- Pattern Matching is a another powerful tool to branch our code behavior based
+  on the values or structure of our input elements.
 
-Instead of assigning a name to our inputs, we can use a value on the left side
-to indicate what the behavior of the function should be when the input has
-that value. We do this for multiple different values, essentially defining
-multiple versions of our function depending on the input.
+- Instead of assigning a name to our inputs, we can use a value on the left side
+  to indicate what the behavior of the function should be when the input has
+  that value. We do this for multiple different values, essentially defining
+  multiple versions of our function depending on the input.
 
 
 -}
