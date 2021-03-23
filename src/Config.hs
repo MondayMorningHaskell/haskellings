@@ -152,26 +152,29 @@ loadBaseConfigPaths = do
   projectRoot' <- findProjectRoot
   case projectRoot' of
     Nothing -> return (Left NoProjectRootError)
-    Just projectRoot -> do
-      let configPath = projectRoot `pathJoin` configFileName
-      configExists <- doesFileExist configPath
-      baseConfig <- if configExists
-        then do
-          fileResult <- decodeFileEither configPath
-          case fileResult of
-            (Left _)       -> return (BaseConfig Nothing Nothing)
-            (Right config) -> return config
-        else return (BaseConfig Nothing Nothing)
-      ghcPath' <- case baseConfigGhcPath baseConfig of
-        Nothing -> findGhc
-        Just p  -> return (Just p)
-      stackPath' <- case baseConfigStackPath baseConfig of
-        Nothing -> findStackPackageDb
-        Just p  -> return (Just p)
-      case (ghcPath', stackPath') of
-        (Just ghcPath, Just stackPath) -> return (Right (projectRoot, ghcPath, stackPath))
-        (Just _, Nothing)        -> return (Left NoStackPackageDbError)
-        (Nothing, _)             -> return (Left NoGhcError)
+    Just projectRoot -> loadBaseConfigPathsWithProjectRoot projectRoot
+
+loadBaseConfigPathsWithProjectRoot :: FilePath -> IO (Either ConfigError (FilePath, FilePath, FilePath))
+loadBaseConfigPathsWithProjectRoot projectRoot = do
+  let configPath = projectRoot `pathJoin` configFileName
+  configExists <- doesFileExist configPath
+  baseConfig <- if configExists
+    then do
+      fileResult <- decodeFileEither configPath
+      case fileResult of
+        (Left _)       -> return (BaseConfig Nothing Nothing)
+        (Right config) -> return config
+    else return (BaseConfig Nothing Nothing)
+  ghcPath' <- case baseConfigGhcPath baseConfig of
+    Nothing -> findGhc
+    Just p  -> return (Just p)
+  stackPath' <- case baseConfigStackPath baseConfig of
+    Nothing -> findStackPackageDb
+    Just p  -> return (Just p)
+  case (ghcPath', stackPath') of
+    (Just ghcPath, Just stackPath) -> return (Right (projectRoot, ghcPath, stackPath))
+    (Just _, Nothing)        -> return (Left NoStackPackageDbError)
+    (Nothing, _)             -> return (Left NoGhcError)
 
 findGhc :: IO (Maybe FilePath)
 findGhc = do
