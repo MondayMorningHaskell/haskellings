@@ -23,6 +23,11 @@ uncurry :: (a -> b -> c) -> (a,b) -> c
 manhattenDistance :: Int -> Int -> Int
 manhattenDistance = (+)
 
+-- The function manhattenDistance is written in *point-free style*
+-- if you prefer, you could define it like this instead:
+-- manhattenDistance :: Int -> Int -> Int
+-- manhattenDistance xdist ydist = xdist + ydist
+
 -- TODO:
 
 -- Define a Type Synonym Point for a pair (Int,Int).
@@ -32,3 +37,16 @@ manhattenDistance = (+)
 
 manhattenDistancePoint :: Point -> Int
 manhattenDistancePoint = ???
+
+-- This function takes a pair of booleans and returns a boolean 
+-- corresponding to their logical AND
+
+andPair :: (Bool,Bool) -> Bool
+andPair (b1,b2) = b1 && b2
+
+-- TODO:
+
+-- Give this function a type signature to make it compile
+
+andCurried :: ???
+andCurried = curry andPair
