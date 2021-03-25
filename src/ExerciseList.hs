@@ -74,6 +74,7 @@ allExercises =
   , ExerciseInfo "Lists2" "lists" UnitTests "Your countdown doesn't need to end exactly with 0."
   , ExerciseInfo "Lists3" "lists" UnitTests "Remember 3 steps for a comprehension: 1. source 2. filter 3. result."
   , ExerciseInfo "Lists4" "lists" UnitTests "Remember 'show' and string appending!"
+  , ExerciseInfo "Curry1" "currying" CompileOnly "Use 'uncurry' and 'curry' and remember their type signatures."
   , ExerciseInfo "Functors" "monads" UnitTests "You can use the underlying functor instances when creating your functor!"
   , ExerciseInfo "Applicatives" "monads" UnitTests "You can use 'fmap' (<$>) to wrap a function in the Applicative before applying <*>!"
   , ExerciseInfo "Monoids" "monads" UnitTests "Think about what you would use as the identity element for each item!"
