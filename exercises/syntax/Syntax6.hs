@@ -5,8 +5,8 @@ import Test.Tasty.HUnit
 
 {-
 
-A 'where' clause is not the only way to define intermediate values.
-You can also use the keywords 'let' and 'in', like so:
+- A 'where' clause is not the only way to define intermediate values.
+  You can also use the keywords 'let' and 'in', like so:
 
 sumEarlyDigits :: Bool -> [Int] -> Int
 sumEarlyDigits bool ls =
@@ -16,8 +16,8 @@ sumEarlyDigits bool ls =
       solution2 = second + head (tail tail1)
   in  if bool then solution1 else solution2
 
-Follow 'let' with all the expressions you want to define, and once you're
-done you use 'in' to complete the function in terms of your expressions.
+- Follow 'let' with all the expressions you want to define, and once you're
+  done you use 'in' to complete the function in terms of your expressions.
 
 sumProducts :: Int -> Int -> Int -> Int
 sumProducts x y z =
@@ -26,8 +26,8 @@ sumProducts x y z =
        prod3 = x * z
   in   prod1 + prod2 + prod3
 
-The same rules about ordering apply in a 'let' statement! This circular
-dependency is still bad!
+- The same rules about ordering apply in a 'let' statement! This circular
+  dependency is still bad!
 
 badSum :: Int -> Int -> Int -> Int
 badSum x y z = prod1 + prod2 + prod3 + prod4

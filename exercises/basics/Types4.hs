@@ -3,13 +3,13 @@ module Types4 where
 -- I AM NOT DONE
 
 {-
-You can combine multiple values of the SAME type in a *List*.
+- You can combine multiple values of the SAME type in a *List*.
 
-You can define a list with a comma separated list of values within *brackets*.
+- You can define a list with a comma separated list of values within *brackets*.
 
-It's type signature has the type of the elements within brackets.
+- It's type signature has the type of the elements within brackets.
 
-A list can have any number of elements, even 0.
+- A list can have any number of elements, even 0.
 -}
 
 list1 :: [Int]

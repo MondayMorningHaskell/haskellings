@@ -6,8 +6,8 @@ import Test.Tasty.HUnit
 
 {-
 
-There are many functions already out there that we can call on our different types.
-Here are a few examples:
+- There are many functions already out there that we can call on our different types.
+  Here are a few examples:
 
 1. head :: [a] -> a
    returns the first element of any non-empty list ("a" is a generic type)

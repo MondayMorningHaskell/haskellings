@@ -5,10 +5,10 @@ import Test.Tasty.HUnit
 
 {-
 
-When pattern matching on the lists, we can use the structure of the list
-to specify different branches. This includes specifying individual elements
-of the list, limiting its length, or even using the cons operator (:) to
-state that there are "at least" a certain number of items in the list.
+- When pattern matching on the lists, we can use the structure of the list
+  to specify different branches. This includes specifying individual elements
+  of the list, limiting its length, or even using the cons operator (:) to
+  state that there are "at least" a certain number of items in the list.
 
 evalList :: [Int] -> Int
 evalList [] = ...              -- Only evaluates empty list
@@ -17,11 +17,11 @@ evalList (1 : 2 : _) = ...     -- List must start with 1 and 2
 evalList (x : y : z : _) = ... -- Any list with at least three elements
 evalList xs = ...              -- Matches any list
 
-We can also run pattern matching in the middle of a function by using a "case" statement.
-Each pattern is followed by an arrow, and then the expression. As always, every expression
-must result in the same type.
+- We can also run pattern matching in the middle of a function by using a "case" statement.
+  Each pattern is followed by an arrow, and then the expression. As always, every expression
+  must result in the same type.
 
-The following is equivalent to above:
+- The following is equivalent to above:
 
 evalList :: [Int] -> Int
 evalList mylist = case myList of

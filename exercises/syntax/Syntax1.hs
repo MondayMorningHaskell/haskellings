@@ -5,17 +5,17 @@ import Test.Tasty.HUnit
 
 {-
 
-"If" statements are different in Haskell from most other languages
-in that they *must* have an "else" branch.
+- "If" statements are different in Haskell from most other languages
+  in that they *must* have an "else" branch.
 
-The general syntax looks like:
-if {Boolean} then {true branch} else {false branch}
+- The general syntax looks like:
+  if {Boolean} then {true branch} else {false branch}
 
-An If-Statement is an expression, and so it must have a type. In
-order for it to have a type, both branches must exist and they
-must be expressions of the *same type*.
+- An If-Statement is an expression, and so it must have a type. In
+  order for it to have a type, both branches must exist and they
+  must be expressions of the *same type*.
 
-You can use 1 line or multiple lines for an "if" statement.
+- You can use 1 line or multiple lines for an "if" statement.
 
 -}
 

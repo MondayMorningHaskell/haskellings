@@ -14,7 +14,7 @@ module Data1 where
 
 data Person = Person String Int
 
-That's all there is to it!
+- That's all there is to it!
 
 -}
 

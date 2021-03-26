@@ -3,13 +3,13 @@ module Types2 where
 -- I AM NOT DONE
 
 {-
-There are other basic types that aren't numeric!
+- There are other basic types that aren't numeric!
 
-Bool - Boolean value (True/False)
+  Bool - Boolean value (True/False)
 
-Char - A single letter character, denoted by single quotes ('a')
+  Char - A single letter character, denoted by single quotes ('a')
 
-String - A word of many characters, denoted by double quotes ("hello")
+  String - A word of many characters, denoted by double quotes ("hello")
 -}
 
 bool1 :: Bool

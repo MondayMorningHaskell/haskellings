@@ -5,8 +5,8 @@ import Test.Tasty.HUnit
 
 {-
 
-Suppose we have a function that takes two arguments. If we only apply
-*one* of the arguments, we get a new function that takes only one argument.
+- Suppose we have a function that takes two arguments. If we only apply
+  *one* of the arguments, we get a new function that takes only one argument.
 
 -}
 

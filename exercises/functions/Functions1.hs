@@ -5,15 +5,15 @@ import Test.Tasty.HUnit
 
 {-
 
-This is our first function. Functions are special expressions
-that require one or more "inputs".
+- This is our first function. Functions are special expressions
+  that require one or more "inputs".
 
-In our type signature (Int -> Int), the first type listed is the
-"input" type. The second type (after the arrow) indicates the "result" type.
-(We can also call it the "return" type)
+- In our type signature (Int -> Int), the first type listed is the
+  "input" type. The second type (after the arrow) indicates the "result" type.
+  (We can also call it the "return" type)
 
-We assign a name ("x" in this case) to the input and put it on the left side
-of the expression definition.
+- We assign a name ("x" in this case) to the input and put it on the left side
+  of the expression definition.
 
 -}
 
@@ -22,10 +22,10 @@ add5 x = x + 5
 
 {-
 
-We "apply" a function by simply placing the input argument after the function name.
+- We "apply" a function by simply placing the input argument after the function name.
 
-Unlike other languages, we don't use parentheses when calling functions.
-In Python/Java/Javascript/C++, this might look like "eleven = add5(6)"
+- Unlike other languages, we don't use parentheses when calling functions.
+  In Python/Java/Javascript/C++, this might look like "eleven = add5(6)"
 
 -}
 
@@ -34,8 +34,8 @@ eleven = add5 6
 
 {-
 
-Functions can have more than one argument. We simply have more types and arrows
-before our final return value, and more arguments before "="
+- Functions can have more than one argument. We simply have more types and arrows
+  before our final return value, and more arguments before "="
 
 -}
 

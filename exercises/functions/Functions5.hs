@@ -5,10 +5,10 @@ import Test.Tasty.HUnit
 
 {-
 
-There are many other operators on other types as well.
+- There are many other operators on other types as well.
 
---
-We can use operators for boolean "and" and "or":
+
+- We can use operators for boolean "and" and "or":
 
 (&&) :: Bool -> Bool -> Bool
 True && True = True
@@ -22,15 +22,15 @@ There's also "not", which isn't an operator:
 not :: Bool -> Bool
 not True = False
 
---
-There are two important operators we can use on lists.
 
-The "append" operator will combine two lists into one:
+- There are two important operators we can use on lists.
+
+- The "append" operator will combine two lists into one:
 (++) :: [a] -> [a] -> [a]
 [1, 2, 3] ++ [4, 5, 6] = [1, 2, 3, 4, 5, 6]
 
-The "concat" operator will place push a new element onto
-the front of a list:
+- The "concat" operator will place push a new element onto
+  the front of a list:
 (:) :: a -> [a] -> [a]
 1 : [2, 3] = [1, 2, 3]
 

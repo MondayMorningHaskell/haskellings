@@ -38,7 +38,7 @@ type Password = String
 login :: Username -> Password -> LoginResult
 ...
 
-Now someone reading our documentation will know what inputs they need.
+- Now someone reading our documentation will know what inputs they need.
 
 -}
 
