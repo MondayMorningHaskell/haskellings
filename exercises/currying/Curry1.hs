@@ -20,17 +20,10 @@ uncurry :: (a -> b -> c) -> (a, b) -> c
 -- The manhatten distance of two coordinat points is defined as the distance in x + the distance in y. 
 -- This function takes the xdistance and ydistance and calculates the manhatten distance:
 
+
+
 manhattenDistance :: Int -> Int -> Int
-manhattenDistance = (+)
-
--- The function manhattenDistance is written in *point-free style*
--- For an explanation of *point-free style*, see:
--- https://wiki.haskell.org/Pointfree
-
--- If you prefer, you could define it like this instead:
-
--- manhattenDistance :: Int -> Int -> Int
--- manhattenDistance xdist ydist = xdist + ydist
+manhattenDistance xdist ydist = abs xdist + abs ydist
 
 -- TODO:
 
