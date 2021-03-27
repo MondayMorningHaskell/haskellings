@@ -8,6 +8,7 @@ mkDerivation {
   src = ./.;
   isLibrary = true;
   isExecutable = true;
+  doCheck = false;
   libraryHaskellDepends = [
     aeson ansi-terminal base containers directory extra fsnotify
     process tasty tasty-hunit time yaml
@@ -16,14 +17,6 @@ mkDerivation {
   testHaskellDepends = [
     base containers directory hspec HUnit tasty tasty-hunit time
   ];
-
-  doCheck = false;
-  
-  postInstall = ''
-    __GHCPATH=$(echo $(whereis ghc) | sed 's/^....//')
-    echo "ghc_path: $__GHCPATH" > config.yaml 
-    '';
-
   homepage = "https://github.com/MondayMorningHaskell/haskellings#readme";
   license = lib.licenses.bsd3;
 }

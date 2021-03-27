@@ -27,6 +27,17 @@ You can also run any `haskellings` command from the project directory using `sta
 >> stack exec -- haskellings run Types1
 ```
 
+### Using Nix
+
+Instead of running stack manually, you can use a nix shell to install the dependencies for you.
+[Install Nix](https://nixos.org/guides/install-nix.html).
+
+Optionally install [direnv](https://direnv.net).
+
+Running `nix-shell` (or `direnv allow`, if you're using `direnv`) in this repository will automatically provide you with a local installation of the `haskellings` executable and the correct version of GHC in your path.
+
+If you'd like to decrease build times and improve reproducibility, install [nix flakes](https://nixos.wiki/wiki/Flakes) and use `nix develop` for a faster shell than `nix-shell` allows. If you do this and you're using `direnv`, you should also set up [nix flakes direnv support](https://nixos.wiki/wiki/Flakes#Super_fast_nix-shell).
+
 ## Running Exercises
 
 Within the [exercises directory](https://github.com/MondayMorningHaskell/haskellings/tree/master/exercises), you can find sub-directories containing all the different exercise modules. You can run individual exercises with the `haskellings run` command combined with the name of the fine (without the extension).
