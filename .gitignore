@@ -5,3 +5,5 @@ generated_files/
 .config/
 tests/test_gen/
 config.yaml
+.direnv/*
+!.direnv/.git-keep
