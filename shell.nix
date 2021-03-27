@@ -3,7 +3,6 @@
 pkgs.mkShell {
   buildInputs = with pkgs; [ 
     haskell.compiler.ghc884
-    stack
     (import ./default.nix { inherit pkgs compiler; })
   ];
 
