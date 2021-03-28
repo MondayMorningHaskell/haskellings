@@ -47,8 +47,8 @@ addHeads = ???
 takeSeconds :: (Int, Int) -> (Int, Int) -> (Int, Int) -> (Int, Int, Int)
 takeSeconds = ???
 
--- Capitalize each of the three characters
-capitalize :: (Char, Char, Char) -> (Char, Char, Char)
+-- Capitalize each of the two characters.
+capitalize :: (Char, Char) -> (Char, Char)
 capitalize = ???
 
 -- Testing Code, You can ignore this:
@@ -58,6 +58,6 @@ main = defaultMain $ testGroup "Functions2" $
   , testCase "Add Heads 2" $ addHeads ([-1, 6, 9], [3, -3, -10]) @?= (2, [6, 9], [-3, -10])
   , testCase "Take Seconds 1" $ takeSeconds (4, 5) (1, 2) (-1, -2) @?= (5, 2, -2)
   , testCase "Take Seconds 2" $ takeSeconds (100, 121) (-3, -4) (50, -67) @?= (121, -4, -67)
-  , testCase "Capitalize 1" $ capitalize ('a', 'b', 'c') @?= ('A', 'B', 'C')
-  , testCase "Capitalize 2" $ capitalize ('r', 'f', 'q') @?= ('R', 'F', 'Q')
+  , testCase "Capitalize 1" $ capitalize ('a', 'b') @?= ('A', 'B')
+  , testCase "Capitalize 2" $ capitalize ('f', 'q') @?= ('F', 'Q')
   ]
