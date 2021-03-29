@@ -6,4 +6,3 @@ generated_files/
 tests/test_gen/
 config.yaml
 result
-.direnv/
