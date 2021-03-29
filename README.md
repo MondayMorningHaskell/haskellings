@@ -27,16 +27,22 @@ You can also run any `haskellings` command from the project directory using `sta
 >> stack exec -- haskellings run Types1
 ```
 
-### Using Nix
+### Using Nix (Experimental)
 
 Instead of running stack manually, you can use a nix shell to install the dependencies for you.
-[Install Nix](https://nixos.org/guides/install-nix.html).
+To do this, [install Nix](https://nixos.org/guides/install-nix.html).
 
-Optionally install [direnv](https://direnv.net).
+Then, when in the project's root directory, runn `nix-shell`.
+After the build process, you should see a bash prompt like this:
 
-Running `nix-shell` (or `direnv allow`, if you're using `direnv`) in this repository will automatically provide you with a local installation of the `haskellings` executable and the correct version of GHC in your path.
+``` shell
+[nix-shell:~]$ 
+```
 
-If you'd like to decrease build times and improve reproducibility, install [nix flakes](https://nixos.wiki/wiki/Flakes) and use `nix develop` for a faster shell than `nix-shell` allows. If you do this and you're using `direnv`, you should also set up [nix flakes direnv support](https://nixos.wiki/wiki/Flakes#Super_fast_nix-shell).
+This shell provides you with an environment that has GHC 8.8.4 and the `haskellings` binary installed and available in your `$PATH` - so you can run `haskellings` and get started!
+
+These dependencies are only available within the `nix-shell`, so don't worry about contaminating your global system with conflicting installations.
+
 
 ## Running Exercises
 
