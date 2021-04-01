@@ -15,6 +15,8 @@ import           Config
 import           DirectoryUtils
 import           ExerciseList
 
+import System.IO.Unsafe (unsafePerformIO)
+
 isHaskellFile :: FilePath -> Bool
 isHaskellFile = isSuffixOf ".hs"
 
@@ -62,7 +64,7 @@ createExerciseProcess config (ExerciseInfo exerciseName exDirectory exType _) =
     baseArgs = [fullSourcePath, "-odir", genDirPath, "-hidir", genDirPath]
     execArgs = if exIsRunnable then baseArgs ++ ["-o", genExecutablePath] else baseArgs
     finalArgs = execArgs ++ ["-package-db", packageDb config]
-    processSpec = proc (ghcPath config) finalArgs
+    processSpec = proc (ghcPath config) (unsafePerformIO (print finalArgs >> return finalArgs))
 
 onCompileFailure :: ProgramConfig -> String -> Maybe Handle -> IO RunResult
 onCompileFailure config exFilename errHandle = withTerminalFailure $ do
@@ -74,6 +76,8 @@ onCompileFailure config exFilename errHandle = withTerminalFailure $ do
 
 runUnitTestExercise :: ProgramConfig -> FilePath -> String -> IO RunResult
 runUnitTestExercise config genExecutablePath exFilename = do
+  putStrLn genExecutablePath
+  doesFileExist genExecutablePath >>= print
   let execSpec = shell genExecutablePath
   (_, execStdOut, execStdErr, execProcHandle) <- createProcess (execSpec { std_out = CreatePipe, std_err = CreatePipe })
   execExit <- waitForProcess execProcHandle
