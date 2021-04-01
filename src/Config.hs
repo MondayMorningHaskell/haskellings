@@ -144,8 +144,7 @@ withDirectory :: FilePath -> IO a -> IO a
 withDirectory dirPath action = do
   createDirectoryIfMissing True dirPath
   res <- action
-  threadDelay 1000000
-  removeDirectoryRecursive dirPath
+  -- removeDirectoryRecursive dirPath
   return res
 
 loadBaseConfigPaths :: IO (Either ConfigError (FilePath, FilePath, FilePath))
