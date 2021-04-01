@@ -77,7 +77,7 @@ runUnitTestExercise config genExecutablePath exFilename = do
   let execSpec = shell genExecutablePath
   (_, execStdOut, execStdErr, execProcHandle) <- createProcess (execSpec { std_out = CreatePipe, std_err = CreatePipe })
   execExit <- waitForProcess execProcHandle
-  threadDelay 100000
+  threadDelay 1000000
   case execExit of
     ExitFailure code -> withTerminalFailure $ do
       progPutStrLn config $ "Tests failed on exercise : " ++ exFilename

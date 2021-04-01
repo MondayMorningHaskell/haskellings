@@ -3,7 +3,7 @@
 module Config where
 
 
-import           Control.Concurrent  (MVar, putMVar, takeMVar)
+import           Control.Concurrent  (MVar, putMVar, takeMVar, threadDelay)
 import           Control.Monad       (forM)
 import           Data.Aeson
 import           Data.List           (all, any, find, isPrefixOf, isSuffixOf)
@@ -144,6 +144,7 @@ withDirectory :: FilePath -> IO a -> IO a
 withDirectory dirPath action = do
   createDirectoryIfMissing True dirPath
   res <- action
+  threadDelay 1000000
   removeDirectoryRecursive dirPath
   return res
 
