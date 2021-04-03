@@ -49,6 +49,7 @@ allExercises =
   , ExerciseInfo "Functions4" "functions" UnitTests "Remember to keep parentheses around the operator when defining it!"
   , ExerciseInfo "Functions5" "functions" UnitTests "For the 'sink' functions, think about partial operator application!"
   , ExerciseInfo "Functions6" "functions" UnitTests "Remember that a String is just a list of characters: [Char]."
+  , ExerciseInfo "Curry" "functions" UnitTests "Use 'uncurry' and 'curry' and remember their type signatures."
   , ExerciseInfo "Syntax1" "syntax" UnitTests "There is no 'elif' like in Python. Use 'else' and then another full 'if' statement."
   , ExerciseInfo "Syntax2" "syntax" UnitTests "You don't need a guard branch for every possible case in countUnitTests!"
   , ExerciseInfo "Syntax3" "syntax" UnitTests "For your catch-all case, either use an expression name like normal for the input, or use an underscore '_' if you don't need the input."
