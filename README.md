@@ -27,6 +27,23 @@ You can also run any `haskellings` command from the project directory using `sta
 >> stack exec -- haskellings run Types1
 ```
 
+### Using Nix (Experimental)
+
+Instead of running stack manually, you can use a nix shell to install the dependencies for you.
+To do this, [install Nix](https://nixos.org/guides/install-nix.html).
+
+Then, when in the project's root directory, runn `nix-shell`.
+After the build process, you should see a bash prompt like this:
+
+``` shell
+[nix-shell:~]$ 
+```
+
+This shell provides you with an environment that has GHC 8.8.4 and the `haskellings` binary installed and available in your `$PATH` - so you can run `haskellings` and get started!
+
+These dependencies are only available within the `nix-shell`, so don't worry about contaminating your global system with conflicting installations.
+
+
 ## Running Exercises
 
 Within the [exercises directory](https://github.com/MondayMorningHaskell/haskellings/tree/master/exercises), you can find sub-directories containing all the different exercise modules. You can run individual exercises with the `haskellings run` command combined with the name of the fine (without the extension).
