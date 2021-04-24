@@ -73,7 +73,7 @@ main = defaultMain $ testGroup "Typeclasses3" $
       [Adult1 "John" "Smith" 45, Adult1 "Thomas" "Allen" 46, Adult1 "Zach" "Whittaker" 31]
   , testCase "Ordering Adults 2" $ sort [Adult2 "Zach" "Whittaker" 31, Adult2 "John" "Smith" 45, Adult2 "Thomas" "Allen" 46] @?=
       [Adult2 "Thomas" "Allen" 46, Adult2 "John" "Smith" 45, Adult2 "Zach" "Whittaker" 31]
-  , testCase "Read Interest Rate" $ map read ["0.5", "0.3", "0.788"] @?= [InterestRate 0.5, InterestRate 0.3, InterestRate 0.788]
+  , testCase "Read Interest Rate" $ map read ["InterestRate 0.5", "InterestRate 0.3", "InterestRate 0.788"] @?= [InterestRate 0.5, InterestRate 0.3, InterestRate 0.788]
   , testCase "Higher Interest Rate 1" $ returnHigherInterestRate ("John", 0.3) ("Tom", 0.03) @?=
       "'\"John\"' has a higher interest rate!"
   , testCase "Higher Interest Rate 1" $ returnHigherInterestRate (Adult1 "John" "Smith" 15, InterestRate 0.07) (Adult1 "Tom" "Allen" 18, InterestRate 0.1) @?=
