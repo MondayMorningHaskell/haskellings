@@ -187,10 +187,15 @@ findGhc = do
       results <- forM nextDirs $ \subPath -> do
         let fullPath = ghcSearchDir `pathJoin` subPath
         subContents <- safeListDirectory fullPath
-        return $ fmap (pathJoin fullPath) (find (==ghcVersion) subContents)
+        return $ fmap (pathJoin fullPath) (find ghcPred subContents)
       case catMaybes results of
         []       -> return Nothing
         (fp : _) -> return $ Just (fp `pathJoin` "bin" `pathJoin` "ghc")
+
+-- Determine a directory is a valid "ghc" directory.
+-- It must start with "ghc" and end with our version number.
+ghcPred :: FilePath -> Bool
+ghcPred path = isPrefixOf "ghc" (basename path) && isSuffixOf ghcVersionNumber path
 
 findStackPackageDb :: IO (Maybe FilePath)
 findStackPackageDb = do
