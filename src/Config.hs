@@ -19,10 +19,10 @@ import           System.IO
 import           DirectoryUtils
 
 ghcVersion :: String
-ghcVersion = "ghc-8.8.4"
+ghcVersion = "ghc-8.10.4"
 
 ghcVersionNumber :: String
-ghcVersionNumber = "8.8.4"
+ghcVersionNumber = "8.10.4"
 
 projectRootDirName :: String
 projectRootDirName = "haskellings"
@@ -209,8 +209,8 @@ findStackPackageDb = do
         Nothing -> return Nothing
         Just ghcVersionDir -> return $ Just (pkgPathFromGhcPath ghcVersionDir)
 
--- The GHC version path might look like {hash}/8.8.4/lib/x86_64-linux-ghc-8.8.4
--- We want to get the package path, at {hash}/8.8.4/pkgdb
+-- The GHC version path might look like {hash}/8.10.4/lib/x86_64-linux-ghc-8.10.4
+-- We want to get the package path, at {hash}/8.10.4/pkgdb
 pkgPathFromGhcPath :: FilePath -> FilePath
 pkgPathFromGhcPath ghcVersionDir = pathJoin (dropDirectoryLevel (dropDirectoryLevel ghcVersionDir)) "pkgdb"
 
