@@ -2,7 +2,7 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: fpco/stack-build:latest
+      - image: fpco/stack-build:latest-16.16
     steps:
       - checkout
       - restore_cache:
