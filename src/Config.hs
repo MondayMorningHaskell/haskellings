@@ -19,10 +19,10 @@ import           System.IO
 import           DirectoryUtils
 
 ghcVersion :: String
-ghcVersion = "ghc-8.8.4"
+ghcVersion = "ghc-8.10.4"
 
 ghcVersionNumber :: String
-ghcVersionNumber = "8.8.4"
+ghcVersionNumber = "8.10.4"
 
 projectRootDirName :: String
 projectRootDirName = "haskellings"
@@ -187,10 +187,15 @@ findGhc = do
       results <- forM nextDirs $ \subPath -> do
         let fullPath = ghcSearchDir `pathJoin` subPath
         subContents <- safeListDirectory fullPath
-        return $ fmap (pathJoin fullPath) (find (==ghcVersion) subContents)
+        return $ fmap (pathJoin fullPath) (find ghcPred subContents)
       case catMaybes results of
         []       -> return Nothing
         (fp : _) -> return $ Just (fp `pathJoin` "bin" `pathJoin` "ghc")
+
+-- Determine a directory is a valid "ghc" directory.
+-- It must start with "ghc" and end with our version number.
+ghcPred :: FilePath -> Bool
+ghcPred path = isPrefixOf "ghc" (basename path) && isSuffixOf ghcVersionNumber path
 
 findStackPackageDb :: IO (Maybe FilePath)
 findStackPackageDb = do
@@ -204,8 +209,8 @@ findStackPackageDb = do
         Nothing -> return Nothing
         Just ghcVersionDir -> return $ Just (pkgPathFromGhcPath ghcVersionDir)
 
--- The GHC version path might look like {hash}/8.8.4/lib/x86_64-linux-ghc-8.8.4
--- We want to get the package path, at {hash}/8.8.4/pkgdb
+-- The GHC version path might look like {hash}/8.10.4/lib/x86_64-linux-ghc-8.10.4
+-- We want to get the package path, at {hash}/8.10.4/pkgdb
 pkgPathFromGhcPath :: FilePath -> FilePath
 pkgPathFromGhcPath ghcVersionDir = pathJoin (dropDirectoryLevel (dropDirectoryLevel ghcVersionDir)) "pkgdb"
 

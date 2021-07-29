@@ -93,6 +93,8 @@ fpBFSTests testsRoot = testGroup "fpBFS Tests"
       fpBFS pred2 (S.singleton testsRoot) `shouldReturn` Just (testsRoot `pathJoin` actual2)
   , testCase "fpBFS 3" $
       fpBFS pred3 (S.singleton testsRoot) `shouldReturn` Nothing
+  , testCase "fpBFS 4" $
+      fpBFS (return . ghcPred) (S.singleton root3) `shouldReturn` Just (testsRoot `pathJoin` actual3)
   ]
   where
     pred1 fp = return ("ghc-8.8.4" `isSuffixOf` fp)
@@ -100,6 +102,8 @@ fpBFSTests testsRoot = testGroup "fpBFS Tests"
     pred3 fp = return ("ghc-8.3.4" `isSuffixOf` fp)
     actual1 = "directory_tests" `pathJoin` "test1" `pathJoin` "linux-x86_64-ghc-8.8.4"
     actual2 = "directory_tests" `pathJoin` "test2" `pathJoin` "windows-x86_64-ghc-8.6.2"
+    root3   = testsRoot `pathJoin` "directory_tests" `pathJoin` "test3"
+    actual3 = "directory_tests" `pathJoin` "test3" `pathJoin` "ghc-tinfo6-8.10.4"
 
 snapshotPackagePredicateTests :: FilePath -> TestTree
 snapshotPackagePredicateTests testsRoot = testGroup "snapshotPackagePredicate Tests"
@@ -108,6 +112,6 @@ snapshotPackagePredicateTests testsRoot = testGroup "snapshotPackagePredicate Te
   ]
   where
     path1 = testsRoot `pathJoin` "directory_tests" `pathJoin` "package_test" `pathJoin`
-                "hash1" `pathJoin` "8.8.4" `pathJoin` "lib" `pathJoin` "x86_64-linux-ghc-8.8.4"
+                "hash1" `pathJoin` "8.10.4" `pathJoin` "lib" `pathJoin` "x86_64-linux-ghc-8.10.4"
     path2 = testsRoot `pathJoin` "directory_tests" `pathJoin` "package_test" `pathJoin`
-                "hash2" `pathJoin` "8.8.4" `pathJoin` "lib" `pathJoin` "x86_64-linux-ghc-8.8.4"
+                "hash2" `pathJoin` "8.10.4" `pathJoin` "lib" `pathJoin` "x86_64-linux-ghc-8.10.4"
