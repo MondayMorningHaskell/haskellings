@@ -3,11 +3,12 @@
 pkgs.mkShell {
   buildInputs = with pkgs; [ 
     haskell.compiler.ghc8104
+    which
     (import ./default.nix { inherit pkgs compiler; })
   ];
 
   shellHook = ''
-    __GHCPATH=$(echo $(whereis ghc) | sed 's/^....//')
+    __GHCPATH=$(echo $(which ghc))
     echo "ghc_path: $__GHCPATH" > config.yaml 
   '';
 }
