@@ -41,7 +41,7 @@ compileBeforeHook :: (FilePath, FilePath, FilePath) -> ExerciseInfo -> FilePath 
 compileBeforeHook (projectRoot, ghcPath, packageDb) exInfo outFile = do
   let fullFp = projectRoot </> "tests" </> "test_gen" </> outFile
   outHandle <- openFile fullFp WriteMode
-  let conf = ProgramConfig projectRoot ghcPath packageDb "tests/exercises/" stdin outHandle stderr M.empty
+  let conf = ProgramConfig projectRoot ghcPath packageDb ("tests" </> "exercises") stdin outHandle stderr M.empty
   resultExit <- compileAndRunExercise conf exInfo
   hClose outHandle
   programOutput <- readFile fullFp
