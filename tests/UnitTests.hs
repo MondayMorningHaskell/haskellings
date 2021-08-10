@@ -14,11 +14,7 @@ main = do
   currentDir <- getCurrentDirectory
   let testsRoot = findProjectRootBackwards currentDir `pathJoin` "tests"
   defaultMain $ testGroup "Unit Tests"
-    [ basenameTests
-    , dropDirectoryLevelTests
-    , makeRelativeTests
-    , pathJoinTests
-    , searchForDirectoryTests testsRoot
+    [ searchForDirectoryTests testsRoot
     , fpBFSTests testsRoot
     , snapshotPackagePredicateTests testsRoot
     ]
@@ -32,44 +28,6 @@ shouldReturn :: (Show a, Eq a) => IO a -> a -> Assertion
 shouldReturn action expected = do
   actual <- action
   actual @?= expected
-
-basenameTests :: TestTree
-basenameTests = testGroup "basename Tests"
-  [ testCase "Unix case" $ basename "/home/haskellings/src/DirectoryUtils.hs" @?= "DirectoryUtils.hs"
-  , testCase "Unix relative end" $ basename "/home/haskellings/src/DirectoryUtils.hs/" @?= "DirectoryUtils.hs"
-  , testCase "Windows case" $ basename "C:\\home\\haskellings\\src\\DirectoryUtils.hs" @?= "DirectoryUtils.hs"
-  , testCase "Windows relative end" $ basename "C:\\home\\haskellings\\src\\DirectoryUtils.hs\\" @?= "DirectoryUtils.hs"
-  ]
-
-dropDirectoryLevelTests :: TestTree
-dropDirectoryLevelTests = testGroup "dropDirectoryLevel Tests"
-  [ testCase "Simple Unix case" $ dropDirectoryLevel "/home/user/.stack/snapshots/lib/linux-x86_64-ghc-8.8.4" @?= "/home/user/.stack/snapshots/lib"
-  , testCase "Unix relative end" $ dropDirectoryLevel "/home/user/.stack/snapshots/lib/linux-x86_64-ghc-8.8.4/" @?= "/home/user/.stack/snapshots/lib"
-  , testCase "Simple Windows case" $ dropDirectoryLevel "C:\\sr\\snapshots\\778da73\\lib\\windows-x86_64-ghc-8.8.4" @?= "C:\\sr\\snapshots\\778da73\\lib"
-  , testCase "Windows relative end" $ dropDirectoryLevel "C:\\sr\\snapshots\\778da73\\lib\\windows-x86_64-ghc-8.8.4\\" @?= "C:\\sr\\snapshots\\778da73\\lib"
-  ]
-
-makeRelativeTests :: TestTree
-makeRelativeTests = testGroup "makeRelative Tests"
-  [ testCase "Simple Unix case" $ makeRelativeUnix "Lib.hs" @?= "/Lib.hs"
-  , testCase "Compound Unix case" $ makeRelativeUnix "src/Lib.hs" @?= "/src/Lib.hs"
-  , testCase "Unix relative begin" $ makeRelativeUnix "/Lib.hs" @?= "/Lib.hs"
-  , testCase "Simple Windows case" $ makeRelativeWindows "Lib.hs" @?= "\\Lib.hs"
-  , testCase "Compound Windows case" $ makeRelativeWindows "src\\Lib.hs" @?= "\\src\\Lib.hs"
-  , testCase "Windows relative begin" $ makeRelativeWindows "\\Lib.hs" @?= "\\Lib.hs"
-  ]
-
-pathJoinTests :: TestTree
-pathJoinTests = testGroup "pathJoin Tests"
-  [ testCase "Windows non-relative x non-relative" $ pathJoinWindows "C:\\haskellings" "src\\Lib.hs" @?= "C:\\haskellings\\src\\Lib.hs"
-  , testCase "Windows non-relative x relative" $ pathJoinWindows "C:\\haskellings" "\\src\\Lib.hs" @?= "C:\\haskellings\\src\\Lib.hs"
-  , testCase "Windows relative x non-relative" $ pathJoinWindows "C:\\haskellings\\" "src\\Lib.hs" @?= "C:\\haskellings\\src\\Lib.hs"
-  , testCase "Windows relative x relative" $ pathJoinWindows "C:\\haskellings\\" "\\src\\Lib.hs" @?= "C:\\haskellings\\src\\Lib.hs"
-  , testCase "Unix non-relative x non-relative" $ pathJoinUnix "/home/haskellings" "src/Lib.hs" @?= "/home/haskellings/src/Lib.hs"
-  , testCase "Unix non-relative x relative" $ pathJoinUnix "/home/haskellings" "/src/Lib.hs" @?= "/home/haskellings/src/Lib.hs"
-  , testCase "Unix relative x non-relative" $ pathJoinUnix "/home/haskellings/" "src/Lib.hs" @?= "/home/haskellings/src/Lib.hs"
-  , testCase "Unix relative x relative" $ pathJoinUnix "/home/haskellings/" "/src/Lib.hs" @?= "/home/haskellings/src/Lib.hs"
-  ]
 
 -- Make a directory within tests which has a few levels to look through.
 searchForDirectoryTests :: FilePath -> TestTree

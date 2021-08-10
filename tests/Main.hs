@@ -40,7 +40,7 @@ compileBeforeHook :: (FilePath, FilePath, FilePath) -> ExerciseInfo -> FilePath 
 compileBeforeHook (projectRoot, ghcPath, packageDb) exInfo outFile = do
   let fullFp = projectRoot `pathJoin` "tests" `pathJoin` "test_gen" `pathJoin` outFile
   outHandle <- openFile fullFp WriteMode
-  let conf = ProgramConfig projectRoot ghcPath packageDb "/tests/exercises/" stdin outHandle stderr M.empty
+  let conf = ProgramConfig projectRoot ghcPath packageDb "tests/exercises/" stdin outHandle stderr M.empty
   resultExit <- compileAndRunExercise conf exInfo
   hClose outHandle
   programOutput <- readFile fullFp
@@ -255,7 +255,7 @@ beforeWatchHook (projectRoot, ghcPath, stackPackageDb) outFile = do
   removeFile fullDest2
   readFile fullFp
   where
-    testExercisesDir = makeRelative ("tests" `pathJoin` "exercises")
+    testExercisesDir = "tests" `pathJoin` "exercises"
     watcherTypesDir = "tests" `pathJoin` "exercises" `pathJoin` "watcher_types"
     addFullDirectory = pathJoin (projectRoot `pathJoin` watcherTypesDir)
     fullDest1 = addFullDirectory "Types1.hs"

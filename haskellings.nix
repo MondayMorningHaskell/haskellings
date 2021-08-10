@@ -1,5 +1,5 @@
 { mkDerivation, aeson, ansi-terminal, base, containers, directory
-, extra, fsnotify, hspec, HUnit, lib, process, tasty, tasty-hunit
+, extra, filepath, fsnotify, hspec, HUnit, lib, process, tasty, tasty-hunit
 , time, yaml
 }:
 mkDerivation {
@@ -10,7 +10,7 @@ mkDerivation {
   isExecutable = true;
   doCheck = false;
   libraryHaskellDepends = [
-    aeson ansi-terminal base containers directory extra fsnotify
+    aeson ansi-terminal base containers directory extra filepath fsnotify
     process tasty tasty-hunit time yaml
   ];
   executableHaskellDepends = [ base containers extra ];

@@ -39,6 +39,7 @@ library
     , containers
     , directory
     , extra
+    , filepath
     , fsnotify
     , tasty
     , tasty-hunit

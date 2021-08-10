@@ -44,7 +44,7 @@ haskellingsVersion :: String
 haskellingsVersion = "0.8.0.0"
 
 mainProjectExercisesDir :: String
-mainProjectExercisesDir = makeRelative "exercises"
+mainProjectExercisesDir = "exercises"
 
 -- A listing of packages required by exercises, so we can use them
 -- to filter Stack snapshots
