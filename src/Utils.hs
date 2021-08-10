@@ -7,7 +7,7 @@ import           Data.List.Extra
 import           Data.Maybe       (fromJust, isJust)
 import           System.Directory
 import           System.Exit
-import           System.FilePath  (takeBaseName)
+import           System.FilePath  (takeBaseName, (</>))
 import           System.IO
 import           System.Process
 
@@ -56,9 +56,9 @@ createExerciseProcess config (ExerciseInfo exerciseName exDirectory exType _) =
     exIsRunnable = exType /= CompileOnly
     exFilename = haskellFileName exerciseName
     root = projectRoot config
-    fullSourcePath = root `pathJoin` exercisesExt config `pathJoin` exDirectory `pathJoin` exFilename
-    genDirPath = root `pathJoin` "generated_files" `pathJoin` exDirectory
-    genExecutablePath = genDirPath `pathJoin` haskellModuleName exFilename
+    fullSourcePath = root </> exercisesExt config </> exDirectory </> exFilename
+    genDirPath = root </> "generated_files" </> exDirectory
+    genExecutablePath = genDirPath </> haskellModuleName exFilename
     baseArgs = [fullSourcePath, "-odir", genDirPath, "-hidir", genDirPath]
     execArgs = if exIsRunnable then baseArgs ++ ["-o", genExecutablePath] else baseArgs
     finalArgs = execArgs ++ ["-package-db", packageDb config]
@@ -159,4 +159,4 @@ fileContainsNotDone fullFp = do
     isDoneLine l = (upper . filter (not . isSpace) $ l) == "--IAMNOTDONE"
 
 fullExerciseFp :: FilePath -> FilePath -> ExerciseInfo -> FilePath
-fullExerciseFp projectRoot exercisesExt (ExerciseInfo exName exDir _ _) = projectRoot `pathJoin` exercisesExt `pathJoin` exDir `pathJoin` haskellFileName exName
+fullExerciseFp projectRoot exercisesExt (ExerciseInfo exName exDir _ _) = projectRoot </> exercisesExt </> exDir </> haskellFileName exName

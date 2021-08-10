@@ -14,7 +14,7 @@ import           Data.Yaml           (decodeFileEither)
 import           System.Console.ANSI
 import           System.Directory
 import           System.Environment  (lookupEnv)
-import           System.FilePath     (takeDirectory, takeFileName)
+import           System.FilePath     (takeDirectory, takeFileName, (</>))
 import           System.IO
 
 import           DirectoryUtils
@@ -157,7 +157,7 @@ loadBaseConfigPaths = do
 
 loadBaseConfigPathsWithProjectRoot :: FilePath -> IO (Either ConfigError (FilePath, FilePath, FilePath))
 loadBaseConfigPathsWithProjectRoot projectRoot = do
-  let configPath = projectRoot `pathJoin` configFileName
+  let configPath = projectRoot </> configFileName
   configExists <- doesFileExist configPath
   baseConfig <- if configExists
     then do
@@ -186,12 +186,12 @@ findGhc = do
     Just ghcSearchDir -> do
       nextDirs <- listDirectory ghcSearchDir
       results <- forM nextDirs $ \subPath -> do
-        let fullPath = ghcSearchDir `pathJoin` subPath
+        let fullPath = ghcSearchDir </> subPath
         subContents <- safeListDirectory fullPath
-        return $ fmap (pathJoin fullPath) (find ghcPred subContents)
+        return $ fmap ((</>) fullPath) (find ghcPred subContents)
       case catMaybes results of
         []       -> return Nothing
-        (fp : _) -> return $ Just (fp `pathJoin` "bin" `pathJoin` "ghc")
+        (fp : _) -> return $ Just (fp </> "bin" </> "ghc")
 
 -- Determine a directory is a valid "ghc" directory.
 -- It must start with "ghc" and end with our version number.
@@ -213,7 +213,7 @@ findStackPackageDb = do
 -- The GHC version path might look like {hash}/8.10.4/lib/x86_64-linux-ghc-8.10.4
 -- We want to get the package path, at {hash}/8.10.4/pkgdb
 pkgPathFromGhcPath :: FilePath -> FilePath
-pkgPathFromGhcPath ghcVersionDir = pathJoin (takeDirectory (takeDirectory ghcVersionDir)) "pkgdb"
+pkgPathFromGhcPath ghcVersionDir = (takeDirectory (takeDirectory ghcVersionDir)) </> "pkgdb"
 
 snapshotPackagePredicate :: FilePath -> IO Bool
 snapshotPackagePredicate fp = if not (ghcVersion `isSuffixOf` fp)
@@ -242,7 +242,7 @@ findStackSnapshotsDir = if isWindows
 findStackSnapshotsDirUnix :: IO (Maybe FilePath)
 findStackSnapshotsDirUnix = do
   homeDir <- getHomeDirectory
-  let dir = homeDir `pathJoin` ".stack" `pathJoin` "snapshots"
+  let dir = homeDir </> ".stack" </> "snapshots"
   returnIfDirExists dir
 
 findStackSnapshotsDirWindows :: IO (Maybe FilePath)
@@ -250,7 +250,7 @@ findStackSnapshotsDirWindows = do
   dir' <- lookupEnv "STACK_ROOT"
   case dir' of
     Nothing  -> return Nothing
-    Just dir -> returnIfDirExists (dir `pathJoin` "snapshots")
+    Just dir -> returnIfDirExists (dir </> "snapshots")
 
 findGhcSearchDir :: IO (Maybe FilePath)
 findGhcSearchDir = if isWindows
@@ -262,9 +262,9 @@ findGhcSearchDirUnix = do
   isCi <- envIsCi
   homeDir <- if isCi
     -- Unintuitively, "/home" is not the same as "~" on Circle CI
-    then return ("/home" `pathJoin` "stackage")
+    then return ("/home" </> "stackage")
     else getHomeDirectory
-  let dir = homeDir `pathJoin` ".stack" `pathJoin` "programs"
+  let dir = homeDir </> ".stack" </> "programs"
   returnIfDirExists dir
 
 findGhcSearchDirWindows :: IO (Maybe FilePath)
@@ -273,5 +273,5 @@ findGhcSearchDirWindows = do
   case localAppDataDir' of
     Nothing -> return Nothing
     Just localAppDataDir -> do
-      let dir = localAppDataDir `pathJoin` "Programs" `pathJoin` "stack"
+      let dir = localAppDataDir </> "Programs" </> "stack"
       returnIfDirExists dir

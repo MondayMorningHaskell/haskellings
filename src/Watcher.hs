@@ -4,7 +4,7 @@ import           Control.Concurrent
 import           Control.Monad      (forever, unless, void, when)
 import qualified Data.Map           as M
 import           System.Exit
-import           System.FilePath    (takeFileName)
+import           System.FilePath    (takeFileName, (</>))
 import           System.FSNotify
 import           System.IO          (hIsEOF)
 
@@ -51,7 +51,7 @@ runExerciseWatch config (firstEx : restExs) = do
       let conf = defaultConfig { confDebounce = Debounce 1 }
       withManagerConf conf $ \mgr -> do
         signalMVar <- newEmptyMVar
-        stopAction <- watchTree mgr (projectRoot config `pathJoin` exercisesExt config) (shouldCheckFile firstEx)
+        stopAction <- watchTree mgr (projectRoot config </> exercisesExt config) (shouldCheckFile firstEx)
           (processEvent config firstEx signalMVar)
         userInputThread <- forkIO $ forever (watchForUserInput config firstEx)
         takeMVar signalMVar

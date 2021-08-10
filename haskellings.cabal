@@ -72,6 +72,7 @@ test-suite haskellings-tests
       base >=4.7 && <5
     , containers
     , directory
+    , filepath
     , haskellings
     , hspec
     , HUnit

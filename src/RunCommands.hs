@@ -6,6 +6,7 @@ import           Data.List          (maximumBy)
 import qualified Data.Map           as M
 import           Data.Yaml          (encodeFile)
 import           System.Directory
+import           System.FilePath    ((</>))
 import           System.Process
 
 import           Config
@@ -78,7 +79,7 @@ runConfigureWithProjectRoot projectRoot = do
   ghc <- getLine
   putStrLn "Please enter Stack package DB path (or leave blank): "
   stackPath <- getLine
-  let configPath = projectRoot `pathJoin` configFileName
+  let configPath = projectRoot </> configFileName
   alreadyExists <- doesFileExist configPath
   when alreadyExists $ removeFile configPath
   let config = BaseConfig

@@ -11,9 +11,6 @@ import           System.Info       (os)
 isWindows :: Bool
 isWindows = os `notElem` ["linux", "unix", "darwin"]
 
-pathJoin :: FilePath -> FilePath -> FilePath
-pathJoin fp1 fp2 = fp1 </> fp2
-
 returnIfDirExists :: FilePath -> IO (Maybe FilePath)
 returnIfDirExists fp = do
   exists <- doesDirectoryExist fp
@@ -41,7 +38,7 @@ fpBFS predicate searchQueue = case S.viewl searchQueue of
         if currentIsDir
           then do
             contents <- safeListDirectory currentRoot
-            let results = map (pathJoin currentRoot) contents
+            let results = map ((</>) currentRoot) contents
             fpBFS predicate $ rest S.>< S.fromList results
           else fpBFS predicate rest
 
