@@ -4,6 +4,7 @@ import           Control.Concurrent
 import           Control.Monad      (forever, unless, void, when)
 import qualified Data.Map           as M
 import           System.Exit
+import           System.FilePath    (takeFileName)
 import           System.FSNotify
 import           System.IO          (hIsEOF)
 
@@ -16,8 +17,8 @@ watchExercises :: ProgramConfig -> IO ()
 watchExercises config = runExerciseWatch config allExercises
 
 shouldCheckFile :: ExerciseInfo -> Event -> Bool
-shouldCheckFile (ExerciseInfo exName _ _ _) (Added fp _ _) = basename fp == haskellFileName exName
-shouldCheckFile (ExerciseInfo exName _ _ _) (Modified fp _ _) = basename fp == haskellFileName exName
+shouldCheckFile (ExerciseInfo exName _ _ _) (Added fp _ _) = takeFileName fp == haskellFileName exName
+shouldCheckFile (ExerciseInfo exName _ _ _) (Modified fp _ _) = takeFileName fp == haskellFileName exName
 shouldCheckFile _ _ = False
 
 -- This event should be a modification of one of our exercise files

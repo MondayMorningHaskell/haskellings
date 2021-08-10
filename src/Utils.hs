@@ -7,6 +7,7 @@ import           Data.List.Extra
 import           Data.Maybe       (fromJust, isJust)
 import           System.Directory
 import           System.Exit
+import           System.FilePath  (takeBaseName)
 import           System.IO
 import           System.Process
 
@@ -19,7 +20,7 @@ isHaskellFile = isSuffixOf ".hs"
 
 -- Probably a good idea to first check that it is a Haskell file first
 haskellModuleName :: FilePath -> FilePath
-haskellModuleName fp = dropEnd 3 (basename fp)
+haskellModuleName = takeBaseName
 
 haskellFileName :: FilePath -> FilePath
 haskellFileName exName = exName ++ ".hs"

@@ -3,6 +3,7 @@ module Main where
 import           Data.List        (isSuffixOf)
 import qualified Data.Sequence    as S
 import           System.Directory
+import           System.FilePath  (takeDirectory, takeFileName)
 import           Test.Tasty
 import           Test.Tasty.HUnit
 
@@ -20,9 +21,9 @@ main = do
     ]
   where
     findProjectRootBackwards "" = error "Couldn't find project root!"
-    findProjectRootBackwards dir = if basename dir == projectRootDirName || basename dir == ciProjectRootDirName
+    findProjectRootBackwards dir = if takeFileName dir == projectRootDirName || takeFileName dir == ciProjectRootDirName
       then dir
-      else findProjectRootBackwards (dropDirectoryLevel dir)
+      else findProjectRootBackwards (takeDirectory dir)
 
 shouldReturn :: (Show a, Eq a) => IO a -> a -> Assertion
 shouldReturn action expected = do

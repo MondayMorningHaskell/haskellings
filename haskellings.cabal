@@ -88,6 +88,7 @@ test-suite unit-tests
       base >=4.7 && <5
     , containers
     , directory
+    , filepath
     , haskellings
     , tasty
     , tasty-hunit

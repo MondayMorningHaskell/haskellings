@@ -11,13 +11,6 @@ import           System.Info       (os)
 isWindows :: Bool
 isWindows = os `notElem` ["linux", "unix", "darwin"]
 
-basename :: FilePath -> FilePath
-basename = takeFileName
-
--- Like doing "cd .." with this filepath
-dropDirectoryLevel :: FilePath -> FilePath
-dropDirectoryLevel = takeDirectory
-
 pathJoin :: FilePath -> FilePath -> FilePath
 pathJoin fp1 fp2 = fp1 </> fp2
 

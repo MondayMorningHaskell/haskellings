@@ -14,6 +14,7 @@ import           Data.Yaml           (decodeFileEither)
 import           System.Console.ANSI
 import           System.Directory
 import           System.Environment  (lookupEnv)
+import           System.FilePath     (takeDirectory, takeFileName)
 import           System.IO
 
 import           DirectoryUtils
@@ -195,7 +196,7 @@ findGhc = do
 -- Determine a directory is a valid "ghc" directory.
 -- It must start with "ghc" and end with our version number.
 ghcPred :: FilePath -> Bool
-ghcPred path = isPrefixOf "ghc" (basename path) && isSuffixOf ghcVersionNumber path
+ghcPred path = isPrefixOf "ghc" (takeFileName path) && isSuffixOf ghcVersionNumber path
 
 findStackPackageDb :: IO (Maybe FilePath)
 findStackPackageDb = do
@@ -212,7 +213,7 @@ findStackPackageDb = do
 -- The GHC version path might look like {hash}/8.10.4/lib/x86_64-linux-ghc-8.10.4
 -- We want to get the package path, at {hash}/8.10.4/pkgdb
 pkgPathFromGhcPath :: FilePath -> FilePath
-pkgPathFromGhcPath ghcVersionDir = pathJoin (dropDirectoryLevel (dropDirectoryLevel ghcVersionDir)) "pkgdb"
+pkgPathFromGhcPath ghcVersionDir = pathJoin (takeDirectory (takeDirectory ghcVersionDir)) "pkgdb"
 
 snapshotPackagePredicate :: FilePath -> IO Bool
 snapshotPackagePredicate fp = if not (ghcVersion `isSuffixOf` fp)

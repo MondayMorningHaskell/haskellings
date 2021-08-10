@@ -15,7 +15,7 @@ mkDerivation {
   ];
   executableHaskellDepends = [ base containers extra ];
   testHaskellDepends = [
-    base containers directory hspec HUnit tasty tasty-hunit time
+    base containers directory filepath hspec HUnit tasty tasty-hunit time
   ];
   homepage = "https://github.com/MondayMorningHaskell/haskellings#readme";
   license = lib.licenses.bsd3;
