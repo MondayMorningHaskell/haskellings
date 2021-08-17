@@ -4,6 +4,7 @@ import qualified Data.Map           as M
 import           Data.Time
 import           System.Directory
 import           System.Exit
+import           System.FilePath    ((</>))
 import           System.IO
 import           Test.Hspec
 import           Test.HUnit
@@ -21,7 +22,7 @@ main = do
   case loadResult of
     Left _ -> error "Unable to find project root or GHC 8.8.4!"
     Right paths@(root, _, _) -> do
-      createDirectoryIfMissing True (root `pathJoin` "tests" `pathJoin` "test_gen")
+      createDirectoryIfMissing True (root </> "tests" </> "test_gen")
       hspec $ describe "Basic Compile Tests" $ do
         compileTests1 paths
         compileTests2 paths
@@ -38,9 +39,9 @@ main = do
 
 compileBeforeHook :: (FilePath, FilePath, FilePath) -> ExerciseInfo -> FilePath -> IO (String, RunResult)
 compileBeforeHook (projectRoot, ghcPath, packageDb) exInfo outFile = do
-  let fullFp = projectRoot `pathJoin` "tests" `pathJoin` "test_gen" `pathJoin` outFile
+  let fullFp = projectRoot </> "tests" </> "test_gen" </> outFile
   outHandle <- openFile fullFp WriteMode
-  let conf = ProgramConfig projectRoot ghcPath packageDb "/tests/exercises/" stdin outHandle stderr M.empty
+  let conf = ProgramConfig projectRoot ghcPath packageDb ("tests" </> "exercises") stdin outHandle stderr M.empty
   resultExit <- compileAndRunExercise conf exInfo
   hClose outHandle
   programOutput <- readFile fullFp
@@ -237,8 +238,8 @@ beforeWatchHook (projectRoot, ghcPath, stackPackageDb) outFile = do
   copyFile (addFullDirectory "Types1Orig.hs") fullDest1
   copyFile (addFullDirectory "Types2Orig.hs") fullDest2
   -- Build Configuration
-  let fullFp = projectRoot `pathJoin` "tests" `pathJoin` "test_gen" `pathJoin` outFile
-  let fullIn = projectRoot `pathJoin` "tests" `pathJoin` "watcher_tests.in"
+  let fullFp = projectRoot </> "tests" </> "test_gen" </> outFile
+  let fullIn = projectRoot </> "tests" </> "watcher_tests.in"
   outHandle <- openFile fullFp WriteMode
   inHandle <- openFile fullIn ReadMode
   lock1 <- newEmptyMVar
@@ -255,9 +256,9 @@ beforeWatchHook (projectRoot, ghcPath, stackPackageDb) outFile = do
   removeFile fullDest2
   readFile fullFp
   where
-    testExercisesDir = makeRelative ("tests" `pathJoin` "exercises")
-    watcherTypesDir = "tests" `pathJoin` "exercises" `pathJoin` "watcher_types"
-    addFullDirectory = pathJoin (projectRoot `pathJoin` watcherTypesDir)
+    testExercisesDir = "tests" </> "exercises"
+    watcherTypesDir = "tests" </> "exercises" </> "watcher_types"
+    addFullDirectory = (</>) (projectRoot </> watcherTypesDir)
     fullDest1 = addFullDirectory "Types1.hs"
     fullDest2 = addFullDirectory "Types2.hs"
     modifications =
@@ -281,9 +282,9 @@ listTestExercises =
 
 listBeforeHook :: (FilePath, FilePath, FilePath) -> FilePath -> IO String
 listBeforeHook (projectRoot, ghcPath, stackPackageDb) outFile = do
-  let fullFp = projectRoot `pathJoin` "tests" `pathJoin` "test_gen" `pathJoin` outFile
+  let fullFp = projectRoot </> "tests" </> "test_gen" </> outFile
   outHandle <- openFile fullFp WriteMode
-  let conf = ProgramConfig projectRoot ghcPath stackPackageDb ("tests" `pathJoin` "exercises") stdin outHandle stderr M.empty
+  let conf = ProgramConfig projectRoot ghcPath stackPackageDb ("tests" </> "exercises") stdin outHandle stderr M.empty
   listExercises' listTestExercises conf
   hClose outHandle
   readFile fullFp

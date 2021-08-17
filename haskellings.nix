@@ -1,5 +1,5 @@
 { mkDerivation, aeson, ansi-terminal, base, containers, directory
-, extra, fsnotify, hspec, HUnit, lib, process, tasty, tasty-hunit
+, extra, filepath, fsnotify, hspec, HUnit, lib, process, tasty, tasty-hunit
 , time, yaml
 }:
 mkDerivation {
@@ -10,12 +10,12 @@ mkDerivation {
   isExecutable = true;
   doCheck = false;
   libraryHaskellDepends = [
-    aeson ansi-terminal base containers directory extra fsnotify
+    aeson ansi-terminal base containers directory extra filepath fsnotify
     process tasty tasty-hunit time yaml
   ];
   executableHaskellDepends = [ base containers extra ];
   testHaskellDepends = [
-    base containers directory hspec HUnit tasty tasty-hunit time
+    base containers directory filepath hspec HUnit tasty tasty-hunit time
   ];
   homepage = "https://github.com/MondayMorningHaskell/haskellings#readme";
   license = lib.licenses.bsd3;

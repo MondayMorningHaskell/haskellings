@@ -39,6 +39,7 @@ library
     , containers
     , directory
     , extra
+    , filepath
     , fsnotify
     , tasty
     , tasty-hunit
@@ -71,6 +72,7 @@ test-suite haskellings-tests
       base >=4.7 && <5
     , containers
     , directory
+    , filepath
     , haskellings
     , hspec
     , HUnit
@@ -87,6 +89,7 @@ test-suite unit-tests
       base >=4.7 && <5
     , containers
     , directory
+    , filepath
     , haskellings
     , tasty
     , tasty-hunit
