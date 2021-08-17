@@ -188,7 +188,7 @@ findGhc = do
       results <- forM nextDirs $ \subPath -> do
         let fullPath = ghcSearchDir </> subPath
         subContents <- safeListDirectory fullPath
-        return $ fmap ((</>) fullPath) (find ghcPred subContents)
+        return $ fmap (fullPath </>) (find ghcPred subContents)
       case catMaybes results of
         []       -> return Nothing
         (fp : _) -> return $ Just (fp </> "bin" </> "ghc")
@@ -213,7 +213,7 @@ findStackPackageDb = do
 -- The GHC version path might look like {hash}/8.10.4/lib/x86_64-linux-ghc-8.10.4
 -- We want to get the package path, at {hash}/8.10.4/pkgdb
 pkgPathFromGhcPath :: FilePath -> FilePath
-pkgPathFromGhcPath ghcVersionDir = (takeDirectory (takeDirectory ghcVersionDir)) </> "pkgdb"
+pkgPathFromGhcPath ghcVersionDir = takeDirectory (takeDirectory ghcVersionDir) </> "pkgdb"
 
 snapshotPackagePredicate :: FilePath -> IO Bool
 snapshotPackagePredicate fp = if not (ghcVersion `isSuffixOf` fp)

@@ -38,7 +38,7 @@ fpBFS predicate searchQueue = case S.viewl searchQueue of
         if currentIsDir
           then do
             contents <- safeListDirectory currentRoot
-            let results = map ((</>) currentRoot) contents
+            let results = map (currentRoot </>) contents
             fpBFS predicate $ rest S.>< S.fromList results
           else fpBFS predicate rest
 
