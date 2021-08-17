@@ -152,7 +152,7 @@ loadBaseConfigPaths :: IO (Either ConfigError (FilePath, FilePath, FilePath))
 loadBaseConfigPaths = do
   projectRoot' <- findProjectRoot
   case projectRoot' of
-    Nothing -> return (Left NoProjectRootError)
+    Nothing          -> return (Left NoProjectRootError)
     Just projectRoot -> loadBaseConfigPathsWithProjectRoot projectRoot
 
 loadBaseConfigPathsWithProjectRoot :: FilePath -> IO (Either ConfigError (FilePath, FilePath, FilePath))

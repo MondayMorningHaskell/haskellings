@@ -4,8 +4,8 @@ import qualified Data.Map           as M
 import           Data.Time
 import           System.Directory
 import           System.Exit
-import           System.IO
 import           System.FilePath    ((</>))
+import           System.IO
 import           Test.Hspec
 import           Test.HUnit
 

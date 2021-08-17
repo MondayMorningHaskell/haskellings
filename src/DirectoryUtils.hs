@@ -5,7 +5,7 @@ import           Data.List         (dropWhileEnd, isInfixOf, isSuffixOf)
 import           Data.List.Extra   (takeWhileEnd)
 import qualified Data.Sequence     as S
 import           System.Directory
-import           System.FilePath   ((</>), takeFileName, takeDirectory)
+import           System.FilePath   (takeDirectory, takeFileName, (</>))
 import           System.Info       (os)
 
 isWindows :: Bool
