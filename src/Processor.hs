@@ -3,7 +3,7 @@
    running those through System.Process and analyzing
    the results.
 -}
-module Execute where
+module Processor where
 
 import           Control.Monad   (forM_, void, when)
 import           Data.Maybe      (fromJust, isJust)

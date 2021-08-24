@@ -9,8 +9,8 @@ import           Test.Hspec
 import           Test.HUnit
 
 import           DirectoryUtils
-import           Execute
 import           LoadConfig
+import           Processor
 import           RunCommands
 import           Types
 import           Watcher

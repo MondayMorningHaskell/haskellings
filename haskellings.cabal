@@ -25,8 +25,8 @@ library
       DirectoryUtils
       ExerciseList
       ExecutableExercises
-      Execute
       LoadConfig
+      Processor
       RunCommands
       TerminalUtils
       Types

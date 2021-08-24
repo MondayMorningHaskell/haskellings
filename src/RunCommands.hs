@@ -12,9 +12,9 @@ import           System.FilePath    ((</>))
 
 import           Constants
 import           DirectoryUtils
-import           Execute
 import           ExerciseList
 import           LoadConfig
+import           Processor
 import           TerminalUtils
 import           Types
 

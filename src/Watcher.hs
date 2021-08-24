@@ -10,8 +10,8 @@ import           System.FSNotify
 import           System.IO          (hIsEOF)
 
 import           DirectoryUtils
-import           Execute
 import           ExerciseList
+import           Processor
 import           TerminalUtils
 import           Types
 
