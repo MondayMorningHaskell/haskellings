@@ -9,10 +9,10 @@ import           System.IO
 import           Test.Hspec
 import           Test.HUnit
 
-import           Config
 import           DirectoryUtils
 import           Execute
 import           ExerciseList
+import           LoadConfig
 import           RunCommands
 import           Types
 import           Watcher

@@ -10,9 +10,9 @@ import           System.FilePath  (takeBaseName, (</>))
 import           System.IO
 import           System.Process
 
-import           Config
 import           DirectoryUtils
 import           ExerciseList
+import           LoadConfig
 import           TerminalUtils
 import           Types
 

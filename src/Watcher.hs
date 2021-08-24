@@ -8,10 +8,10 @@ import           System.FilePath    (takeFileName, (</>))
 import           System.FSNotify
 import           System.IO          (hIsEOF)
 
-import           Config
 import           DirectoryUtils
 import           Execute
 import           ExerciseList
+import           LoadConfig
 import           TerminalUtils
 import           Types
 

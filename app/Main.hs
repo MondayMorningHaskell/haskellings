@@ -5,8 +5,8 @@ import           Data.Tuple.Extra   (uncurry3)
 import           System.Environment
 import           System.IO
 
-import           Config
 import           Constants
+import           LoadConfig
 import           RunCommands
 import           TerminalUtils
 import           Types

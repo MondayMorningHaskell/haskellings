@@ -21,12 +21,12 @@ source-repository head
 
 library
   exposed-modules:
-      Config
       Constants
       DirectoryUtils
       ExerciseList
       ExecutableExercises
       Execute
+      LoadConfig
       RunCommands
       TerminalUtils
       Types

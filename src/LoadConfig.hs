@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Config where
+module LoadConfig where
 
 import           Control.Concurrent (MVar, putMVar, takeMVar)
 import           Control.Monad      (forM)

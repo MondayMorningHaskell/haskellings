@@ -9,11 +9,11 @@ import           System.Directory
 import           System.FilePath    ((</>))
 import           System.Process
 
-import           Config
 import           Constants
 import           DirectoryUtils
 import           Execute
 import           ExerciseList
+import           LoadConfig
 import           TerminalUtils
 import           Types
 
