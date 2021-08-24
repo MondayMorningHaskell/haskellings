@@ -8,7 +8,9 @@ import           Test.Tasty
 import           Test.Tasty.HUnit
 
 import           Config
+import           Constants
 import           DirectoryUtils
+import           Types
 
 main :: IO ()
 main = do

@@ -13,6 +13,7 @@ import           Config
 import           Constants
 import           DirectoryUtils
 import           ExerciseList
+import           Types
 import           Utils
 
 runExercise :: ProgramConfig -> String -> IO ()

@@ -8,6 +8,7 @@ import           System.IO
 import           Config
 import           Constants
 import           RunCommands
+import           Types
 import           Watcher
 
 main :: IO ()

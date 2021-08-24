@@ -28,6 +28,7 @@ library
       ExecutableExercises
       RunCommands
       Utils
+      Types
       Watcher
   other-modules:
       Paths_haskellings

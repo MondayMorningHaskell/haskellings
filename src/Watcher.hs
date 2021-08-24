@@ -11,6 +11,7 @@ import           System.IO          (hIsEOF)
 import           Config
 import           DirectoryUtils
 import           ExerciseList
+import           Types
 import           Utils
 
 watchExercises :: ProgramConfig -> IO ()

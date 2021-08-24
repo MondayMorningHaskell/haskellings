@@ -19,11 +19,7 @@ import           System.IO
 
 import           Constants
 import           DirectoryUtils
-
-data ConfigError = NoProjectRootError | NoGhcError | NoStackPackageDbError
-  deriving (Show)
-
-type FileLockMap = M.Map FilePath (MVar ())
+import           Types
 
 withFileLock :: FilePath -> ProgramConfig -> IO a -> IO a
 withFileLock fp config action = case M.lookup fp (fileLocks config) of
@@ -33,34 +29,6 @@ withFileLock fp config action = case M.lookup fp (fileLocks config) of
     result <- action
     takeMVar lock
     return result
-
-data BaseConfig = BaseConfig
-  { baseConfigGhcPath   :: Maybe FilePath
-  , baseConfigStackPath :: Maybe FilePath
-  }
-
-instance ToJSON BaseConfig where
-  toJSON (BaseConfig ghc stackPackageDb) = object
-    [ "ghc_path" .= ghc
-    , "stack_package_db_path" .= stackPackageDb
-    ]
-
-instance FromJSON BaseConfig where
-  parseJSON = withObject "BaseConfig" $ \o -> do
-    ghc <- o .:? "ghc_path"
-    stackPackageDb <- o .:? "stack_package_db_path"
-    return $ BaseConfig ghc stackPackageDb
-
-data ProgramConfig = ProgramConfig
-  { projectRoot  :: FilePath
-  , ghcPath      :: FilePath
-  , packageDb    :: FilePath
-  , exercisesExt :: FilePath
-  , inHandle     :: Handle
-  , outHandle    :: Handle
-  , errHandle    :: Handle
-  , fileLocks    :: FileLockMap
-  }
 
 progPutStr :: ProgramConfig -> String -> IO ()
 progPutStr pc = hPutStr (outHandle pc)

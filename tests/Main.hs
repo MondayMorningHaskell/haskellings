@@ -13,6 +13,7 @@ import           Config
 import           DirectoryUtils
 import           ExerciseList
 import           RunCommands
+import           Types
 import           Utils
 import           Watcher
 
