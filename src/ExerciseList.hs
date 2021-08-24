@@ -1,3 +1,4 @@
+{- Definitive list of exercises in Haskellings -}
 module ExerciseList where
 
 import qualified Data.Map            as M

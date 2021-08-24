@@ -1,3 +1,8 @@
+{- Functions for compiling and executing exercises.
+   Largely centered around constructing GHC commands,
+   running those through System.Process and analyzing
+   the results.
+-}
 module Execute where
 
 import           Control.Monad   (forM_, void, when)

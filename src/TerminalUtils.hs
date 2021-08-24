@@ -1,3 +1,6 @@
+{- Utility functions for printing to the terminal.
+   Deal with different kinds of Handles, adds color.
+-}
 module TerminalUtils where
 
 import           System.Console.ANSI

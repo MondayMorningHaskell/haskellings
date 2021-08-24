@@ -1,3 +1,6 @@
+{- Lists inputs and output predicates for
+   executable exercises.
+-}
 module ExecutableExercises where
 
 import           Data.List (isPrefixOf)

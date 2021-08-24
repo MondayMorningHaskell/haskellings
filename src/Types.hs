@@ -1,3 +1,4 @@
+{- Core types for project. -}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Types where

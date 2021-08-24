@@ -1,3 +1,5 @@
+{- Utility functions for manipulating filepaths and directories.
+-}
 module DirectoryUtils where
 
 import           Control.Concurrent
@@ -62,6 +64,8 @@ returnIfDirExists fp = do
   if exists
     then return (Just fp)
     else return Nothing
+
+---------- Directory Search Functions ----------
 
 searchForDirectoryContaining :: FilePath -> String -> IO (Maybe FilePath)
 searchForDirectoryContaining searchRoot directoryToFind = fpBFS predicate (S.singleton searchRoot)

@@ -1,3 +1,6 @@
+{- Core wrapper functions for each commands,
+   e.g. 'run', 'exec', 'hint', 'watch', 'list
+-}
 module RunCommands where
 
 import           Control.Concurrent (threadDelay)

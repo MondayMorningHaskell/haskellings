@@ -1,3 +1,6 @@
+{- Constants used throughout the program,
+   often related to configuration.
+-}
 module Constants where
 
 import           Data.Maybe

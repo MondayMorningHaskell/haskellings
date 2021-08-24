@@ -1,3 +1,6 @@
+{- Handles the "Watcher", which reruns exercises automatically
+   whenever a file changes.
+-}
 module Watcher where
 
 import           Control.Concurrent

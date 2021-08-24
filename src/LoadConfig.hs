@@ -1,3 +1,6 @@
+{- Functions related to loading project configuration,
+   including GHC Path, Stack package path, etc.
+-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module LoadConfig where
