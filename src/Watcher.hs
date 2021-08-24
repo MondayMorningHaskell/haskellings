@@ -56,7 +56,7 @@ runExerciseWatch (firstEx : restExs) = do
       liftIO $ withManagerConf conf $ \mgr -> do
         signalMVar <- newEmptyMVar
         stopAction <- watchTree mgr (projectRoot config </> exercisesExt config) (shouldCheckFile firstEx)
-          (\e -> runReaderT (processEvent firstEx signalMVar e) config)
+          (\event -> runReaderT (processEvent firstEx signalMVar event) config)
         userInputThread <- forkIO $ forever (watchForUserInput config firstEx)
         takeMVar signalMVar
         stopAction

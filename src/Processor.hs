@@ -16,29 +16,21 @@ import           DirectoryUtils
 import           TerminalUtils
 import           Types
 
--- Specialized to run in any monad IO
-createProcess' :: (MonadIO m) =>
-  CreateProcess -> m (Maybe Handle, Maybe Handle, Maybe Handle, ProcessHandle)
-createProcess' = liftIO . createProcess
-
-waitForProcess' :: (MonadIO m) => ProcessHandle -> m ExitCode
-waitForProcess' = liftIO . waitForProcess
-
 executeExercise :: ExerciseInfo -> ReaderT ProgramConfig IO ()
 executeExercise exInfo@(ExerciseInfo exerciseName _ _ _) = do
   config <- ask
   let (processSpec, genDirPath, genExecutablePath, exFilename) = createExerciseProcess config exInfo
   withDirectory genDirPath $ do
-    (_, _, procStdErr, procHandle) <- createProcess' (processSpec { std_out = CreatePipe, std_err = CreatePipe })
-    exitCode <- waitForProcess' procHandle
+    (_, _, procStdErr, procHandle) <- lift $ createProcess (processSpec { std_out = CreatePipe, std_err = CreatePipe })
+    exitCode <- lift $ waitForProcess procHandle
     case exitCode of
       ExitFailure code -> void $ onCompileFailure exFilename procStdErr
       ExitSuccess -> do
         progPutStrLnSuccess $ "Successfully compiled: " ++ exFilename
         progPutStrLn $ "----- Executing file: " ++ exFilename ++ " -----"
         let execSpec = shell genExecutablePath
-        (_, _, _, execProcHandle) <- createProcess' execSpec
-        void $ waitForProcess' execProcHandle
+        (_, _, _, execProcHandle) <- lift $ createProcess execSpec
+        void $ lift $ waitForProcess execProcHandle
 
 -- Produces 3 Elements for running our exercise:
 -- 1. The 'CreateProcess' that we can run for the compilation.
@@ -70,8 +62,8 @@ onCompileFailure exFilename errHandle = withTerminalFailure $ do
 runUnitTestExercise :: FilePath -> String -> ReaderT ProgramConfig IO RunResult
 runUnitTestExercise genExecutablePath exFilename = do
   let execSpec = shell genExecutablePath
-  (_, execStdOut, execStdErr, execProcHandle) <- createProcess' (execSpec { std_out = CreatePipe, std_err = CreatePipe })
-  execExit <- waitForProcess' execProcHandle
+  (_, execStdOut, execStdErr, execProcHandle) <- lift $ createProcess (execSpec { std_out = CreatePipe, std_err = CreatePipe })
+  execExit <- lift $ waitForProcess execProcHandle
   case execExit of
     ExitFailure code -> withTerminalFailure $ do
       progPutStrLn $ "Tests failed on exercise : " ++ exFilename
@@ -94,10 +86,10 @@ runExecutableExercise
   -> ReaderT ProgramConfig IO RunResult
 runExecutableExercise genExecutablePath exFilename inputs outputPred = do
   let execSpec = shell genExecutablePath
-  (execStdIn, execStdOut, execStdErr, execProcHandle) <- createProcess'
+  (execStdIn, execStdOut, execStdErr, execProcHandle) <- lift $ createProcess
     (execSpec { std_out = CreatePipe, std_err = CreatePipe, std_in = CreatePipe })
   when (isJust execStdIn) $ forM_ inputs $ \i -> lift $ hPutStrLn (fromJust execStdIn) i
-  execExit <- waitForProcess' execProcHandle
+  execExit <- lift $ waitForProcess execProcHandle
   case execExit of
     ExitFailure code -> withTerminalFailure $ do
       progPutStrLn $ "Encountered error running exercise: " ++ exFilename
@@ -130,8 +122,8 @@ compileAndRunExercise exInfo@(ExerciseInfo exerciseName exDirectory exType _) = 
   config <- ask
   let (processSpec, genDirPath, genExecutablePath, exFilename) = createExerciseProcess config exInfo
   withDirectory genDirPath $ do
-    (_, _, procStdErr, procHandle) <- createProcess' (processSpec { std_out = CreatePipe, std_err = CreatePipe })
-    exitCode <- waitForProcess' procHandle
+    (_, _, procStdErr, procHandle) <- lift $ createProcess (processSpec { std_out = CreatePipe, std_err = CreatePipe })
+    exitCode <- lift $ waitForProcess procHandle
     case exitCode of
       ExitFailure code -> onCompileFailure exFilename procStdErr
       ExitSuccess -> do
