@@ -2,22 +2,17 @@
 
 module LoadConfig where
 
-import           Control.Concurrent (MVar, putMVar, takeMVar)
 import           Control.Monad      (forM)
-import           Data.Aeson
-import           Data.List          (all, any, find, isPrefixOf, isSuffixOf)
-import qualified Data.Map           as M
-import           Data.Maybe         (catMaybes, isJust)
+import           Data.List          (find, isPrefixOf, isSuffixOf)
+import           Data.Maybe         (catMaybes)
 import qualified Data.Sequence      as S
 import           Data.Yaml          (decodeFileEither)
 import           System.Directory
 import           System.Environment (lookupEnv)
 import           System.FilePath    (takeDirectory, takeFileName, (</>))
-import           System.IO
 
 import           Constants
 import           DirectoryUtils
-import           TerminalUtils
 import           Types
 
 loadBaseConfigPaths :: IO (Either ConfigError (FilePath, FilePath, FilePath))

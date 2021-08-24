@@ -1,13 +1,11 @@
 module RunCommands where
 
 import           Control.Concurrent (threadDelay)
-import           Control.Monad      (forM, forM_, mapM_, when)
-import           Data.List          (maximumBy)
+import           Control.Monad      (forM_, when)
 import qualified Data.Map           as M
 import           Data.Yaml          (encodeFile)
 import           System.Directory
 import           System.FilePath    ((</>))
-import           System.Process
 
 import           Constants
 import           DirectoryUtils

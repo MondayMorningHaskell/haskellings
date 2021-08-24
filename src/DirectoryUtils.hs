@@ -1,15 +1,14 @@
 module DirectoryUtils where
 
 import           Control.Concurrent
-import           Control.Exception  (Exception, catch)
+import           Control.Exception  (catch)
 import           Data.Char
-import           Data.List          (dropWhileEnd, isInfixOf, isSuffixOf)
-import           Data.List.Extra    (takeWhileEnd, upper)
+import           Data.List          (isSuffixOf)
+import           Data.List.Extra    (upper)
 import qualified Data.Map           as M
 import qualified Data.Sequence      as S
 import           System.Directory
-import           System.FilePath    (takeBaseName, takeDirectory, takeFileName,
-                                     (</>))
+import           System.FilePath    (takeBaseName, takeFileName, (</>))
 import           System.Info        (os)
 
 import           Types

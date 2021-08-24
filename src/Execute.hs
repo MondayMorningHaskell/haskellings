@@ -1,18 +1,13 @@
 module Execute where
 
-import           Control.Monad    (forM_, void, when)
-import           Data.List
-import           Data.List.Extra
-import           Data.Maybe       (fromJust, isJust)
-import           System.Directory
+import           Control.Monad   (forM_, void, when)
+import           Data.Maybe      (fromJust, isJust)
 import           System.Exit
-import           System.FilePath  (takeBaseName, (</>))
+import           System.FilePath ((</>))
 import           System.IO
 import           System.Process
 
 import           DirectoryUtils
-import           ExerciseList
-import           LoadConfig
 import           TerminalUtils
 import           Types
 
