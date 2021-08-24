@@ -2,23 +2,22 @@
 
 module Config where
 
-
-import           Control.Concurrent  (MVar, putMVar, takeMVar)
-import           Control.Monad       (forM)
+import           Control.Concurrent (MVar, putMVar, takeMVar)
+import           Control.Monad      (forM)
 import           Data.Aeson
-import           Data.List           (all, any, find, isPrefixOf, isSuffixOf)
-import qualified Data.Map            as M
-import           Data.Maybe          (catMaybes, isJust)
-import qualified Data.Sequence       as S
-import           Data.Yaml           (decodeFileEither)
-import           System.Console.ANSI
+import           Data.List          (all, any, find, isPrefixOf, isSuffixOf)
+import qualified Data.Map           as M
+import           Data.Maybe         (catMaybes, isJust)
+import qualified Data.Sequence      as S
+import           Data.Yaml          (decodeFileEither)
 import           System.Directory
-import           System.Environment  (lookupEnv)
-import           System.FilePath     (takeDirectory, takeFileName, (</>))
+import           System.Environment (lookupEnv)
+import           System.FilePath    (takeDirectory, takeFileName, (</>))
 import           System.IO
 
 import           Constants
 import           DirectoryUtils
+import           TerminalUtils
 import           Types
 
 withFileLock :: FilePath -> ProgramConfig -> IO a -> IO a
@@ -29,48 +28,6 @@ withFileLock fp config action = case M.lookup fp (fileLocks config) of
     result <- action
     takeMVar lock
     return result
-
-progPutStr :: ProgramConfig -> String -> IO ()
-progPutStr pc = hPutStr (outHandle pc)
-
-progPutStrLn :: ProgramConfig -> String -> IO ()
-progPutStrLn pc = hPutStrLn (outHandle pc)
-
-progPrint :: (Show a) => ProgramConfig -> a -> IO ()
-progPrint pc = hPrint (outHandle pc)
-
-progPutStrErr :: ProgramConfig -> String -> IO ()
-progPutStrErr pc = hPutStrLn (errHandle pc)
-
-progPrintErr :: (Show a) => ProgramConfig -> a -> IO ()
-progPrintErr pc = hPrint (errHandle pc)
-
-progReadLine :: ProgramConfig -> IO String
-progReadLine pc = hGetLine (inHandle pc)
-
--- Perform an action with 'Green' Terminal Text
-withTerminalSuccess :: IO a -> IO a
-withTerminalSuccess = withTerminalColor Green
-
--- Perform an action with 'Red' Terminal Text
-withTerminalFailure :: IO a -> IO a
-withTerminalFailure = withTerminalColor Red
-
--- Perform an action with printed output given a color.
-withTerminalColor :: Color -> IO a -> IO a
-withTerminalColor color action = do
-  setSGR [SetColor Foreground Vivid color]
-  res <- action
-  setSGR [Reset]
-  return res
-
--- Print a line, but in Green
-progPutStrLnSuccess :: ProgramConfig -> String -> IO ()
-progPutStrLnSuccess pc output = withTerminalSuccess (progPutStrLn pc output)
-
--- Print a line, but in Red
-progPutStrLnFailure :: ProgramConfig -> String -> IO ()
-progPutStrLnFailure pc output = withTerminalFailure (progPutStrLn pc output)
 
 -- Create a directory. Run the action depending on that directory,
 -- and then clean the directory up.

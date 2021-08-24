@@ -28,6 +28,7 @@ library
       ExecutableExercises
       RunCommands
       Utils
+      TerminalUtils
       Types
       Watcher
   other-modules:

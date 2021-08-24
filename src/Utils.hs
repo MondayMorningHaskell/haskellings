@@ -14,6 +14,7 @@ import           System.Process
 import           Config
 import           DirectoryUtils
 import           ExerciseList
+import           TerminalUtils
 import           Types
 
 isHaskellFile :: FilePath -> Bool
