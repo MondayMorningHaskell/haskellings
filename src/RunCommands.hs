@@ -1,18 +1,22 @@
+{- Core wrapper functions for each commands,
+   e.g. 'run', 'exec', 'hint', 'watch', 'list
+-}
 module RunCommands where
 
 import           Control.Concurrent (threadDelay)
-import           Control.Monad      (forM, forM_, mapM_, when)
-import           Data.List          (maximumBy)
+import           Control.Monad      (forM_, when)
 import qualified Data.Map           as M
 import           Data.Yaml          (encodeFile)
 import           System.Directory
 import           System.FilePath    ((</>))
-import           System.Process
 
-import           Config
+import           Constants
 import           DirectoryUtils
 import           ExerciseList
-import           Utils
+import           LoadConfig
+import           Processor
+import           TerminalUtils
+import           Types
 
 runExercise :: ProgramConfig -> String -> IO ()
 runExercise config exerciseName = case M.lookup exerciseName allExercisesMap of

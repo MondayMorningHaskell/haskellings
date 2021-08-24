@@ -1,15 +1,62 @@
+{- Utility functions for manipulating filepaths and directories.
+-}
 module DirectoryUtils where
 
-import           Control.Exception (Exception, catch)
-import           Data.List         (dropWhileEnd, isInfixOf, isSuffixOf)
-import           Data.List.Extra   (takeWhileEnd)
-import qualified Data.Sequence     as S
+import           Control.Concurrent
+import           Control.Exception  (catch)
+import           Data.Char
+import           Data.List          (isSuffixOf)
+import           Data.List.Extra    (upper)
+import qualified Data.Map           as M
+import qualified Data.Sequence      as S
 import           System.Directory
-import           System.FilePath   (takeDirectory, takeFileName, (</>))
-import           System.Info       (os)
+import           System.FilePath    (takeBaseName, takeFileName, (</>))
+import           System.Info        (os)
+
+import           Types
 
 isWindows :: Bool
 isWindows = os `notElem` ["linux", "unix", "darwin"]
+
+isHaskellFile :: FilePath -> Bool
+isHaskellFile = isSuffixOf ".hs"
+
+-- Probably a good idea to first check that it is a Haskell file first
+haskellModuleName :: FilePath -> FilePath
+haskellModuleName = takeBaseName
+
+haskellFileName :: FilePath -> FilePath
+haskellFileName exName = exName ++ ".hs"
+
+fileContainsNotDone :: FilePath -> IO Bool
+fileContainsNotDone fullFp = do
+  fileLines <- lines <$> readFile fullFp
+  return (any isDoneLine fileLines)
+  where
+    isDoneLine :: String -> Bool
+    isDoneLine l = (upper . filter (not . isSpace) $ l) == "--IAMNOTDONE"
+
+fullExerciseFp :: FilePath -> FilePath -> ExerciseInfo -> FilePath
+fullExerciseFp projectRoot exercisesExt (ExerciseInfo exName exDir _ _) =
+  projectRoot </> exercisesExt </> exDir </> haskellFileName exName
+
+withFileLock :: FilePath -> ProgramConfig -> IO a -> IO a
+withFileLock fp config action = case M.lookup fp (fileLocks config) of
+  Nothing -> action
+  Just lock -> do
+    putMVar lock ()
+    result <- action
+    takeMVar lock
+    return result
+
+-- Create a directory. Run the action depending on that directory,
+-- and then clean the directory up.
+withDirectory :: FilePath -> IO a -> IO a
+withDirectory dirPath action = do
+  createDirectoryIfMissing True dirPath
+  res <- action
+  removeDirectoryRecursive dirPath
+  return res
 
 returnIfDirExists :: FilePath -> IO (Maybe FilePath)
 returnIfDirExists fp = do
@@ -17,6 +64,8 @@ returnIfDirExists fp = do
   if exists
     then return (Just fp)
     else return Nothing
+
+---------- Directory Search Functions ----------
 
 searchForDirectoryContaining :: FilePath -> String -> IO (Maybe FilePath)
 searchForDirectoryContaining searchRoot directoryToFind = fpBFS predicate (S.singleton searchRoot)

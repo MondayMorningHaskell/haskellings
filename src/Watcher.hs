@@ -1,17 +1,19 @@
+{- Handles the "Watcher", which reruns exercises automatically
+   whenever a file changes.
+-}
 module Watcher where
 
 import           Control.Concurrent
-import           Control.Monad      (forever, unless, void, when)
-import qualified Data.Map           as M
-import           System.Exit
+import           Control.Monad      (forever, void, when)
 import           System.FilePath    (takeFileName, (</>))
 import           System.FSNotify
 import           System.IO          (hIsEOF)
 
-import           Config
 import           DirectoryUtils
 import           ExerciseList
-import           Utils
+import           Processor
+import           TerminalUtils
+import           Types
 
 watchExercises :: ProgramConfig -> IO ()
 watchExercises config = runExerciseWatch config allExercises
