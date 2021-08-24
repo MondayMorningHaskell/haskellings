@@ -1,7 +1,6 @@
 module Execute where
 
 import           Control.Monad    (forM_, void, when)
-import           Data.Char
 import           Data.List
 import           Data.List.Extra
 import           Data.Maybe       (fromJust, isJust)
@@ -16,20 +15,6 @@ import           DirectoryUtils
 import           ExerciseList
 import           TerminalUtils
 import           Types
-
-isHaskellFile :: FilePath -> Bool
-isHaskellFile = isSuffixOf ".hs"
-
--- Probably a good idea to first check that it is a Haskell file first
-haskellModuleName :: FilePath -> FilePath
-haskellModuleName = takeBaseName
-
-haskellFileName :: FilePath -> FilePath
-haskellFileName exName = exName ++ ".hs"
-
-data RunResult =
-  CompileError | TestFailed | RunSuccess
-  deriving (Show, Eq)
 
 executeExercise :: ProgramConfig -> ExerciseInfo -> IO ()
 executeExercise config exInfo@(ExerciseInfo exerciseName _ _ _) = do
@@ -151,14 +136,3 @@ compileAndRunExercise config exInfo@(ExerciseInfo exerciseName exDirectory exTyp
 
 compileAndRunExercise_ :: ProgramConfig -> ExerciseInfo -> IO ()
 compileAndRunExercise_ config ex = void $ compileAndRunExercise config ex
-
-fileContainsNotDone :: FilePath -> IO Bool
-fileContainsNotDone fullFp = do
-  fileLines <- lines <$> readFile fullFp
-  return (any isDoneLine fileLines)
-  where
-    isDoneLine :: String -> Bool
-    isDoneLine l = (upper . filter (not . isSpace) $ l) == "--IAMNOTDONE"
-
-fullExerciseFp :: FilePath -> FilePath -> ExerciseInfo -> FilePath
-fullExerciseFp projectRoot exercisesExt (ExerciseInfo exName exDir _ _) = projectRoot </> exercisesExt </> exDir </> haskellFileName exName

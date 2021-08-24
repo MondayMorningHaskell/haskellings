@@ -20,24 +20,6 @@ import           DirectoryUtils
 import           TerminalUtils
 import           Types
 
-withFileLock :: FilePath -> ProgramConfig -> IO a -> IO a
-withFileLock fp config action = case M.lookup fp (fileLocks config) of
-  Nothing -> action
-  Just lock -> do
-    putMVar lock ()
-    result <- action
-    takeMVar lock
-    return result
-
--- Create a directory. Run the action depending on that directory,
--- and then clean the directory up.
-withDirectory :: FilePath -> IO a -> IO a
-withDirectory dirPath action = do
-  createDirectoryIfMissing True dirPath
-  res <- action
-  removeDirectoryRecursive dirPath
-  return res
-
 loadBaseConfigPaths :: IO (Either ConfigError (FilePath, FilePath, FilePath))
 loadBaseConfigPaths = do
   projectRoot' <- findProjectRoot
