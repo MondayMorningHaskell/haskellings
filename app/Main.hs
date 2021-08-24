@@ -6,6 +6,7 @@ import           System.Environment
 import           System.IO
 
 import           Config
+import           Constants
 import           RunCommands
 import           Watcher
 

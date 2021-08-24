@@ -10,6 +10,7 @@ import           System.FilePath    ((</>))
 import           System.Process
 
 import           Config
+import           Constants
 import           DirectoryUtils
 import           ExerciseList
 import           Utils
