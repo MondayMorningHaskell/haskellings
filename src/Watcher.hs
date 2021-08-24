@@ -10,10 +10,10 @@ import           System.IO          (hIsEOF)
 
 import           Config
 import           DirectoryUtils
+import           Execute
 import           ExerciseList
 import           TerminalUtils
 import           Types
-import           Utils
 
 watchExercises :: ProgramConfig -> IO ()
 watchExercises config = runExerciseWatch config allExercises

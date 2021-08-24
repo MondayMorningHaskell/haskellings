@@ -26,8 +26,8 @@ library
       DirectoryUtils
       ExerciseList
       ExecutableExercises
+      Execute
       RunCommands
-      Utils
       TerminalUtils
       Types
       Watcher

@@ -12,10 +12,10 @@ import           System.Process
 import           Config
 import           Constants
 import           DirectoryUtils
+import           Execute
 import           ExerciseList
 import           TerminalUtils
 import           Types
-import           Utils
 
 runExercise :: ProgramConfig -> String -> IO ()
 runExercise config exerciseName = case M.lookup exerciseName allExercisesMap of

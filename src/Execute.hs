@@ -1,4 +1,4 @@
-module Utils where
+module Execute where
 
 import           Control.Monad    (forM_, void, when)
 import           Data.Char

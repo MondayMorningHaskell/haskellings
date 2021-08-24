@@ -11,10 +11,10 @@ import           Test.HUnit
 
 import           Config
 import           DirectoryUtils
+import           Execute
 import           ExerciseList
 import           RunCommands
 import           Types
-import           Utils
 import           Watcher
 
 main :: IO ()
