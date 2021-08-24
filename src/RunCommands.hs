@@ -3,12 +3,12 @@
 -}
 module RunCommands where
 
-import           Control.Concurrent (threadDelay)
-import           Control.Monad      (forM_, when)
-import qualified Data.Map           as M
-import           Data.Yaml          (encodeFile)
+import           Control.Concurrent   (threadDelay)
+import           Control.Monad.Reader
+import qualified Data.Map             as M
+import           Data.Yaml            (encodeFile)
 import           System.Directory
-import           System.FilePath    ((</>))
+import           System.FilePath      ((</>))
 
 import           Constants
 import           DirectoryUtils
@@ -18,45 +18,46 @@ import           Processor
 import           TerminalUtils
 import           Types
 
-runExercise :: ProgramConfig -> String -> IO ()
-runExercise config exerciseName = case M.lookup exerciseName allExercisesMap of
-  Nothing -> progPutStrLn config $ "Could not find exercise: " ++ exerciseName ++ "!"
-  Just exInfo -> compileAndRunExercise_ config exInfo
+runExercise :: String -> ReaderT ProgramConfig IO ()
+runExercise exerciseName = case M.lookup exerciseName allExercisesMap of
+  Nothing -> progPutStrLn $ "Could not find exercise: " ++ exerciseName ++ "!"
+  Just exInfo -> compileAndRunExercise_ exInfo
 
-execExercise :: ProgramConfig -> String -> IO ()
-execExercise config exerciseName = case M.lookup exerciseName allExercisesMap of
-  Nothing -> progPutStrLn config $ "Could not find exercise: " ++ exerciseName ++ "!"
-  Just exInfo@(ExerciseInfo _ _ (Executable _ _) _) -> executeExercise config exInfo
-  _ -> progPutStrLn config $ "Exercise " ++ exerciseName ++ " is not executable!"
+execExercise :: String -> ReaderT ProgramConfig IO ()
+execExercise exerciseName = case M.lookup exerciseName allExercisesMap of
+  Nothing -> progPutStrLn $ "Could not find exercise: " ++ exerciseName ++ "!"
+  Just exInfo@(ExerciseInfo _ _ (Executable _ _) _) -> executeExercise exInfo
+  _ -> progPutStrLn $ "Exercise " ++ exerciseName ++ " is not executable!"
 
-hintExercise :: ProgramConfig -> String -> IO ()
-hintExercise config exerciseName = case M.lookup exerciseName allExercisesMap of
-  Nothing -> progPutStrLn config $ "Could not find exercise: " ++ exerciseName ++ "!"
-  Just exInfo -> progPutStrLn config (exerciseHint exInfo)
+hintExercise :: String -> ReaderT ProgramConfig IO ()
+hintExercise exerciseName = case M.lookup exerciseName allExercisesMap of
+  Nothing -> progPutStrLn $ "Could not find exercise: " ++ exerciseName ++ "!"
+  Just exInfo -> progPutStrLn (exerciseHint exInfo)
 
-listExercises :: ProgramConfig -> IO ()
+listExercises :: ReaderT ProgramConfig IO ()
 listExercises = listExercises' allExercises
 
 -- Separated for testability
-listExercises' :: [ExerciseInfo] -> ProgramConfig -> IO ()
-listExercises' [] config = progPutStrLn config "No exercises!"
-listExercises' exercises config = do
-  progPutStrLn config "Listing exercises...(must remove \"I AM NOT DONE\" comment to indicate as done)"
-  threadDelay 2000000
+listExercises' :: [ExerciseInfo] -> ReaderT ProgramConfig IO ()
+listExercises' [] = progPutStrLn "No exercises!"
+listExercises' exercises = do
+  config <- ask
+  progPutStrLn "Listing exercises...(must remove \"I AM NOT DONE\" comment to indicate as done)"
+  lift $ threadDelay 2000000
   let maxNameSize = maximum (length . exerciseName <$> exercises)
   forM_ (zip [1..] exercises) $ \(i, exInfo) -> do
     let fullFp = fullExerciseFp (projectRoot config) (exercisesExt config) exInfo
     let name = exerciseName exInfo
-    isNotDone <- fileContainsNotDone fullFp
+    isNotDone <- lift $ fileContainsNotDone fullFp
     let printNameAndDots = do
-          when (i < 10) (progPutStr config " ")
-          progPutStr config (show i)
-          progPutStr config ": "
-          progPutStr config name
-          progPutStr config $ replicate (maxNameSize - length name) '.'
+          when (i < 10) (progPutStr " ")
+          progPutStr (show i)
+          progPutStr ": "
+          progPutStr name
+          progPutStr $ replicate (maxNameSize - length name) '.'
     if isNotDone
-      then withTerminalFailure $ printNameAndDots >> progPutStrLn config "...NOT DONE"
-      else withTerminalSuccess $ printNameAndDots >> progPutStrLn config ".......DONE"
+      then withTerminalFailure $ printNameAndDots >> progPutStrLn "...NOT DONE"
+      else withTerminalSuccess $ printNameAndDots >> progPutStrLn ".......DONE"
 
 runHelp :: IO ()
 runHelp = mapM_ putStrLn

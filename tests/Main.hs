@@ -1,9 +1,10 @@
 import           Control.Concurrent
+import           Control.Monad.Reader
 import           Data.List
-import qualified Data.Map           as M
+import qualified Data.Map             as M
 import           Data.Time
 import           System.Directory
-import           System.FilePath    ((</>))
+import           System.FilePath      ((</>))
 import           System.IO
 import           Test.Hspec
 import           Test.HUnit
@@ -41,7 +42,7 @@ compileBeforeHook (projectRoot, ghcPath, packageDb) exInfo outFile = do
   let fullFp = projectRoot </> "tests" </> "test_gen" </> outFile
   outHandle <- openFile fullFp WriteMode
   let conf = ProgramConfig projectRoot ghcPath packageDb ("tests" </> "exercises") stdin outHandle stderr M.empty
-  resultExit <- compileAndRunExercise conf exInfo
+  resultExit <- runReaderT (compileAndRunExercise exInfo) conf
   hClose outHandle
   programOutput <- readFile fullFp
   return (programOutput, resultExit)
@@ -224,7 +225,7 @@ makeModifications :: ProgramConfig -> [(FilePath, FilePath)] -> IO ()
 makeModifications _ [] = return ()
 makeModifications conf ((src, dst) : rest) = do
   threadDelay 1000000
-  withFileLock dst conf $ do
+  flip runReaderT conf $ withFileLock dst $ lift $ do
     removeFile dst
     copyFile src dst
     getCurrentTime >>= setModificationTime dst
@@ -245,7 +246,7 @@ beforeWatchHook (projectRoot, ghcPath, stackPackageDb) outFile = do
   lock2 <- newEmptyMVar
   let locks = M.fromList [(fullDest1, lock1), (fullDest2, lock2)]
   let conf = ProgramConfig projectRoot ghcPath stackPackageDb testExercisesDir inHandle outHandle stderr locks
-  watchTid <- forkIO (runExerciseWatch conf watchTestExercises)
+  watchTid <- forkIO (runReaderT (runExerciseWatch watchTestExercises) conf)
   -- Modify Files
   makeModifications conf modifications
   killThread watchTid
@@ -284,7 +285,7 @@ listBeforeHook (projectRoot, ghcPath, stackPackageDb) outFile = do
   let fullFp = projectRoot </> "tests" </> "test_gen" </> outFile
   outHandle <- openFile fullFp WriteMode
   let conf = ProgramConfig projectRoot ghcPath stackPackageDb ("tests" </> "exercises") stdin outHandle stderr M.empty
-  listExercises' listTestExercises conf
+  runReaderT (listExercises' listTestExercises) conf
   hClose outHandle
   readFile fullFp
 

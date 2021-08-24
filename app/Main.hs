@@ -1,7 +1,8 @@
 module Main where
 
-import           Data.Map           (empty)
-import           Data.Tuple.Extra   (uncurry3)
+import           Control.Monad.Reader
+import           Data.Map             (empty)
+import           Data.Tuple.Extra     (uncurry3)
 import           System.Environment
 import           System.IO
 
@@ -27,20 +28,20 @@ main = do
           Left NoStackPackageDbError -> putStrLn "Couldn't find an appropriate stack package DB!"
           Right paths -> do
             let config = uncurry3 ProgramConfig paths mainProjectExercisesDir stdin stdout stderr empty
-            runCommand config (tail args) (head args)
+            runReaderT (runCommand (tail args) (head args)) config
 
-runCommand :: ProgramConfig -> [String] -> String -> IO ()
-runCommand config restArgs command = case command of
+runCommand :: [String] -> String -> ReaderT ProgramConfig IO ()
+runCommand restArgs command = case command of
   "run" -> if null restArgs
-    then progPutStrLn config "Run command requires an exercise name!"
-    else runExercise config (head restArgs)
-  "watch" -> watchExercises config
+    then progPutStrLn "Run command requires an exercise name!"
+    else runExercise (head restArgs)
+  "watch" -> watchExercises
   "exec" -> if null restArgs
-    then progPutStrLn config "Exec command requires an exercise name!"
-    else execExercise config (head restArgs)
-  "version" -> putStrLn haskellingsVersion
-  "list" -> listExercises config
+    then progPutStrLn "Exec command requires an exercise name!"
+    else execExercise (head restArgs)
+  "version" -> progPutStrLn haskellingsVersion
+  "list" -> listExercises
   "hint" -> if null restArgs
-    then progPutStrLn config "Hint command requires an exercise name!"
-    else hintExercise config (head restArgs)
-  _ -> runHelp
+    then progPutStrLn "Hint command requires an exercise name!"
+    else hintExercise (head restArgs)
+  _ -> lift runHelp

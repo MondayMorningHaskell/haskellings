@@ -5,10 +5,10 @@
 -}
 module Processor where
 
-import           Control.Monad   (forM_, void, when)
-import           Data.Maybe      (fromJust, isJust)
+import           Control.Monad.Reader
+import           Data.Maybe           (fromJust, isJust)
 import           System.Exit
-import           System.FilePath ((</>))
+import           System.FilePath      ((</>))
 import           System.IO
 import           System.Process
 
@@ -16,29 +16,37 @@ import           DirectoryUtils
 import           TerminalUtils
 import           Types
 
-executeExercise :: ProgramConfig -> ExerciseInfo -> IO ()
-executeExercise config exInfo@(ExerciseInfo exerciseName _ _ _) = do
-  let (processSpec, genDirPath, genExecutablePath) = createExerciseProcess config exInfo
-  let exFilename = haskellFileName exerciseName
+-- Specialized to run in any monad IO
+createProcess' :: (MonadIO m) =>
+  CreateProcess -> m (Maybe Handle, Maybe Handle, Maybe Handle, ProcessHandle)
+createProcess' = liftIO . createProcess
+
+waitForProcess' :: (MonadIO m) => ProcessHandle -> m ExitCode
+waitForProcess' = liftIO . waitForProcess
+
+executeExercise :: ExerciseInfo -> ReaderT ProgramConfig IO ()
+executeExercise exInfo@(ExerciseInfo exerciseName _ _ _) = do
+  config <- ask
+  let (processSpec, genDirPath, genExecutablePath, exFilename) = createExerciseProcess config exInfo
   withDirectory genDirPath $ do
-    (_, _, procStdErr, procHandle) <- createProcess (processSpec { std_out = CreatePipe, std_err = CreatePipe })
-    exitCode <- waitForProcess procHandle
+    (_, _, procStdErr, procHandle) <- createProcess' (processSpec { std_out = CreatePipe, std_err = CreatePipe })
+    exitCode <- waitForProcess' procHandle
     case exitCode of
-      ExitFailure code -> void $ onCompileFailure config exFilename procStdErr
+      ExitFailure code -> void $ onCompileFailure exFilename procStdErr
       ExitSuccess -> do
-        progPutStrLnSuccess config $ "Successfully compiled: " ++ exFilename
-        progPutStrLn config $ "----- Executing file: " ++ exFilename ++ " -----"
+        progPutStrLnSuccess $ "Successfully compiled: " ++ exFilename
+        progPutStrLn $ "----- Executing file: " ++ exFilename ++ " -----"
         let execSpec = shell genExecutablePath
-        (_, _, _, execProcHandle) <- createProcess execSpec
-        void $ waitForProcess execProcHandle
+        (_, _, _, execProcHandle) <- createProcess' execSpec
+        void $ waitForProcess' execProcHandle
 
 -- Produces 3 Elements for running our exercise:
 -- 1. The 'CreateProcess' that we can run for the compilation.
 -- 2. The directory path for the generated files
 -- 3. The path of the executable we would run (assuming the exercise is executable).
-createExerciseProcess :: ProgramConfig -> ExerciseInfo -> (CreateProcess, FilePath, FilePath)
+createExerciseProcess :: ProgramConfig -> ExerciseInfo -> (CreateProcess, FilePath, FilePath, FilePath)
 createExerciseProcess config (ExerciseInfo exerciseName exDirectory exType _) =
-  (processSpec, genDirPath, genExecutablePath)
+  (processSpec, genDirPath, genExecutablePath, haskellFileName exerciseName)
   where
     exIsRunnable = exType /= CompileOnly
     exFilename = haskellFileName exerciseName
@@ -51,88 +59,87 @@ createExerciseProcess config (ExerciseInfo exerciseName exDirectory exType _) =
     finalArgs = execArgs ++ ["-package-db", packageDb config]
     processSpec = proc (ghcPath config) finalArgs
 
-onCompileFailure :: ProgramConfig -> String -> Maybe Handle -> IO RunResult
-onCompileFailure config exFilename errHandle = withTerminalFailure $ do
-  progPutStrLn config $ "Couldn't compile : " ++ exFilename
+onCompileFailure :: String -> Maybe Handle -> ReaderT ProgramConfig IO RunResult
+onCompileFailure exFilename errHandle = withTerminalFailure $ do
+  progPutStrLn $ "Couldn't compile : " ++ exFilename
   case errHandle of
     Nothing -> return ()
-    Just h  -> hGetContents h >>= progPutStrLn config
+    Just h  -> lift (hGetContents h) >>= progPutStrLn
   return CompileError
 
-runUnitTestExercise :: ProgramConfig -> FilePath -> String -> IO RunResult
-runUnitTestExercise config genExecutablePath exFilename = do
+runUnitTestExercise :: FilePath -> String -> ReaderT ProgramConfig IO RunResult
+runUnitTestExercise genExecutablePath exFilename = do
   let execSpec = shell genExecutablePath
-  (_, execStdOut, execStdErr, execProcHandle) <- createProcess (execSpec { std_out = CreatePipe, std_err = CreatePipe })
-  execExit <- waitForProcess execProcHandle
+  (_, execStdOut, execStdErr, execProcHandle) <- createProcess' (execSpec { std_out = CreatePipe, std_err = CreatePipe })
+  execExit <- waitForProcess' execProcHandle
   case execExit of
     ExitFailure code -> withTerminalFailure $ do
-      progPutStrLn config $ "Tests failed on exercise : " ++ exFilename
+      progPutStrLn $ "Tests failed on exercise : " ++ exFilename
       case execStdErr of
         Nothing -> return ()
-        Just h  -> hGetContents h >>= progPutStrLn config
+        Just h  -> lift (hGetContents h) >>= progPutStrLn
       case execStdOut of
         Nothing -> return ()
-        Just h  -> hGetContents h >>= progPutStrLn config
+        Just h  -> lift (hGetContents h) >>= progPutStrLn
       return TestFailed
     ExitSuccess -> do
-      progPutStrLnSuccess config $ "Successfully ran : " ++ exFilename
+      progPutStrLnSuccess $ "Successfully ran : " ++ exFilename
       return RunSuccess
 
 runExecutableExercise
-  :: ProgramConfig
-  -> FilePath
+  :: FilePath
   -> String
   -> [String]
   -> ([String] -> Bool)
-  -> IO RunResult
-runExecutableExercise config genExecutablePath exFilename inputs outputPred = do
+  -> ReaderT ProgramConfig IO RunResult
+runExecutableExercise genExecutablePath exFilename inputs outputPred = do
   let execSpec = shell genExecutablePath
-  (execStdIn, execStdOut, execStdErr, execProcHandle) <- createProcess
+  (execStdIn, execStdOut, execStdErr, execProcHandle) <- createProcess'
     (execSpec { std_out = CreatePipe, std_err = CreatePipe, std_in = CreatePipe })
-  when (isJust execStdIn) $ forM_ inputs $ \i -> hPutStrLn (fromJust execStdIn) i
-  execExit <- waitForProcess execProcHandle
+  when (isJust execStdIn) $ forM_ inputs $ \i -> lift $ hPutStrLn (fromJust execStdIn) i
+  execExit <- waitForProcess' execProcHandle
   case execExit of
     ExitFailure code -> withTerminalFailure $ do
-      progPutStrLn config $ "Encountered error running exercise: " ++ exFilename
+      progPutStrLn $ "Encountered error running exercise: " ++ exFilename
       case execStdOut of
         Nothing -> return ()
-        Just h  -> hGetContents h >>= progPutStrLn config
+        Just h  -> lift (hGetContents h) >>= progPutStrLn
       case execStdErr of
         Nothing -> return ()
-        Just h  -> hGetContents h >>= progPutStrLn config
-      progPutStrLn config "Check the Sample Input and Sample Output in the file."
-      progPutStrLn config $ "Then try running it for yourself with 'haskellings exec" ++ haskellModuleName exFilename ++ "'."
+        Just h  -> lift (hGetContents h) >>= progPutStrLn
+      progPutStrLn "Check the Sample Input and Sample Output in the file."
+      progPutStrLn $ "Then try running it for yourself with 'haskellings exec" ++ haskellModuleName exFilename ++ "'."
       return TestFailed
     ExitSuccess -> do
       passes <- case execStdOut of
         Nothing -> return (outputPred [])
-        Just h  -> (lines <$> hGetContents h) >>= (return . outputPred)
+        Just h  -> (lines <$> lift (hGetContents h)) >>= (return . outputPred)
       if passes
         then withTerminalSuccess $ do
-          progPutStrLn config $ "Successfully ran : " ++ exFilename
-          progPutStrLn config $ "You can run this code for yourself with 'haskellings exec " ++ haskellModuleName exFilename ++ "'."
+          progPutStrLn $ "Successfully ran : " ++ exFilename
+          progPutStrLn $ "You can run this code for yourself with 'haskellings exec " ++ haskellModuleName exFilename ++ "'."
           return RunSuccess
         else withTerminalFailure $ do
-          progPutStrLn config $ "Unexpected output for exercise: " ++ exFilename
-          progPutStrLn config "Check the Sample Input and Sample Output in the file."
-          progPutStrLn config $ "Then try running it for yourself with 'haskellings exec " ++ haskellModuleName exFilename ++ "'."
+          progPutStrLn $ "Unexpected output for exercise: " ++ exFilename
+          progPutStrLn "Check the Sample Input and Sample Output in the file."
+          progPutStrLn $ "Then try running it for yourself with 'haskellings exec " ++ haskellModuleName exFilename ++ "'."
           return TestFailed
 
-compileAndRunExercise :: ProgramConfig -> ExerciseInfo -> IO RunResult
-compileAndRunExercise config exInfo@(ExerciseInfo exerciseName exDirectory exType _) = do
-  let (processSpec, genDirPath, genExecutablePath) = createExerciseProcess config exInfo
-  let exFilename = haskellFileName exerciseName
+compileAndRunExercise :: ExerciseInfo -> ReaderT ProgramConfig IO RunResult
+compileAndRunExercise exInfo@(ExerciseInfo exerciseName exDirectory exType _) = do
+  config <- ask
+  let (processSpec, genDirPath, genExecutablePath, exFilename) = createExerciseProcess config exInfo
   withDirectory genDirPath $ do
-    (_, _, procStdErr, procHandle) <- createProcess (processSpec { std_out = CreatePipe, std_err = CreatePipe })
-    exitCode <- waitForProcess procHandle
+    (_, _, procStdErr, procHandle) <- createProcess' (processSpec { std_out = CreatePipe, std_err = CreatePipe })
+    exitCode <- waitForProcess' procHandle
     case exitCode of
-      ExitFailure code -> onCompileFailure config exFilename procStdErr
+      ExitFailure code -> onCompileFailure exFilename procStdErr
       ExitSuccess -> do
-        progPutStrLnSuccess config $ "Successfully compiled : " ++ exFilename
+        progPutStrLnSuccess $ "Successfully compiled : " ++ exFilename
         case exType of
           CompileOnly -> return RunSuccess
-          UnitTests -> runUnitTestExercise config genExecutablePath exFilename
-          Executable inputs outputPred -> runExecutableExercise config genExecutablePath exFilename inputs outputPred
+          UnitTests -> runUnitTestExercise genExecutablePath exFilename
+          Executable inputs outputPred -> runExecutableExercise genExecutablePath exFilename inputs outputPred
 
-compileAndRunExercise_ :: ProgramConfig -> ExerciseInfo -> IO ()
-compileAndRunExercise_ config ex = void $ compileAndRunExercise config ex
+compileAndRunExercise_ :: ExerciseInfo -> ReaderT ProgramConfig IO ()
+compileAndRunExercise_ ex = void $ compileAndRunExercise ex

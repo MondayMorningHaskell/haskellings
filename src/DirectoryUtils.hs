@@ -1,17 +1,21 @@
-{- Utility functions for manipulating filepaths and directories.
--}
+{- Utility functions for manipulating filepaths and directories. -}
+
+{-# LANGUAGE FlexibleContexts #-}
+
 module DirectoryUtils where
 
 import           Control.Concurrent
-import           Control.Exception  (catch)
+import           Control.Exception          (catch)
+import           Control.Monad.IO.Class
+import           Control.Monad.Reader.Class
 import           Data.Char
-import           Data.List          (isSuffixOf)
-import           Data.List.Extra    (upper)
-import qualified Data.Map           as M
-import qualified Data.Sequence      as S
+import           Data.List                  (isSuffixOf)
+import           Data.List.Extra            (upper)
+import qualified Data.Map                   as M
+import qualified Data.Sequence              as S
 import           System.Directory
-import           System.FilePath    (takeBaseName, takeFileName, (</>))
-import           System.Info        (os)
+import           System.FilePath            (takeBaseName, takeFileName, (</>))
+import           System.Info                (os)
 
 import           Types
 
@@ -40,22 +44,24 @@ fullExerciseFp :: FilePath -> FilePath -> ExerciseInfo -> FilePath
 fullExerciseFp projectRoot exercisesExt (ExerciseInfo exName exDir _ _) =
   projectRoot </> exercisesExt </> exDir </> haskellFileName exName
 
-withFileLock :: FilePath -> ProgramConfig -> IO a -> IO a
-withFileLock fp config action = case M.lookup fp (fileLocks config) of
-  Nothing -> action
-  Just lock -> do
-    putMVar lock ()
-    result <- action
-    takeMVar lock
-    return result
+withFileLock :: (MonadIO m, MonadReader ProgramConfig m) => FilePath -> m a -> m a
+withFileLock fp action = do
+  maybeLock <- M.lookup fp <$> asks fileLocks
+  case maybeLock of
+    Nothing -> action
+    Just lock -> do
+      liftIO $ putMVar lock ()
+      result <- action
+      liftIO $ takeMVar lock
+      return result
 
 -- Create a directory. Run the action depending on that directory,
 -- and then clean the directory up.
-withDirectory :: FilePath -> IO a -> IO a
+withDirectory :: (MonadIO m) => FilePath -> m a -> m a
 withDirectory dirPath action = do
-  createDirectoryIfMissing True dirPath
+  liftIO $ createDirectoryIfMissing True dirPath
   res <- action
-  removeDirectoryRecursive dirPath
+  liftIO $ removeDirectoryRecursive dirPath
   return res
 
 returnIfDirExists :: FilePath -> IO (Maybe FilePath)
