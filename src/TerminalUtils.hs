@@ -3,49 +3,61 @@
 -}
 module TerminalUtils where
 
+import           Control.Monad.IO.Class
+import           Control.Monad.Reader
 import           System.Console.ANSI
 import           System.IO
 
 import           Types
 
-progPutStr :: ProgramConfig -> String -> IO ()
-progPutStr pc = hPutStr (outHandle pc)
+progPutStr :: String -> ReaderT ProgramConfig IO ()
+progPutStr str = do
+  handle <- asks outHandle
+  lift $ hPutStr handle str
 
-progPutStrLn :: ProgramConfig -> String -> IO ()
-progPutStrLn pc = hPutStrLn (outHandle pc)
+progPutStrLn :: String -> ReaderT ProgramConfig IO ()
+progPutStrLn str = do
+  handle <- asks outHandle
+  lift $ hPutStrLn handle str
 
-progPrint :: (Show a) => ProgramConfig -> a -> IO ()
-progPrint pc = hPrint (outHandle pc)
+progPrint :: (Show a) => a -> ReaderT ProgramConfig IO ()
+progPrint val = do
+  handle <- asks outHandle
+  lift $ hPrint handle val
 
-progPutStrErr :: ProgramConfig -> String -> IO ()
-progPutStrErr pc = hPutStrLn (errHandle pc)
+progPutStrErr :: String -> ReaderT ProgramConfig IO ()
+progPutStrErr str = do
+  handle <- asks errHandle
+  lift $ hPutStrLn handle str
 
-progPrintErr :: (Show a) => ProgramConfig -> a -> IO ()
-progPrintErr pc = hPrint (errHandle pc)
+progPrintErr :: (Show a) => a -> ReaderT ProgramConfig IO ()
+progPrintErr val = do
+  handle <- asks errHandle
+  lift $ hPrint handle val
 
-progReadLine :: ProgramConfig -> IO String
-progReadLine pc = hGetLine (inHandle pc)
+progReadLine :: ReaderT ProgramConfig IO String
+progReadLine = asks inHandle >>= (lift . hGetLine)
 
 -- Perform an action with 'Green' Terminal Text
-withTerminalSuccess :: IO a -> IO a
+withTerminalSuccess :: (MonadIO m) => m a -> m a
 withTerminalSuccess = withTerminalColor Green
 
 -- Perform an action with 'Red' Terminal Text
-withTerminalFailure :: IO a -> IO a
+withTerminalFailure :: (MonadIO m) => m a -> m a
 withTerminalFailure = withTerminalColor Red
 
 -- Perform an action with printed output given a color.
-withTerminalColor :: Color -> IO a -> IO a
+withTerminalColor :: (MonadIO m) => Color -> m a -> m a
 withTerminalColor color action = do
-  setSGR [SetColor Foreground Vivid color]
+  liftIO $ setSGR [SetColor Foreground Vivid color]
   res <- action
-  setSGR [Reset]
+  liftIO $ setSGR [Reset]
   return res
 
 -- Print a line, but in Green
-progPutStrLnSuccess :: ProgramConfig -> String -> IO ()
-progPutStrLnSuccess pc output = withTerminalSuccess (progPutStrLn pc output)
+progPutStrLnSuccess :: String -> ReaderT ProgramConfig IO ()
+progPutStrLnSuccess output = withTerminalSuccess (progPutStrLn output)
 
 -- Print a line, but in Red
-progPutStrLnFailure :: ProgramConfig -> String -> IO ()
-progPutStrLnFailure pc output = withTerminalFailure (progPutStrLn pc output)
+progPutStrLnFailure :: String -> ReaderT ProgramConfig IO ()
+progPutStrLnFailure output = withTerminalFailure (progPutStrLn output)

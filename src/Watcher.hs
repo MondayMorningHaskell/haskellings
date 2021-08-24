@@ -4,10 +4,10 @@
 module Watcher where
 
 import           Control.Concurrent
-import           Control.Monad      (forever, void, when)
-import           System.FilePath    (takeFileName, (</>))
+import           Control.Monad.Reader
+import           System.FilePath      (takeFileName, (</>))
 import           System.FSNotify
-import           System.IO          (hIsEOF)
+import           System.IO            (hIsEOF)
 
 import           DirectoryUtils
 import           ExerciseList
@@ -15,8 +15,8 @@ import           Processor
 import           TerminalUtils
 import           Types
 
-watchExercises :: ProgramConfig -> IO ()
-watchExercises config = runExerciseWatch config allExercises
+watchExercises :: ReaderT ProgramConfig IO ()
+watchExercises = runExerciseWatch allExercises
 
 shouldCheckFile :: ExerciseInfo -> Event -> Bool
 shouldCheckFile (ExerciseInfo exName _ _ _) (Added fp _ _) = takeFileName fp == haskellFileName exName
@@ -24,51 +24,52 @@ shouldCheckFile (ExerciseInfo exName _ _ _) (Modified fp _ _) = takeFileName fp 
 shouldCheckFile _ _ = False
 
 -- This event should be a modification of one of our exercise files
-processEvent :: ProgramConfig -> ExerciseInfo -> MVar () -> Event -> IO ()
-processEvent config exerciseInfo signalMVar _ = do
-  progPutStrLn config $ "Running exercise: " ++ exerciseName exerciseInfo
-  withFileLock fullFp config $ do
-    runResult <- compileAndRunExercise config exerciseInfo
+processEvent :: ExerciseInfo -> MVar () -> Event -> ReaderT ProgramConfig IO ()
+processEvent exerciseInfo signalMVar _ = do
+  config <- ask
+  let fullFp = fullExerciseFp (projectRoot config) (exercisesExt config) exerciseInfo
+  progPutStrLn $ "Running exercise: " ++ exerciseName exerciseInfo
+  withFileLock fullFp $ do
+    runResult <- compileAndRunExercise exerciseInfo
     case runResult of
       RunSuccess -> do
-        isNotDone <- fileContainsNotDone fullFp
+        isNotDone <- lift $ fileContainsNotDone fullFp
         if isNotDone
-          then progPutStrLn config "This exercise succeeds! Remove 'I AM NOT DONE' to proceed!"
-          else putMVar signalMVar ()
+          then progPutStrLn "This exercise succeeds! Remove 'I AM NOT DONE' to proceed!"
+          else lift $ putMVar signalMVar ()
       _ -> return ()
-  where
-    fullFp = fullExerciseFp (projectRoot config) (exercisesExt config) exerciseInfo
 
-runExerciseWatch :: ProgramConfig -> [ExerciseInfo] -> IO ()
-runExerciseWatch config [] = progPutStrLn config "Congratulations, you've completed all the exercises!"
-runExerciseWatch config (firstEx : restExs) = do
-  (runResult, isDone) <- withFileLock fullFp config $ do
-    runResult <- compileAndRunExercise config firstEx
-    isDone <- not <$> fileContainsNotDone fullFp
+runExerciseWatch :: [ExerciseInfo] -> ReaderT ProgramConfig IO ()
+runExerciseWatch [] = progPutStrLn "Congratulations, you've completed all the exercises!"
+runExerciseWatch (firstEx : restExs) = do
+  config <- ask
+  let fullFp = fullExerciseFp (projectRoot config) (exercisesExt config) firstEx
+  (runResult, isDone) <- withFileLock fullFp $ do
+    runResult <- compileAndRunExercise firstEx
+    isDone <- lift (not <$> fileContainsNotDone fullFp)
     return (runResult, isDone)
   if runResult == RunSuccess && isDone
-    then runExerciseWatch config restExs
+    then runExerciseWatch restExs
     else do
-      when (runResult == RunSuccess) $ progPutStrLn config "This exercise succeeds! Remove 'I AM NOT DONE' to proceed!"
+      when (runResult == RunSuccess) $ progPutStrLn "This exercise succeeds! Remove 'I AM NOT DONE' to proceed!"
       let conf = defaultConfig { confDebounce = Debounce 1 }
-      withManagerConf conf $ \mgr -> do
+      liftIO $ withManagerConf conf $ \mgr -> do
         signalMVar <- newEmptyMVar
         stopAction <- watchTree mgr (projectRoot config </> exercisesExt config) (shouldCheckFile firstEx)
-          (processEvent config firstEx signalMVar)
+          (\event -> runReaderT (processEvent firstEx signalMVar event) config)
         userInputThread <- forkIO $ forever (watchForUserInput config firstEx)
         takeMVar signalMVar
         stopAction
         forkIO $ killThread userInputThread
-      runExerciseWatch config restExs
-  where
-    fullFp = fullExerciseFp (projectRoot config) (exercisesExt config) firstEx
+      runExerciseWatch restExs
 
+-- Must be IO because it is called through forkIO
 watchForUserInput :: ProgramConfig -> ExerciseInfo -> IO ()
 watchForUserInput config exInfo = do
   inIsEnd <- hIsEOF (inHandle config)
   if inIsEnd
     then void (threadDelay 1000000)
-    else do
-      userInput <- progReadLine config
+    else flip runReaderT config $ do
+      userInput <- progReadLine
       when (userInput == "hint") $
-        progPutStrLn config (exerciseHint exInfo)
+        progPutStrLn (exerciseHint exInfo)
