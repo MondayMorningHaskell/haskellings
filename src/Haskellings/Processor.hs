@@ -3,7 +3,7 @@
    running those through System.Process and analyzing
    the results.
 -}
-module Processor where
+module Haskellings.Processor where
 
 import           Control.Monad.Reader
 import           Data.Maybe           (fromJust, isJust)
@@ -12,9 +12,9 @@ import           System.FilePath      ((</>))
 import           System.IO
 import           System.Process
 
-import           DirectoryUtils
-import           TerminalUtils
-import           Types
+import           Haskellings.DirectoryUtils
+import           Haskellings.TerminalUtils
+import           Haskellings.Types
 
 executeExercise :: ExerciseInfo -> ReaderT ProgramConfig IO ()
 executeExercise exInfo@(ExerciseInfo exerciseName _ _ _) = do

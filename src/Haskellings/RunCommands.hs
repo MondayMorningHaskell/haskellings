@@ -1,7 +1,7 @@
 {- Core wrapper functions for each commands,
    e.g. 'run', 'exec', 'hint', 'watch', 'list
 -}
-module RunCommands where
+module Haskellings.RunCommands where
 
 import           Control.Concurrent   (threadDelay)
 import           Control.Monad.Reader
@@ -10,13 +10,13 @@ import           Data.Yaml            (encodeFile)
 import           System.Directory
 import           System.FilePath      ((</>))
 
-import           Constants
-import           DirectoryUtils
-import           ExerciseList
-import           LoadConfig
-import           Processor
-import           TerminalUtils
-import           Types
+import           Haskellings.Constants
+import           Haskellings.DirectoryUtils
+import           Haskellings.Internal.ExerciseList
+import           Haskellings.LoadConfig
+import           Haskellings.Processor
+import           Haskellings.TerminalUtils
+import           Haskellings.Types
 
 runExercise :: String -> ReaderT ProgramConfig IO ()
 runExercise exerciseName = case M.lookup exerciseName allExercisesMap of

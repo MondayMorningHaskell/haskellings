@@ -1,14 +1,14 @@
 {- Utility functions for printing to the terminal.
    Deal with different kinds of Handles, adds color.
 -}
-module TerminalUtils where
+module Haskellings.TerminalUtils where
 
 import           Control.Monad.IO.Class
 import           Control.Monad.Reader
 import           System.Console.ANSI
 import           System.IO
 
-import           Types
+import           Haskellings.Types
 
 progPutStr :: String -> ReaderT ProgramConfig IO ()
 progPutStr str = do

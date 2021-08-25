@@ -1,7 +1,7 @@
 {- Handles the "Watcher", which reruns exercises automatically
    whenever a file changes.
 -}
-module Watcher where
+module Haskellings.Watcher where
 
 import           Control.Concurrent
 import           Control.Monad.Reader
@@ -9,11 +9,11 @@ import           System.FilePath      (takeFileName, (</>))
 import           System.FSNotify
 import           System.IO            (hIsEOF)
 
-import           DirectoryUtils
-import           ExerciseList
-import           Processor
-import           TerminalUtils
-import           Types
+import           Haskellings.DirectoryUtils
+import           Haskellings.Internal.ExerciseList
+import           Haskellings.Processor
+import           Haskellings.TerminalUtils
+import           Haskellings.Types
 
 watchExercises :: ReaderT ProgramConfig IO ()
 watchExercises = runExerciseWatch allExercises

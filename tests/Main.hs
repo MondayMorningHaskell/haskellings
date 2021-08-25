@@ -9,12 +9,12 @@ import           System.IO
 import           Test.Hspec
 import           Test.HUnit
 
-import           DirectoryUtils
-import           LoadConfig
-import           Processor
-import           RunCommands
-import           Types
-import           Watcher
+import           Haskellings.DirectoryUtils
+import           Haskellings.LoadConfig
+import           Haskellings.Processor
+import           Haskellings.RunCommands
+import           Haskellings.Types
+import           Haskellings.Watcher
 
 main :: IO ()
 main = do

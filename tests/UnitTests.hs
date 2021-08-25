@@ -7,10 +7,10 @@ import           System.FilePath  (takeDirectory, takeFileName, (</>))
 import           Test.Tasty
 import           Test.Tasty.HUnit
 
-import           Constants
-import           DirectoryUtils
-import           LoadConfig
-import           Types
+import           Haskellings.Constants
+import           Haskellings.DirectoryUtils
+import           Haskellings.LoadConfig
+import           Haskellings.Types
 
 main :: IO ()
 main = do

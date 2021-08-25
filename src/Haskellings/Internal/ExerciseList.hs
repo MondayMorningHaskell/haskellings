@@ -1,10 +1,10 @@
 {- Definitive list of exercises in Haskellings -}
-module ExerciseList where
+module Haskellings.Internal.ExerciseList where
 
 import qualified Data.Map            as M
 
-import           ExecutableExercises
-import           Types
+import           Haskellings.Internal.ExecutableExercises
+import           Haskellings.Types
 
 allExercises :: [ExerciseInfo]
 allExercises =

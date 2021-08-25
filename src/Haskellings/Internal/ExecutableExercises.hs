@@ -1,7 +1,7 @@
 {- Lists inputs and output predicates for
    executable exercises.
 -}
-module ExecutableExercises where
+module Haskellings.Internal.ExecutableExercises where
 
 import           Data.List (isPrefixOf)
 

@@ -1,7 +1,7 @@
 {- Core types for project. -}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Types where
+module Haskellings.Types where
 
 import           Control.Concurrent
 import           Data.Aeson

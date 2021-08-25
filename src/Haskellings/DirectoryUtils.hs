@@ -2,7 +2,7 @@
 
 {-# LANGUAGE FlexibleContexts #-}
 
-module DirectoryUtils where
+module Haskellings.DirectoryUtils where
 
 import           Control.Concurrent
 import           Control.Exception          (catch)
@@ -17,7 +17,7 @@ import           System.Directory
 import           System.FilePath            (takeBaseName, takeFileName, (</>))
 import           System.Info                (os)
 
-import           Types
+import           Haskellings.Types
 
 isWindows :: Bool
 isWindows = os `notElem` ["linux", "unix", "darwin"]

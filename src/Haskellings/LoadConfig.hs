@@ -3,7 +3,7 @@
 -}
 {-# LANGUAGE OverloadedStrings #-}
 
-module LoadConfig where
+module Haskellings.LoadConfig where
 
 import           Control.Monad      (forM)
 import           Data.List          (find, isPrefixOf, isSuffixOf)
@@ -14,9 +14,9 @@ import           System.Directory
 import           System.Environment (lookupEnv)
 import           System.FilePath    (takeDirectory, takeFileName, (</>))
 
-import           Constants
-import           DirectoryUtils
-import           Types
+import           Haskellings.Constants
+import           Haskellings.DirectoryUtils
+import           Haskellings.Types
 
 loadBaseConfigPaths :: IO (Either ConfigError (FilePath, FilePath, FilePath))
 loadBaseConfigPaths = do
