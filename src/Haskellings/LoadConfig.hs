@@ -1,11 +1,19 @@
-{- Functions related to loading project configuration,
-   including GHC Path, Stack package path, etc.
+{-|
+Module      : Haskellings.LoadConfig
+Description : Functions for loading configuration information
+License     : BSD3
+Maintainer  : james@mondaymorninghaskell.me
+
+This module locates key elements of the project configuration, such
+as the project root, GHC executable path, and Stack package DB location.
 -}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Haskellings.LoadConfig (
+  -- * Project Configuration Functions
   loadBaseConfigPaths,
   findProjectRoot,
+  -- * Predicates for GHC/Stack paths
   ghcPred,
   snapshotPackagePredicate
 ) where
@@ -23,6 +31,9 @@ import           Haskellings.Constants
 import           Haskellings.DirectoryUtils
 import           Haskellings.Types
 
+-- | Locates 3 paths: The Project root path, the GHC executable path,
+--   and the Stack package DB path.
+--   If these cannot be found, an appropriate ConfigError is returned instead.
 loadBaseConfigPaths :: IO (Either ConfigError (FilePath, FilePath, FilePath))
 loadBaseConfigPaths = do
   projectRoot' <- findProjectRoot
@@ -30,7 +41,8 @@ loadBaseConfigPaths = do
     Nothing          -> return (Left NoProjectRootError)
     Just projectRoot -> loadBaseConfigPathsWithProjectRoot projectRoot
 
--- BFS
+-- | Locates the project root (e.g. 'haskellings' directory) via
+--   a Breadth-First-Search from the "home" directory.
 findProjectRoot :: IO (Maybe FilePath)
 findProjectRoot = do
   home <- getHomeDirectory
@@ -41,11 +53,13 @@ findProjectRoot = do
 
 ---------- EXPORTED ONLY FOR TESTING ----------
 
--- Determine a directory is a valid "ghc" directory.
--- It must start with "ghc" and end with our version number.
+-- | A predicate to determine if a directory is a valid "ghc" directory.
+--   It must start with "ghc" and end with our version number.
 ghcPred :: FilePath -> Bool
 ghcPred path = isPrefixOf "ghc" (takeFileName path) && isSuffixOf ghcVersionNumber path
 
+-- | A predicated to determine if a directory can contains an appropriate
+--   Stack snapshot we can use.
 snapshotPackagePredicate :: FilePath -> IO Bool
 snapshotPackagePredicate fp = if not (ghcVersion `isSuffixOf` fp)
   then return False
