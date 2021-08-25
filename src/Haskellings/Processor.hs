@@ -1,12 +1,20 @@
-{- Functions for compiling and executing exercises.
-   Largely centered around constructing GHC commands,
-   running those through System.Process and analyzing
-   the results.
+{-|
+Module      : Haskellings.Processor
+Description : Functions for compiling and executing exercises.
+License     : BSD3
+Maintainer  : james@mondaymorninghaskell.me
+
+These functions compile exercise files and, if applicable,
+run the generated executables to unit test them. The implementation
+details are largely centered around constructing GHC commands,
+running those through System.Process and analyzing the results.
 -}
 module Haskellings.Processor (
-  executeExercise,
+  -- * Compiling exercises and running tests
   compileAndRunExercise,
-  compileAndRunExercise_
+  compileAndRunExercise_,
+  -- * Executing an exercise for custom input
+  executeExercise
 ) where
 
 import           Control.Monad.Reader
@@ -20,22 +28,8 @@ import           Haskellings.DirectoryUtils
 import           Haskellings.TerminalUtils
 import           Haskellings.Types
 
-executeExercise :: ExerciseInfo -> ReaderT ProgramConfig IO ()
-executeExercise exInfo@(ExerciseInfo exerciseName _ _ _) = do
-  config <- ask
-  let (processSpec, genDirPath, genExecutablePath, exFilename) = createExerciseProcess config exInfo
-  withDirectory genDirPath $ do
-    (_, _, procStdErr, procHandle) <- lift $ createProcess (processSpec { std_out = CreatePipe, std_err = CreatePipe })
-    exitCode <- lift $ waitForProcess procHandle
-    case exitCode of
-      ExitFailure code -> void $ onCompileFailure exFilename procStdErr
-      ExitSuccess -> do
-        progPutStrLnSuccess $ "Successfully compiled: " ++ exFilename
-        progPutStrLn $ "----- Executing file: " ++ exFilename ++ " -----"
-        let execSpec = shell genExecutablePath
-        (_, _, _, execProcHandle) <- lift $ createProcess execSpec
-        void $ lift $ waitForProcess execProcHandle
-
+-- | Compiles the given exercise and, if applicable, runs the unit tests
+--   or executable tests associated with it.
 compileAndRunExercise :: ExerciseInfo -> ReaderT ProgramConfig IO RunResult
 compileAndRunExercise exInfo@(ExerciseInfo exerciseName exDirectory exType _) = do
   config <- ask
@@ -52,8 +46,28 @@ compileAndRunExercise exInfo@(ExerciseInfo exerciseName exDirectory exType _) = 
           UnitTests -> runUnitTestExercise genExecutablePath exFilename
           Executable inputs outputPred -> runExecutableExercise genExecutablePath exFilename inputs outputPred
 
+-- | Same as 'compileAndRunExercise', but discards the 'RunResult'.
 compileAndRunExercise_ :: ExerciseInfo -> ReaderT ProgramConfig IO ()
 compileAndRunExercise_ ex = void $ compileAndRunExercise ex
+
+-- | 'Execute' an exercise, allowing the user to run the program
+--   with their own input and examine the output. This only really works
+--   for "Executable" exercises.
+executeExercise :: ExerciseInfo -> ReaderT ProgramConfig IO ()
+executeExercise exInfo@(ExerciseInfo exerciseName _ _ _) = do
+  config <- ask
+  let (processSpec, genDirPath, genExecutablePath, exFilename) = createExerciseProcess config exInfo
+  withDirectory genDirPath $ do
+    (_, _, procStdErr, procHandle) <- lift $ createProcess (processSpec { std_out = CreatePipe, std_err = CreatePipe })
+    exitCode <- lift $ waitForProcess procHandle
+    case exitCode of
+      ExitFailure code -> void $ onCompileFailure exFilename procStdErr
+      ExitSuccess -> do
+        progPutStrLnSuccess $ "Successfully compiled: " ++ exFilename
+        progPutStrLn $ "----- Executing file: " ++ exFilename ++ " -----"
+        let execSpec = shell genExecutablePath
+        (_, _, _, execProcHandle) <- lift $ createProcess execSpec
+        void $ lift $ waitForProcess execProcHandle
 
 ---------- PRIVATE FUNCTIONS ----------
 
