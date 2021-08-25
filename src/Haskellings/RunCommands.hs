@@ -1,7 +1,15 @@
 {- Core wrapper functions for each commands,
    e.g. 'run', 'exec', 'hint', 'watch', 'list
 -}
-module Haskellings.RunCommands where
+module Haskellings.RunCommands (
+  runExercise,
+  execExercise,
+  hintExercise,
+  listExercises,
+  listExercises',
+  runHelp,
+  runConfigure
+) where
 
 import           Control.Concurrent   (threadDelay)
 import           Control.Monad.Reader
@@ -77,6 +85,8 @@ runConfigure = do
   case projectRoot' of
     Nothing -> putStrLn "Could not find project root. Please move the repository so that it is somewhere within the 'home' directory on your system."
     Just projectRoot -> runConfigureWithProjectRoot projectRoot
+
+---------- PRIVATE FUNCTIONS ----------
 
 runConfigureWithProjectRoot :: FilePath -> IO ()
 runConfigureWithProjectRoot projectRoot = do

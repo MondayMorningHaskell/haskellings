@@ -1,7 +1,17 @@
 {- Constants used throughout the program,
    often related to configuration.
 -}
-module Haskellings.Constants where
+module Haskellings.Constants (
+  ghcVersion,
+  ghcVersionNumber,
+  projectRootDirName,
+  configFileName,
+  envIsCi,
+  ciProjectRootDirName,
+  haskellingsVersion,
+  mainProjectExercisesDir,
+  haskellingsRequiredLibs
+) where
 
 import           Data.Maybe
 import           System.Environment
@@ -17,10 +27,6 @@ projectRootDirName = "haskellings"
 
 configFileName :: String
 configFileName = "config.yaml"
-
--- On CircleCI, the root directory shows up as "project'
-ciEnvName :: String
-ciEnvName = "HASKELLINGS_CI_ENV"
 
 envIsCi :: IO Bool
 envIsCi = isJust <$> lookupEnv ciEnvName
@@ -41,3 +47,9 @@ haskellingsRequiredLibs =
   [ "tasty"
   , "tasty-hunit"
   ]
+
+---------- PRIVATE FUNCTIONS ----------
+
+-- On CircleCI, the root directory shows up as "project'
+ciEnvName :: String
+ciEnvName = "HASKELLINGS_CI_ENV"

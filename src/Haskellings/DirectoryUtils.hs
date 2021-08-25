@@ -2,14 +2,25 @@
 
 {-# LANGUAGE FlexibleContexts #-}
 
-module Haskellings.DirectoryUtils where
+module Haskellings.DirectoryUtils (
+  isWindows,
+  haskellModuleName,
+  haskellFileName,
+  fileContainsNotDone,
+  fullExerciseFp,
+  withFileLock,
+  withDirectory,
+  returnIfDirExists,
+  searchForDirectoryContaining,
+  fpBFS,
+  safeListDirectory
+) where
 
 import           Control.Concurrent
 import           Control.Exception          (catch)
 import           Control.Monad.IO.Class
 import           Control.Monad.Reader.Class
 import           Data.Char
-import           Data.List                  (isSuffixOf)
 import           Data.List.Extra            (upper)
 import qualified Data.Map                   as M
 import qualified Data.Sequence              as S
@@ -21,9 +32,6 @@ import           Haskellings.Types
 
 isWindows :: Bool
 isWindows = os `notElem` ["linux", "unix", "darwin"]
-
-isHaskellFile :: FilePath -> Bool
-isHaskellFile = isSuffixOf ".hs"
 
 -- Probably a good idea to first check that it is a Haskell file first
 haskellModuleName :: FilePath -> FilePath

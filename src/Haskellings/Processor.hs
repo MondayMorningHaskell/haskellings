@@ -3,7 +3,11 @@
    running those through System.Process and analyzing
    the results.
 -}
-module Haskellings.Processor where
+module Haskellings.Processor (
+  executeExercise,
+  compileAndRunExercise,
+  compileAndRunExercise_
+) where
 
 import           Control.Monad.Reader
 import           Data.Maybe           (fromJust, isJust)
@@ -31,6 +35,27 @@ executeExercise exInfo@(ExerciseInfo exerciseName _ _ _) = do
         let execSpec = shell genExecutablePath
         (_, _, _, execProcHandle) <- lift $ createProcess execSpec
         void $ lift $ waitForProcess execProcHandle
+
+compileAndRunExercise :: ExerciseInfo -> ReaderT ProgramConfig IO RunResult
+compileAndRunExercise exInfo@(ExerciseInfo exerciseName exDirectory exType _) = do
+  config <- ask
+  let (processSpec, genDirPath, genExecutablePath, exFilename) = createExerciseProcess config exInfo
+  withDirectory genDirPath $ do
+    (_, _, procStdErr, procHandle) <- lift $ createProcess (processSpec { std_out = CreatePipe, std_err = CreatePipe })
+    exitCode <- lift $ waitForProcess procHandle
+    case exitCode of
+      ExitFailure code -> onCompileFailure exFilename procStdErr
+      ExitSuccess -> do
+        progPutStrLnSuccess $ "Successfully compiled : " ++ exFilename
+        case exType of
+          CompileOnly -> return RunSuccess
+          UnitTests -> runUnitTestExercise genExecutablePath exFilename
+          Executable inputs outputPred -> runExecutableExercise genExecutablePath exFilename inputs outputPred
+
+compileAndRunExercise_ :: ExerciseInfo -> ReaderT ProgramConfig IO ()
+compileAndRunExercise_ ex = void $ compileAndRunExercise ex
+
+---------- PRIVATE FUNCTIONS ----------
 
 -- Produces 3 Elements for running our exercise:
 -- 1. The 'CreateProcess' that we can run for the compilation.
@@ -116,22 +141,3 @@ runExecutableExercise genExecutablePath exFilename inputs outputPred = do
           progPutStrLn "Check the Sample Input and Sample Output in the file."
           progPutStrLn $ "Then try running it for yourself with 'haskellings exec " ++ haskellModuleName exFilename ++ "'."
           return TestFailed
-
-compileAndRunExercise :: ExerciseInfo -> ReaderT ProgramConfig IO RunResult
-compileAndRunExercise exInfo@(ExerciseInfo exerciseName exDirectory exType _) = do
-  config <- ask
-  let (processSpec, genDirPath, genExecutablePath, exFilename) = createExerciseProcess config exInfo
-  withDirectory genDirPath $ do
-    (_, _, procStdErr, procHandle) <- lift $ createProcess (processSpec { std_out = CreatePipe, std_err = CreatePipe })
-    exitCode <- lift $ waitForProcess procHandle
-    case exitCode of
-      ExitFailure code -> onCompileFailure exFilename procStdErr
-      ExitSuccess -> do
-        progPutStrLnSuccess $ "Successfully compiled : " ++ exFilename
-        case exType of
-          CompileOnly -> return RunSuccess
-          UnitTests -> runUnitTestExercise genExecutablePath exFilename
-          Executable inputs outputPred -> runExecutableExercise genExecutablePath exFilename inputs outputPred
-
-compileAndRunExercise_ :: ExerciseInfo -> ReaderT ProgramConfig IO ()
-compileAndRunExercise_ ex = void $ compileAndRunExercise ex

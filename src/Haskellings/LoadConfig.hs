@@ -3,7 +3,12 @@
 -}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Haskellings.LoadConfig where
+module Haskellings.LoadConfig (
+  loadBaseConfigPaths,
+  findProjectRoot,
+  ghcPred,
+  snapshotPackagePredicate
+) where
 
 import           Control.Monad      (forM)
 import           Data.List          (find, isPrefixOf, isSuffixOf)
@@ -24,6 +29,34 @@ loadBaseConfigPaths = do
   case projectRoot' of
     Nothing          -> return (Left NoProjectRootError)
     Just projectRoot -> loadBaseConfigPathsWithProjectRoot projectRoot
+
+-- BFS
+findProjectRoot :: IO (Maybe FilePath)
+findProjectRoot = do
+  home <- getHomeDirectory
+  isCi <- envIsCi
+  if isCi
+    then searchForDirectoryContaining home ciProjectRootDirName
+    else searchForDirectoryContaining home projectRootDirName
+
+---------- EXPORTED ONLY FOR TESTING ----------
+
+-- Determine a directory is a valid "ghc" directory.
+-- It must start with "ghc" and end with our version number.
+ghcPred :: FilePath -> Bool
+ghcPred path = isPrefixOf "ghc" (takeFileName path) && isSuffixOf ghcVersionNumber path
+
+snapshotPackagePredicate :: FilePath -> IO Bool
+snapshotPackagePredicate fp = if not (ghcVersion `isSuffixOf` fp)
+  then return False
+  else do
+    let fullDir = pkgPathFromGhcPath fp
+    contents <- safeListDirectory fullDir
+    -- Each required library must have a subpackage directory in the package DB.
+    let containsLib lib = any (isPrefixOf lib) contents
+    return $ all containsLib haskellingsRequiredLibs
+
+---------- PRIVATE FUNCTIONS ----------
 
 loadBaseConfigPathsWithProjectRoot :: FilePath -> IO (Either ConfigError (FilePath, FilePath, FilePath))
 loadBaseConfigPathsWithProjectRoot projectRoot = do
@@ -63,11 +96,6 @@ findGhc = do
         []       -> return Nothing
         (fp : _) -> return $ Just (fp </> "bin" </> "ghc")
 
--- Determine a directory is a valid "ghc" directory.
--- It must start with "ghc" and end with our version number.
-ghcPred :: FilePath -> Bool
-ghcPred path = isPrefixOf "ghc" (takeFileName path) && isSuffixOf ghcVersionNumber path
-
 findStackPackageDb :: IO (Maybe FilePath)
 findStackPackageDb = do
   home <- getHomeDirectory
@@ -84,25 +112,6 @@ findStackPackageDb = do
 -- We want to get the package path, at {hash}/8.10.4/pkgdb
 pkgPathFromGhcPath :: FilePath -> FilePath
 pkgPathFromGhcPath ghcVersionDir = takeDirectory (takeDirectory ghcVersionDir) </> "pkgdb"
-
-snapshotPackagePredicate :: FilePath -> IO Bool
-snapshotPackagePredicate fp = if not (ghcVersion `isSuffixOf` fp)
-  then return False
-  else do
-    let fullDir = pkgPathFromGhcPath fp
-    contents <- safeListDirectory fullDir
-    -- Each required library must have a subpackage directory in the package DB.
-    let containsLib lib = any (isPrefixOf lib) contents
-    return $ all containsLib haskellingsRequiredLibs
-
--- BFS
-findProjectRoot :: IO (Maybe FilePath)
-findProjectRoot = do
-  home <- getHomeDirectory
-  isCi <- envIsCi
-  if isCi
-    then searchForDirectoryContaining home ciProjectRootDirName
-    else searchForDirectoryContaining home projectRootDirName
 
 findStackSnapshotsDir :: IO (Maybe FilePath)
 findStackSnapshotsDir = if isWindows

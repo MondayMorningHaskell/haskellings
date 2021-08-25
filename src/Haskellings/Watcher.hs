@@ -1,7 +1,10 @@
 {- Handles the "Watcher", which reruns exercises automatically
    whenever a file changes.
 -}
-module Haskellings.Watcher where
+module Haskellings.Watcher (
+  watchExercises,
+  runExerciseWatch
+) where
 
 import           Control.Concurrent
 import           Control.Monad.Reader
@@ -17,27 +20,6 @@ import           Haskellings.Types
 
 watchExercises :: ReaderT ProgramConfig IO ()
 watchExercises = runExerciseWatch allExercises
-
-shouldCheckFile :: ExerciseInfo -> Event -> Bool
-shouldCheckFile (ExerciseInfo exName _ _ _) (Added fp _ _) = takeFileName fp == haskellFileName exName
-shouldCheckFile (ExerciseInfo exName _ _ _) (Modified fp _ _) = takeFileName fp == haskellFileName exName
-shouldCheckFile _ _ = False
-
--- This event should be a modification of one of our exercise files
-processEvent :: ExerciseInfo -> MVar () -> Event -> ReaderT ProgramConfig IO ()
-processEvent exerciseInfo signalMVar _ = do
-  config <- ask
-  let fullFp = fullExerciseFp (projectRoot config) (exercisesExt config) exerciseInfo
-  progPutStrLn $ "Running exercise: " ++ exerciseName exerciseInfo
-  withFileLock fullFp $ do
-    runResult <- compileAndRunExercise exerciseInfo
-    case runResult of
-      RunSuccess -> do
-        isNotDone <- lift $ fileContainsNotDone fullFp
-        if isNotDone
-          then progPutStrLn "This exercise succeeds! Remove 'I AM NOT DONE' to proceed!"
-          else lift $ putMVar signalMVar ()
-      _ -> return ()
 
 runExerciseWatch :: [ExerciseInfo] -> ReaderT ProgramConfig IO ()
 runExerciseWatch [] = progPutStrLn "Congratulations, you've completed all the exercises!"
@@ -62,6 +44,28 @@ runExerciseWatch (firstEx : restExs) = do
         stopAction
         forkIO $ killThread userInputThread
       runExerciseWatch restExs
+
+---------- PRIVATE FUNCTIONS ----------
+shouldCheckFile :: ExerciseInfo -> Event -> Bool
+shouldCheckFile (ExerciseInfo exName _ _ _) (Added fp _ _) = takeFileName fp == haskellFileName exName
+shouldCheckFile (ExerciseInfo exName _ _ _) (Modified fp _ _) = takeFileName fp == haskellFileName exName
+shouldCheckFile _ _ = False
+
+-- This event should be a modification of one of our exercise files
+processEvent :: ExerciseInfo -> MVar () -> Event -> ReaderT ProgramConfig IO ()
+processEvent exerciseInfo signalMVar _ = do
+  config <- ask
+  let fullFp = fullExerciseFp (projectRoot config) (exercisesExt config) exerciseInfo
+  progPutStrLn $ "Running exercise: " ++ exerciseName exerciseInfo
+  withFileLock fullFp $ do
+    runResult <- compileAndRunExercise exerciseInfo
+    case runResult of
+      RunSuccess -> do
+        isNotDone <- lift $ fileContainsNotDone fullFp
+        if isNotDone
+          then progPutStrLn "This exercise succeeds! Remove 'I AM NOT DONE' to proceed!"
+          else lift $ putMVar signalMVar ()
+      _ -> return ()
 
 -- Must be IO because it is called through forkIO
 watchForUserInput :: ProgramConfig -> ExerciseInfo -> IO ()

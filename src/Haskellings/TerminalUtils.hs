@@ -1,7 +1,18 @@
 {- Utility functions for printing to the terminal.
    Deal with different kinds of Handles, adds color.
 -}
-module Haskellings.TerminalUtils where
+module Haskellings.TerminalUtils (
+  progPutStr,
+  progPutStrLn,
+  progPrint,
+  progPutStrErr,
+  progPrintErr,
+  progReadLine,
+  withTerminalSuccess,
+  withTerminalFailure,
+  progPutStrLnSuccess,
+  progPutStrLnFailure
+) where
 
 import           Control.Monad.IO.Class
 import           Control.Monad.Reader
@@ -46,14 +57,6 @@ withTerminalSuccess = withTerminalColor Green
 withTerminalFailure :: (MonadIO m) => m a -> m a
 withTerminalFailure = withTerminalColor Red
 
--- Perform an action with printed output given a color.
-withTerminalColor :: (MonadIO m) => Color -> m a -> m a
-withTerminalColor color action = do
-  liftIO $ setSGR [SetColor Foreground Vivid color]
-  res <- action
-  liftIO $ setSGR [Reset]
-  return res
-
 -- Print a line, but in Green
 progPutStrLnSuccess :: String -> ReaderT ProgramConfig IO ()
 progPutStrLnSuccess output = withTerminalSuccess (progPutStrLn output)
@@ -61,3 +64,13 @@ progPutStrLnSuccess output = withTerminalSuccess (progPutStrLn output)
 -- Print a line, but in Red
 progPutStrLnFailure :: String -> ReaderT ProgramConfig IO ()
 progPutStrLnFailure output = withTerminalFailure (progPutStrLn output)
+
+---------- PRIVATE FUNCTIONS ----------
+
+-- Perform an action with printed output given a color.
+withTerminalColor :: (MonadIO m) => Color -> m a -> m a
+withTerminalColor color action = do
+  liftIO $ setSGR [SetColor Foreground Vivid color]
+  res <- action
+  liftIO $ setSGR [Reset]
+  return res
