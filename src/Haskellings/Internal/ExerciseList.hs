@@ -1,11 +1,25 @@
-{- Definitive list of exercises in Haskellings -}
-module Haskellings.Internal.ExerciseList where
+{-|
+Module      : Haskellings.Internal.ExerciseList
+Description : Definitive list of exercises in Haskellings
+License     : BSD3
+Maintainer  : james@mondaymorninghaskell.me
+
+This module contains all the ExerciseInfo objects. Each of these refers
+to a single exercise in Haskellings, complete with a module name, a
+directory path, the "type" of exercise, and a hint.
+-}
+module Haskellings.Internal.ExerciseList (
+    allExercises
+  , allExercisesMap
+) where
 
 import qualified Data.Map            as M
 
 import           Haskellings.Internal.ExecutableExercises
 import           Haskellings.Types
 
+-- | All Haskellings exercises, listed in the expected order a user would do them.
+--   (The Watcher uses this ordering)
 allExercises :: [ExerciseInfo]
 allExercises =
   [ ExerciseInfo "Expressions" "basics" CompileOnly "Fill in numeric values in place of '???' for expression3 and expression4."
@@ -61,6 +75,8 @@ allExercises =
   , ExerciseInfo "Transformers2" "monads" (Executable transformers2Inputs transformers2Pred) "You can combine 'MaybeT' actions in the same do-syntax block!"
   ]
 
+-- | All Haskellings exercises, stored as a map. This allows us to easily
+--   reference an exercise when using 'haskellings run'.
 allExercisesMap :: M.Map String ExerciseInfo
 allExercisesMap = M.fromList
   [(exerciseName ex, ex) | ex <- allExercises]
