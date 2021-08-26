@@ -1,7 +1,15 @@
-{- Handles the "Watcher", which reruns exercises automatically
-   whenever a file changes.
+{-|
+Module      : Haskellings.Watcher
+Description : Functionality for the 'watch' command
+License     : BSD3
+Maintainer  : james@mondaymorninghaskell.me
+
+Core logic for the 'watch' command, which automatically re-runs
+exercises when the user makes changes.
 -}
+
 module Haskellings.Watcher (
+  -- * Watch Functions
   watchExercises,
   runExerciseWatch
 ) where
@@ -18,9 +26,12 @@ import           Haskellings.Processor
 import           Haskellings.TerminalUtils
 import           Haskellings.Types
 
+-- | Runs the Watcher on the default set of Haskellings exercises
 watchExercises :: ReaderT ProgramConfig IO ()
 watchExercises = runExerciseWatch allExercises
 
+-- | Run the Watcher on the given set of exercises, proceding to the next exercise
+--   when the current one compiles and passes the tests. Works recursively.
 runExerciseWatch :: [ExerciseInfo] -> ReaderT ProgramConfig IO ()
 runExerciseWatch [] = progPutStrLn "Congratulations, you've completed all the exercises!"
 runExerciseWatch (firstEx : restExs) = do
