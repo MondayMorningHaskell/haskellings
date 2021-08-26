@@ -1,12 +1,22 @@
-{- Core wrapper functions for each commands,
-   e.g. 'run', 'exec', 'hint', 'watch', 'list
+{-|
+Module      : Haskellings.RunCommands
+Description : Core wrapper functions for each command
+License     : BSD3
+Maintainer  : james@mondaymorninghaskell.me
+
+The are the primary functions called for each command, including
+'run', 'exec', 'hint', and 'list' (but not including 'watch').
 -}
+
 module Haskellings.RunCommands (
+  -- * Running Exercises
   runExercise,
   execExercise,
-  hintExercise,
+  -- * Listing Exercises
   listExercises,
   listExercises',
+  -- * Helper Commands
+  hintExercise,
   runHelp,
   runConfigure
 ) where
@@ -26,26 +36,26 @@ import           Haskellings.Processor
 import           Haskellings.TerminalUtils
 import           Haskellings.Types
 
+-- | Run the exercise given by the string (i.e. 'haskellings run')
 runExercise :: String -> ReaderT ProgramConfig IO ()
 runExercise exerciseName = case M.lookup exerciseName allExercisesMap of
   Nothing -> progPutStrLn $ "Could not find exercise: " ++ exerciseName ++ "!"
   Just exInfo -> compileAndRunExercise_ exInfo
 
+-- | Execute the exercise given by the string (i.e. 'haskellings exec')
+--   Only used with executable exercises.
 execExercise :: String -> ReaderT ProgramConfig IO ()
 execExercise exerciseName = case M.lookup exerciseName allExercisesMap of
   Nothing -> progPutStrLn $ "Could not find exercise: " ++ exerciseName ++ "!"
   Just exInfo@(ExerciseInfo _ _ (Executable _ _) _) -> executeExercise exInfo
   _ -> progPutStrLn $ "Exercise " ++ exerciseName ++ " is not executable!"
 
-hintExercise :: String -> ReaderT ProgramConfig IO ()
-hintExercise exerciseName = case M.lookup exerciseName allExercisesMap of
-  Nothing -> progPutStrLn $ "Could not find exercise: " ++ exerciseName ++ "!"
-  Just exInfo -> progPutStrLn (exerciseHint exInfo)
-
+-- | List all the exercises in Haskellings with their status (done/not done).
+--   (i.e. 'haskellings list')
 listExercises :: ReaderT ProgramConfig IO ()
 listExercises = listExercises' allExercises
 
--- Separated for testability
+-- | Core logic function for listing. Separated for testing.
 listExercises' :: [ExerciseInfo] -> ReaderT ProgramConfig IO ()
 listExercises' [] = progPutStrLn "No exercises!"
 listExercises' exercises = do
@@ -67,6 +77,13 @@ listExercises' exercises = do
       then withTerminalFailure $ printNameAndDots >> progPutStrLn "...NOT DONE"
       else withTerminalSuccess $ printNameAndDots >> progPutStrLn ".......DONE"
 
+-- | Give a hint for the given exercise (i.e. 'haskellings hint')
+hintExercise :: String -> ReaderT ProgramConfig IO ()
+hintExercise exerciseName = case M.lookup exerciseName allExercisesMap of
+  Nothing -> progPutStrLn $ "Could not find exercise: " ++ exerciseName ++ "!"
+  Just exInfo -> progPutStrLn (exerciseHint exInfo)
+
+-- | List available commands (i.e. 'haskellings help')
 runHelp :: IO ()
 runHelp = mapM_ putStrLn
   [ "Available commands:"
@@ -79,6 +96,8 @@ runHelp = mapM_ putStrLn
   , "  haskellings help (-h, --help) -- Display this help message."
   ]
 
+-- | Configure the project. Allows the user to set the GHC path and
+--   the Stack package path, saving them in a config file.
 runConfigure :: IO ()
 runConfigure = do
   projectRoot' <- findProjectRoot
