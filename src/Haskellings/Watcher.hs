@@ -16,9 +16,9 @@ module Haskellings.Watcher (
 
 import           Control.Concurrent
 import           Control.Monad.Reader
-import           System.FilePath      (takeFileName, (</>))
+import           System.FilePath                   (takeFileName, (</>))
 import           System.FSNotify
-import           System.IO            (hIsEOF)
+import           System.IO                         (hIsEOF)
 
 import           Haskellings.DirectoryUtils
 import           Haskellings.Internal.ExerciseList

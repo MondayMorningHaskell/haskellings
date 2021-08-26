@@ -1,10 +1,10 @@
 import           Control.Concurrent
 import           Control.Monad.Reader
 import           Data.List
-import qualified Data.Map             as M
+import qualified Data.Map                   as M
 import           Data.Time
 import           System.Directory
-import           System.FilePath      ((</>))
+import           System.FilePath            ((</>))
 import           System.IO
 import           Test.Hspec
 import           Test.HUnit

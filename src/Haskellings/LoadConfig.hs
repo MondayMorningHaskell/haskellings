@@ -19,14 +19,14 @@ module Haskellings.LoadConfig (
   snapshotPackagePredicate
 ) where
 
-import           Control.Monad      (forM)
-import           Data.List          (find, isPrefixOf, isSuffixOf)
-import           Data.Maybe         (catMaybes)
-import qualified Data.Sequence      as S
-import           Data.Yaml          (decodeFileEither)
+import           Control.Monad              (forM)
+import           Data.List                  (find, isPrefixOf, isSuffixOf)
+import           Data.Maybe                 (catMaybes)
+import qualified Data.Sequence              as S
+import           Data.Yaml                  (decodeFileEither)
 import           System.Directory
-import           System.Environment (lookupEnv)
-import           System.FilePath    (takeDirectory, takeFileName, (</>))
+import           System.Environment         (lookupEnv)
+import           System.FilePath            (takeDirectory, takeFileName, (</>))
 
 import           Haskellings.Constants
 import           Haskellings.DirectoryUtils

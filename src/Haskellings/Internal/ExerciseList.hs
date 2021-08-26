@@ -14,7 +14,7 @@ module Haskellings.Internal.ExerciseList (
   , allExercisesMap
 ) where
 
-import qualified Data.Map            as M
+import qualified Data.Map                                 as M
 
 import           Haskellings.Internal.ExecutableExercises
 import           Haskellings.Types

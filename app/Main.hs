@@ -1,8 +1,8 @@
 module Main where
 
 import           Control.Monad.Reader
-import           Data.Map             (empty)
-import           Data.Tuple.Extra     (uncurry3)
+import           Data.Map                  (empty)
+import           Data.Tuple.Extra          (uncurry3)
 import           System.Environment
 import           System.IO
 

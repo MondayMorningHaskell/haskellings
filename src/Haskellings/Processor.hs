@@ -19,9 +19,9 @@ module Haskellings.Processor (
 ) where
 
 import           Control.Monad.Reader
-import           Data.Maybe           (fromJust, isJust)
+import           Data.Maybe                 (fromJust, isJust)
 import           System.Exit
-import           System.FilePath      ((</>))
+import           System.FilePath            ((</>))
 import           System.IO
 import           System.Process
 

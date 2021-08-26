@@ -21,12 +21,12 @@ module Haskellings.RunCommands (
   runConfigure
 ) where
 
-import           Control.Concurrent   (threadDelay)
+import           Control.Concurrent                (threadDelay)
 import           Control.Monad.Reader
-import qualified Data.Map             as M
-import           Data.Yaml            (encodeFile)
+import qualified Data.Map                          as M
+import           Data.Yaml                         (encodeFile)
 import           System.Directory
-import           System.FilePath      ((</>))
+import           System.FilePath                   ((</>))
 
 import           Haskellings.Constants
 import           Haskellings.DirectoryUtils
