@@ -8,6 +8,7 @@ This module has constant values that are used across Haskellings.
 It includes things like the string for the GHC version currently in use,
 hard-coded directory and file names, and required libraries.
 -}
+
 module Haskellings.Constants
 ( -- * Version strings
   -- | Includes the GHC version currently in use, and the Haskellings version.

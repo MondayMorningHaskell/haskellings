@@ -9,6 +9,7 @@ run the generated executables to unit test them. The implementation
 details are largely centered around constructing GHC commands,
 running those through System.Process and analyzing the results.
 -}
+
 module Haskellings.Processor (
   -- * Compiling exercises and running tests
   compileAndRunExercise,

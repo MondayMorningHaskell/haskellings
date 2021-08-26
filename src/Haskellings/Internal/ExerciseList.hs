@@ -8,6 +8,7 @@ This module contains all the ExerciseInfo objects. Each of these refers
 to a single exercise in Haskellings, complete with a module name, a
 directory path, the "type" of exercise, and a hint.
 -}
+
 module Haskellings.Internal.ExerciseList (
     allExercises
   , allExercisesMap

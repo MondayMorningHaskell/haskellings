@@ -7,6 +7,7 @@ Maintainer  : james@mondaymorninghaskell.me
 This module locates key elements of the project configuration, such
 as the project root, GHC executable path, and Stack package DB location.
 -}
+
 {-# LANGUAGE OverloadedStrings #-}
 
 module Haskellings.LoadConfig (

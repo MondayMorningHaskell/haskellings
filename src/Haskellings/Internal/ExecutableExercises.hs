@@ -9,6 +9,7 @@ verify that the line-by-line output satisfies a particular predicate. This might
 be that the lines precisely match what is in this file, or some lines might
 only have prefixes.
 -}
+
 module Haskellings.Internal.ExecutableExercises (
   -- * Exercise IO1
     io1Pred
