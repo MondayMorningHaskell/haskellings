@@ -1,21 +1,59 @@
-{- Functions for compiling and executing exercises.
-   Largely centered around constructing GHC commands,
-   running those through System.Process and analyzing
-   the results.
+{-|
+Module      : Haskellings.Processor
+Description : Functions for compiling and executing exercises.
+License     : BSD3
+Maintainer  : james@mondaymorninghaskell.me
+
+These functions compile exercise files and, if applicable,
+run the generated executables to unit test them. The implementation
+details are largely centered around constructing GHC commands,
+running those through System.Process and analyzing the results.
 -}
-module Processor where
+
+module Haskellings.Processor (
+  -- * Compiling exercises and running tests
+  compileAndRunExercise,
+  compileAndRunExercise_,
+  -- * Executing an exercise for custom input
+  executeExercise
+) where
 
 import           Control.Monad.Reader
-import           Data.Maybe           (fromJust, isJust)
+import           Data.Maybe                 (fromJust, isJust)
 import           System.Exit
-import           System.FilePath      ((</>))
+import           System.FilePath            ((</>))
 import           System.IO
 import           System.Process
 
-import           DirectoryUtils
-import           TerminalUtils
-import           Types
+import           Haskellings.DirectoryUtils
+import           Haskellings.TerminalUtils
+import           Haskellings.Types
 
+-- | Compiles the given exercise and, if applicable, runs the unit tests
+--   or executable tests associated with it.
+compileAndRunExercise :: ExerciseInfo -> ReaderT ProgramConfig IO RunResult
+compileAndRunExercise exInfo@(ExerciseInfo exerciseName exDirectory exType _) = do
+  config <- ask
+  let (processSpec, genDirPath, genExecutablePath, exFilename) = createExerciseProcess config exInfo
+  withDirectory genDirPath $ do
+    (_, _, procStdErr, procHandle) <- lift $ createProcess (processSpec { std_out = CreatePipe, std_err = CreatePipe })
+    exitCode <- lift $ waitForProcess procHandle
+    case exitCode of
+      ExitFailure code -> onCompileFailure exFilename procStdErr
+      ExitSuccess -> do
+        progPutStrLnSuccess $ "Successfully compiled : " ++ exFilename
+        case exType of
+          CompileOnly -> return RunSuccess
+          UnitTests -> runUnitTestExercise genExecutablePath exFilename
+          Executable inputs outputPred -> runExecutableExercise genExecutablePath exFilename inputs outputPred
+
+-- | Same as 'compileAndRunExercise', but discards the 'RunResult'.
+compileAndRunExercise_ :: ExerciseInfo -> ReaderT ProgramConfig IO ()
+compileAndRunExercise_ ex = void $ compileAndRunExercise ex
+
+-- | 'Execute' an exercise, allowing the user to run the program
+--   with their own input and examine the output. This only really works
+--   for "Executable" exercises.
 executeExercise :: ExerciseInfo -> ReaderT ProgramConfig IO ()
 executeExercise exInfo@(ExerciseInfo exerciseName _ _ _) = do
   config <- ask
@@ -31,6 +69,8 @@ executeExercise exInfo@(ExerciseInfo exerciseName _ _ _) = do
         let execSpec = shell genExecutablePath
         (_, _, _, execProcHandle) <- lift $ createProcess execSpec
         void $ lift $ waitForProcess execProcHandle
+
+---------- PRIVATE FUNCTIONS ----------
 
 -- Produces 3 Elements for running our exercise:
 -- 1. The 'CreateProcess' that we can run for the compilation.
@@ -116,22 +156,3 @@ runExecutableExercise genExecutablePath exFilename inputs outputPred = do
           progPutStrLn "Check the Sample Input and Sample Output in the file."
           progPutStrLn $ "Then try running it for yourself with 'haskellings exec " ++ haskellModuleName exFilename ++ "'."
           return TestFailed
-
-compileAndRunExercise :: ExerciseInfo -> ReaderT ProgramConfig IO RunResult
-compileAndRunExercise exInfo@(ExerciseInfo exerciseName exDirectory exType _) = do
-  config <- ask
-  let (processSpec, genDirPath, genExecutablePath, exFilename) = createExerciseProcess config exInfo
-  withDirectory genDirPath $ do
-    (_, _, procStdErr, procHandle) <- lift $ createProcess (processSpec { std_out = CreatePipe, std_err = CreatePipe })
-    exitCode <- lift $ waitForProcess procHandle
-    case exitCode of
-      ExitFailure code -> onCompileFailure exFilename procStdErr
-      ExitSuccess -> do
-        progPutStrLnSuccess $ "Successfully compiled : " ++ exFilename
-        case exType of
-          CompileOnly -> return RunSuccess
-          UnitTests -> runUnitTestExercise genExecutablePath exFilename
-          Executable inputs outputPred -> runExecutableExercise genExecutablePath exFilename inputs outputPred
-
-compileAndRunExercise_ :: ExerciseInfo -> ReaderT ProgramConfig IO ()
-compileAndRunExercise_ ex = void $ compileAndRunExercise ex

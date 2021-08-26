@@ -1,29 +1,77 @@
-{- Functions related to loading project configuration,
-   including GHC Path, Stack package path, etc.
+{-|
+Module      : Haskellings.LoadConfig
+Description : Functions for loading configuration information
+License     : BSD3
+Maintainer  : james@mondaymorninghaskell.me
+
+This module locates key elements of the project configuration, such
+as the project root, GHC executable path, and Stack package DB location.
 -}
+
 {-# LANGUAGE OverloadedStrings #-}
 
-module LoadConfig where
+module Haskellings.LoadConfig (
+  -- * Project Configuration Functions
+  loadBaseConfigPaths,
+  findProjectRoot,
+  -- * Predicates for GHC/Stack paths
+  ghcPred,
+  snapshotPackagePredicate
+) where
 
-import           Control.Monad      (forM)
-import           Data.List          (find, isPrefixOf, isSuffixOf)
-import           Data.Maybe         (catMaybes)
-import qualified Data.Sequence      as S
-import           Data.Yaml          (decodeFileEither)
+import           Control.Monad              (forM)
+import           Data.List                  (find, isPrefixOf, isSuffixOf)
+import           Data.Maybe                 (catMaybes)
+import qualified Data.Sequence              as S
+import           Data.Yaml                  (decodeFileEither)
 import           System.Directory
-import           System.Environment (lookupEnv)
-import           System.FilePath    (takeDirectory, takeFileName, (</>))
+import           System.Environment         (lookupEnv)
+import           System.FilePath            (takeDirectory, takeFileName, (</>))
 
-import           Constants
-import           DirectoryUtils
-import           Types
+import           Haskellings.Constants
+import           Haskellings.DirectoryUtils
+import           Haskellings.Types
 
+-- | Locates 3 paths: The Project root path, the GHC executable path,
+--   and the Stack package DB path.
+--   If these cannot be found, an appropriate ConfigError is returned instead.
 loadBaseConfigPaths :: IO (Either ConfigError (FilePath, FilePath, FilePath))
 loadBaseConfigPaths = do
   projectRoot' <- findProjectRoot
   case projectRoot' of
     Nothing          -> return (Left NoProjectRootError)
     Just projectRoot -> loadBaseConfigPathsWithProjectRoot projectRoot
+
+-- | Locates the project root (e.g. 'haskellings' directory) via
+--   a Breadth-First-Search from the "home" directory.
+findProjectRoot :: IO (Maybe FilePath)
+findProjectRoot = do
+  home <- getHomeDirectory
+  isCi <- envIsCi
+  if isCi
+    then searchForDirectoryContaining home ciProjectRootDirName
+    else searchForDirectoryContaining home projectRootDirName
+
+---------- EXPORTED ONLY FOR TESTING ----------
+
+-- | A predicate to determine if a directory is a valid "ghc" directory.
+--   It must start with "ghc" and end with our version number.
+ghcPred :: FilePath -> Bool
+ghcPred path = isPrefixOf "ghc" (takeFileName path) && isSuffixOf ghcVersionNumber path
+
+-- | A predicated to determine if a directory can contains an appropriate
+--   Stack snapshot we can use.
+snapshotPackagePredicate :: FilePath -> IO Bool
+snapshotPackagePredicate fp = if not (ghcVersion `isSuffixOf` fp)
+  then return False
+  else do
+    let fullDir = pkgPathFromGhcPath fp
+    contents <- safeListDirectory fullDir
+    -- Each required library must have a subpackage directory in the package DB.
+    let containsLib lib = any (isPrefixOf lib) contents
+    return $ all containsLib haskellingsRequiredLibs
+
+---------- PRIVATE FUNCTIONS ----------
 
 loadBaseConfigPathsWithProjectRoot :: FilePath -> IO (Either ConfigError (FilePath, FilePath, FilePath))
 loadBaseConfigPathsWithProjectRoot projectRoot = do
@@ -63,11 +111,6 @@ findGhc = do
         []       -> return Nothing
         (fp : _) -> return $ Just (fp </> "bin" </> "ghc")
 
--- Determine a directory is a valid "ghc" directory.
--- It must start with "ghc" and end with our version number.
-ghcPred :: FilePath -> Bool
-ghcPred path = isPrefixOf "ghc" (takeFileName path) && isSuffixOf ghcVersionNumber path
-
 findStackPackageDb :: IO (Maybe FilePath)
 findStackPackageDb = do
   home <- getHomeDirectory
@@ -84,25 +127,6 @@ findStackPackageDb = do
 -- We want to get the package path, at {hash}/8.10.4/pkgdb
 pkgPathFromGhcPath :: FilePath -> FilePath
 pkgPathFromGhcPath ghcVersionDir = takeDirectory (takeDirectory ghcVersionDir) </> "pkgdb"
-
-snapshotPackagePredicate :: FilePath -> IO Bool
-snapshotPackagePredicate fp = if not (ghcVersion `isSuffixOf` fp)
-  then return False
-  else do
-    let fullDir = pkgPathFromGhcPath fp
-    contents <- safeListDirectory fullDir
-    -- Each required library must have a subpackage directory in the package DB.
-    let containsLib lib = any (isPrefixOf lib) contents
-    return $ all containsLib haskellingsRequiredLibs
-
--- BFS
-findProjectRoot :: IO (Maybe FilePath)
-findProjectRoot = do
-  home <- getHomeDirectory
-  isCi <- envIsCi
-  if isCi
-    then searchForDirectoryContaining home ciProjectRootDirName
-    else searchForDirectoryContaining home projectRootDirName
 
 findStackSnapshotsDir :: IO (Maybe FilePath)
 findStackSnapshotsDir = if isWindows

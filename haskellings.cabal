@@ -21,18 +21,18 @@ source-repository head
 
 library
   exposed-modules:
-      Constants
-      DirectoryUtils
-      ExerciseList
-      ExecutableExercises
-      LoadConfig
-      Processor
-      RunCommands
-      TerminalUtils
-      Types
-      Watcher
+      Haskellings.Constants
+      Haskellings.DirectoryUtils
+      Haskellings.LoadConfig
+      Haskellings.Processor
+      Haskellings.RunCommands
+      Haskellings.TerminalUtils
+      Haskellings.Types
+      Haskellings.Watcher
   other-modules:
       Paths_haskellings
+      Haskellings.Internal.ExerciseList
+      Haskellings.Internal.ExecutableExercises
   hs-source-dirs:
       src
   build-depends:

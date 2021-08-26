@@ -1,17 +1,17 @@
 module Main where
 
 import           Control.Monad.Reader
-import           Data.Map             (empty)
-import           Data.Tuple.Extra     (uncurry3)
+import           Data.Map                  (empty)
+import           Data.Tuple.Extra          (uncurry3)
 import           System.Environment
 import           System.IO
 
-import           Constants
-import           LoadConfig
-import           RunCommands
-import           TerminalUtils
-import           Types
-import           Watcher
+import           Haskellings.Constants
+import           Haskellings.LoadConfig
+import           Haskellings.RunCommands
+import           Haskellings.TerminalUtils
+import           Haskellings.Types
+import           Haskellings.Watcher
 
 main :: IO ()
 main = do

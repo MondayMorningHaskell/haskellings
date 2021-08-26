@@ -1,16 +1,16 @@
 module Main where
 
-import           Data.List        (isSuffixOf)
-import qualified Data.Sequence    as S
+import           Data.List                  (isSuffixOf)
+import qualified Data.Sequence              as S
 import           System.Directory
-import           System.FilePath  (takeDirectory, takeFileName, (</>))
+import           System.FilePath            (takeDirectory, takeFileName, (</>))
 import           Test.Tasty
 import           Test.Tasty.HUnit
 
-import           Constants
-import           DirectoryUtils
-import           LoadConfig
-import           Types
+import           Haskellings.Constants
+import           Haskellings.DirectoryUtils
+import           Haskellings.LoadConfig
+import           Haskellings.Types
 
 main :: IO ()
 main = do
