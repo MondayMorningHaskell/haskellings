@@ -1,0 +1,77 @@
+name:                haskellings
+version:             0.8.0.0
+github:              "MondayMorningHaskell/haskellings"
+license:             BSD3
+author:              "James Bowen"
+maintainer:          "james@mondaymoringhaskell.me"
+copyright:           "2021 Monday Morning Haskell"
+description:         Please see the README on GitHub at <https://github.com/MondayMorningHaskell/haskellings#readme>
+extra-source-files:
+  - README.md
+  - ChangeLog.md
+
+dependencies:
+  - base >= 4.7 && < 5
+  - containers
+  - directory
+  - filepath
+  - mtl
+
+ghc-options:
+  - -fwarn-unused-imports
+
+library:
+  dependencies:
+    - aeson
+    - ansi-terminal
+    - extra
+    - fsnotify
+    - tasty
+    - tasty-hunit
+    - process
+    - time
+    - yaml
+  source-dirs: src
+  other-modules:
+    - Paths_haskellings
+    - Haskellings.Internal.ExerciseList
+    - Haskellings.Internal.ExecutableExercises
+
+executables:
+  haskellings:
+    dependencies:
+      - extra
+      - haskellings
+    ghc-options:
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+    main: Main.hs
+    source-dirs: app
+
+tests:
+  haskellings-tests:
+    dependencies:
+      - haskellings
+      - hspec
+      - HUnit
+      - time
+    ghc-options:
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+    main: Main.hs
+    other-modules: []
+    source-dirs: tests
+  unit-tests:
+    dependencies:
+      - haskellings
+      - tasty
+      - tasty-hunit
+    ghc-options:
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+    main: UnitTests.hs
+    other-modules: []
+    source-dirs: tests
