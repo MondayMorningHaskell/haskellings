@@ -10,7 +10,6 @@ import           Test.Tasty.HUnit
 import           Haskellings.Constants
 import           Haskellings.DirectoryUtils
 import           Haskellings.LoadConfig
-import           Haskellings.Types
 
 main :: IO ()
 main = do
