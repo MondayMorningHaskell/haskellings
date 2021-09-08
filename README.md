@@ -32,14 +32,15 @@ You can also run any `haskellings` command from the project directory using `sta
 Instead of running stack manually, you can use a nix shell to install the dependencies for you.
 To do this, [install Nix](https://nixos.org/guides/install-nix.html).
 
-Then, when in the project's root directory, runn `nix-shell`.
+Then, when in the project's root directory, run `stack build`. This is necessary to generate `haskellings.cabal` from `package.yaml` (`hpack` will also work). Then you can run `nix-shell`.
+
 After the build process, you should see a bash prompt like this:
 
 ``` shell
 [nix-shell:~]$ 
 ```
 
-This shell provides you with an environment that has GHC 8.8.4 and the `haskellings` binary installed and available in your `$PATH` - so you can run `haskellings` and get started!
+This shell provides you with an environment that has GHC 8.10.4 and the `haskellings` binary installed and available in your `$PATH` - so you can run `haskellings` and get started!
 
 These dependencies are only available within the `nix-shell`, so don't worry about contaminating your global system with conflicting installations.
 
