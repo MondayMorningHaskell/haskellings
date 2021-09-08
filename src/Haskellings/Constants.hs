@@ -45,7 +45,7 @@ ghcVersionNumber = "8.10.4"
 
 -- | The current Haskellings program version.
 haskellingsVersion :: String
-haskellingsVersion = "0.8.0.0"
+haskellingsVersion = "0.9.0.0"
 
 -- | The project root directory name. We need to find the project root
 --   in order to locate the exercises.
