@@ -50,9 +50,9 @@ data Point3 = Point3 Int Int Int
   deriving (Show, Read, Eq)
 
 -- logObject (Point3 3 4 5) "Test.hs" -> "Calculated 'Point3 3 4 5' from input file Test.hs"
--- compareFromEntry (Point3 3 4 5) (Point3 3 4 5)
+-- compareFromEntry "Point3 3 4 5" (Point3 3 4 5)
 --   -> (True, "New Point calculation matches.")
--- compareFromEntry (Point3 3 4 5) (Point3 6 8 10)
+-- compareFromEntry "Point3 3 4 5" (Point3 6 8 10)
 --   -> (False, "New Point calculation does not match previous.")
 
 -- Fill in this function as a generalization of compareFromEntry
