@@ -75,7 +75,7 @@ add2AndShow = do
 
 -- Same as add2AndShow, but return a concatenated string with both the
 -- result on the original int as well as twice it's value!
--- runReader add2AndShowDouble 3 -> "(5,8)"
+-- runReader add2AndShowDouble 3 -> "5,8"
 add2AndShowDouble :: Reader Int String
 add2AndShowDouble = ???
 
