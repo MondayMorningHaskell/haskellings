@@ -30,7 +30,7 @@ data Point3 = Point3 Int Int Int
 
 instance Mathable Point3 where
   getSum (Point3 a b c) = a + b + c
-  getSum (Point3 a b c) = a * b * c
+  getProduct (Point3 a b c) = a * b * c
   getMin (Point3 a b c) = min a (min b c)
   getMax (Point3 a b c) = max a (max b c)
 
