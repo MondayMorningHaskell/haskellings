@@ -1,14 +1,14 @@
-{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/7e9b0dff974c89e070da1ad85713ff3c20b0ca97.tar.gz") {}, compiler ? "ghc8104" }:
+{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/6c4b9f1a2fd761e2d384ef86cff0d208ca27fdca.tar.gz") {}, compiler ? "ghc8107" }:
 
 pkgs.mkShell {
-  buildInputs = with pkgs; [ 
-    haskell.compiler.ghc8104
+  buildInputs = with pkgs; [
+    haskell.compiler.ghc8107
     which
     (import ./default.nix { inherit pkgs compiler; })
   ];
 
   shellHook = ''
     __GHCPATH=$(echo $(which ghc))
-    echo "ghc_path: $__GHCPATH" > config.yaml 
+    echo "ghc_path: $__GHCPATH" > config.yaml
   '';
 }
