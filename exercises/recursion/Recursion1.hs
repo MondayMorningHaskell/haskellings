@@ -19,7 +19,7 @@ import Test.Tasty.HUnit
   When the dividend (first input) is smaller than the divisor (second),
   the answer is 0. This is our *base case*.
 
-quotient :: Word -> Word -> Word 
+quotient :: Word -> Word -> Word
 quotient dividend divisor = if dividend < divisor
   then 0   -- < BASE CASE
   else ...

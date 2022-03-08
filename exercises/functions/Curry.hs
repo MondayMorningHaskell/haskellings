@@ -6,14 +6,14 @@ import Test.Tasty.HUnit
 {-
 - In Haskell, functions that take more than one argument are usually
   *curried*, meaning the function takes one argument and returns a new function
-  that takes the second argument. 
+  that takes the second argument.
 
 - This is also reflected in the type signature of multi-argument functions:
 
 f :: String -> Int -> Bool
 
-- In the above example, f is a function that takes a String and returns 
-  a function from Int to Bool. 
+- In the above example, f is a function that takes a String and returns
+  a function from Int to Bool.
 
 - In order to make this more explicit, we could write:
 
@@ -21,15 +21,15 @@ f ::  String -> (Int -> Bool)
 
 - However, as the function arrow associates to the right, the parentheses
   can be (and usually are) omitted.
-  
+
 - The standard library defines a *higher order function* `curry`.
-  
-- This functions takes a single input argument: a function 
+
+- This functions takes a single input argument: a function
   that takes a pair (a, b) as input.
 
 - The output of this function is a *new function* that takes its inputs separately
   (a -> b -> c), rather than as a tuple/pair.
-  
+
 curry :: ((a, b) -> c) -> a -> b -> c
 
 - The inverse of `curry` is called `uncurry`.
@@ -41,8 +41,8 @@ uncurry :: (a -> b -> c) -> (a, b) -> c
 
 -}
 
--- The manhattan distance of two coordinate points is defined as 
--- the distance in x + the distance in y. 
+-- The manhattan distance of two coordinate points is defined as
+-- the distance in x + the distance in y.
 -- This function takes the xdistance and ydistance and calculates the manhattan distance:
 
 
@@ -59,7 +59,7 @@ manhattanDistance xdist ydist = abs xdist + abs ydist
 manhattanDistancePoint :: (Int, Int) -> Int
 manhattanDistancePoint = ???
 
--- This function takes a pair of booleans and returns a boolean 
+-- This function takes a pair of booleans and returns a boolean
 -- corresponding to their logical AND
 
 andPair :: (Bool, Bool) -> Bool

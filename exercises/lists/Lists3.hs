@@ -10,7 +10,7 @@ import Test.Tasty.HUnit
   has up to 3 components:
 
 1. The data source
-2. An optional filter 
+2. An optional filter
 3. The resulting data
 
 - Here's one example, which uppercases all the words which are

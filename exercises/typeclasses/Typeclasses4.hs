@@ -16,7 +16,7 @@ class Mathable a where
 - Then you simply list the function names and type signatures for the
   different functions you want in that class! These will almost always
   contain the variable type:
-  
+
 -}
 
 class Mathable a where

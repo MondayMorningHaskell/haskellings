@@ -75,7 +75,7 @@ data Metrics m = Metrics
 doubleMetrics :: Metrics Double -> Metrics Double
 doubleMetrics = undefined
 
--- 
+--
 
 m1 :: Metrics Double
 m1 = Metrics [3.0, 6.0] 4.5 6.0 3.0 Nothing
