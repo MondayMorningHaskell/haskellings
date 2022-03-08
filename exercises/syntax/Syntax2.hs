@@ -31,7 +31,7 @@ example list1
 - Observe that the "equals" sign goes on each individual line, NOT after the
   initial function name and arguments!
 
-- Note: The cases are evaluated in the order they are listed. 
+- Note: The cases are evaluated in the order they are listed.
 -}
 
 -- TODO:

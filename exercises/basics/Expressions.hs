@@ -2,7 +2,7 @@ module Expressions where
 
 -- I AM NOT DONE
 
-{- 
+{-
 - In Haskell, you can define *expressions* by taking a name and using the
   "equals" sign to assign it a value. See how we do this with
   "expression1" and "expression2" below.
@@ -19,7 +19,7 @@ expression3 = ???
 
 expression4 = ???
 
-{- 
+{-
 - Haskell expression aren't "variables" like you might have in other languages.
   Once a value is assigned, we can't change it later. Thus there can be only
   one definition for each name.

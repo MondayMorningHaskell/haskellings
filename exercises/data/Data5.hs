@@ -31,7 +31,7 @@ login :: String -> String -> LoginResult
 - It's not 100% clear which strings we should enter.
   A password? An API Key? An email? A username?
   We can make this clearer like so;
-  
+
 type Username = String
 type Password = String
 

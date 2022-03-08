@@ -5,7 +5,7 @@ import Test.Tasty.HUnit
 
 {-
 
-- Many times, we don't want to (or can't) use the default instances we get 
+- Many times, we don't want to (or can't) use the default instances we get
   from using 'deriving'. In these cases we'll have to define our own instances.
   In this case we use the 'instance' keyword like so:
 

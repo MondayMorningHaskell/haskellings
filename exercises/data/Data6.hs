@@ -54,7 +54,7 @@ newtype Username = Username { unUsername :: String }
 
 -}
 
--- TODO: There are a few inaccuracies in this code, even though it compiles! 
+-- TODO: There are a few inaccuracies in this code, even though it compiles!
 --       Turn these type synonyms into newtypes so they cause compilation errors.
 --       Then fix the errors!
 
