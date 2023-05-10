@@ -1,5 +1,3 @@
--- I AM NOT DONE
-
 import System.Directory
 import System.FilePath
 import System.IO
@@ -59,11 +57,15 @@ addExtraLine fp = do
 
 -- Return a list of all the strings in the file!
 getAllLines :: FilePath -> IO [String]
-getAllLines fp = ???
+getAllLines fp = do
+  s <- readFile fp
+  return $ lines s
 
 -- Read only the first line in the file! Use a 'Handle'!
 readFirstLine :: FilePath -> IO String
-readFirstLine fp = ???
+readFirstLine fp = do
+  h <- openFile fp ReadMode
+  hGetLine h
 
 -- NOTE: This will create a file in your home directory,
 --       but delete it once it successfully runs.

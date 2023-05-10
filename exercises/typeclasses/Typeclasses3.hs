@@ -1,5 +1,3 @@
--- I AM NOT DONE
-
 import Data.List (sort)
 
 import Test.Tasty
@@ -50,20 +48,47 @@ readAndCompare f input expected = f (read input) == expected
 data Adult1 = Adult1 String String Int
   deriving (Show, Eq)
 
+instance Ord Adult1 where
+  compare (Adult1 firstName1 lastName1 _) (Adult1 firstName2 lastName2 _) = if compare firstName1 firstName2 /= EQ then compare firstName1 firstName2 else compare lastName1 lastName2
+
 data Adult2 = Adult2 String String Int
-  deriving (Show, Eq)
+  deriving (Show, Eq, Read)
+
+instance Ord Adult2 where
+  compare (Adult2 firstName1 lastName1 _) (Adult2 firstName2 lastName2 _) = if compare lastName1 lastName2 /= EQ then compare lastName1 lastName2 else compare firstName1 firstName2 
+
 
 -- Derive both 'Ord' and 'Read' for this type.
 newtype InterestRate = InterestRate Double
   deriving (Eq, Show)
+
+instance Ord InterestRate where
+  compare (InterestRate r1) (InterestRate r2) = compare r1 r2
+
+-- instance Read InterestRate where
+--   readsPrec _ input = [(InterestRate r, rest) | (r, rest) <- reads input]
+
+instance Read InterestRate where
+  readsPrec _ input = do
+    let (interestRateStr, rest) = span (/= ' ') input
+
+    -- Check if the input starts with "InterestRate"
+    if interestRateStr == "InterestRate"
+      then case reads (dropWhile (== ' ') rest) of
+             [(rate, "")] -> [(InterestRate rate, "")]
+             _ -> []
+      else []
 
 -- This function should take two tuples, of variable types (a, b)
 -- The 'a' type represents the person, the 'b' type represents
 -- their interest rate. Whoever has the higher rate, return a string with
 -- "'{p}' has a higher interest rate!", replacing {p} with 'show'-ing the person.
 -- Fill in the type signature!
-returnHigherInterestRate :: ???
-returnHigherInterestRate = undefined
+returnHigherInterestRate :: (Ord a, Show a, Ord b) => (a, b) -> (a, b) -> String
+returnHigherInterestRate (p1, i1) (p2, i2)
+  | compare i1 i2 == GT = "'" ++ show p1 ++ "' has a higher interest rate!"
+  | compare i1 i2 == LT = "'" ++ show p2 ++ "' has a higher interest rate!"
+  | otherwise = "they both earn the same"
 
 -- Test Code
 

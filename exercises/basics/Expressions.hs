@@ -1,7 +1,5 @@
 module Expressions where
 
--- I AM NOT DONE
-
 {- 
 - In Haskell, you can define *expressions* by taking a name and using the
   "equals" sign to assign it a value. See how we do this with
@@ -15,9 +13,9 @@ expression2 = 4.5
 -- TODO: To make this module compile, replace the ??? marks with different
 -- numeric values.
 
-expression3 = ???
+expression3 = 3
 
-expression4 = ???
+expression4 = 4
 
 {- 
 - Haskell expression aren't "variables" like you might have in other languages.

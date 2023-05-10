@@ -1,5 +1,3 @@
--- I AM NOT DONE
-
 import Data.Char (toUpper)
 
 import Test.Tasty
@@ -46,19 +44,19 @@ doubleList xs = map double xs
 
 -- Flip the boolean value of each input
 flipBools :: [Bool] -> [Bool]
-flipBools input = ???
+flipBools input = map not input
 
 -- Uppercase all the letters in this word!
 capitalizeWord :: String -> String
-capitalizeWord input = ???
+capitalizeWord input = map toUpper input
 
 -- TODO: Create your own higher order function, doubleAndApply.
 -- The input function should take a single integer
 -- and produce a tuple of three ints (Int, Int, Int)
 -- The doubleAndApply function should then take an extra Int input,
 -- double it, and then apply the function.
-doubleAndApply :: ???
-doubleAndApply = undefined
+doubleAndApply :: (Int -> (Int, Int, Int)) -> Int -> (Int, Int, Int)
+doubleAndApply f x = f $ 2 * x
 
 -- Testing Code
 main :: IO ()

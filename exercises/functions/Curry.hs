@@ -1,4 +1,3 @@
--- I AM NOT DONE
 
 import Test.Tasty
 import Test.Tasty.HUnit
@@ -57,7 +56,7 @@ manhattanDistance xdist ydist = abs xdist + abs ydist
 -- Use `uncurry` and the manhattanDistance defined above.
 
 manhattanDistancePoint :: (Int, Int) -> Int
-manhattanDistancePoint = ???
+manhattanDistancePoint (x1, y1) = uncurry manhattanDistance (x1, y1)
 
 -- This function takes a pair of booleans and returns a boolean 
 -- corresponding to their logical AND
@@ -69,7 +68,7 @@ andPair (b1, b2) = b1 && b2
 
 -- Give this function a type signature to make it compile
 
-andCurried :: ???
+andCurried :: Bool -> Bool -> Bool
 andCurried = curry andPair
 
 -- Testing Code, You can ignore this:

@@ -1,7 +1,5 @@
 module Data3 where
 
--- I AM NOT DONE
-
 {-
 
 - Suppose we have this basic type for an assignment grade:
@@ -34,6 +32,19 @@ data Grade = Grade
 
 -- TODO: Recreate your Adult and Child types from 'Data1', as separate types.
 --       However, you should now use record syntax to name each of the type fields.
+
+data Adult = Adult {
+    adultFirstName :: String
+  , adultLastName :: String 
+  , adultAge :: Int
+  , adultOccupation :: String
+}
+
+data Child = Child {
+    childName:: String 
+  , childAge:: Int 
+  , childGrade :: Int
+}
 
 -- Notice how we can initialize this type using the field names
 adult1 :: Adult

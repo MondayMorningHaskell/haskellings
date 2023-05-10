@@ -1,5 +1,3 @@
--- I AM NOT DONE
-
 import Control.Monad.State
 import Test.Tasty
 import Test.Tasty.HUnit
@@ -73,30 +71,82 @@ instance Show Op where
 -- instead of the Writer monad! Notice however, that you do not
 -- need a 'Monoid' instance for the "IntAdd" state!
 applyOpCount :: Op -> Double -> State IntAdd Double
-applyOpCount = ???
+applyOpCount op d = do
+  s <- get
+  let cost = opCost op
+  put $ (append cost s)
+  return $ apply op d
+  where 
+    apply :: Op -> Double -> Double
+    apply (Add x) d = d + x
+    apply (Subtract x) d = d - x
+    apply (Multiply x) d = d * x 
+    apply (Divide x) d = d / x
+    apply Sqrt _ = if d < 0 then d else sqrt d
+
+    append :: IntAdd -> IntAdd -> IntAdd
+    append (IntAdd x1) (IntAdd x2) = IntAdd (x1+x2) 
 
 applyAndCountOperations :: [Op] -> Double -> (Double, IntAdd)
-applyAndCountOperations = ???
+applyAndCountOperations list d = runState (f list d) (IntAdd 0)
+                                      where 
+                                        f :: [Op] -> Double -> State IntAdd Double
+                                        f [] d = return d
+                                        f (o:ops) d = do
+                                          d' <- applyOpCount o d
+                                          f ops d'
 
 applyOpLog :: Op -> Double -> State [String] Double
-applyOpLog = ???
+applyOpLog o d = do
+      s <- get
+      let msg = show o
+      put $ s ++ [msg]
+      return $ apply o d
+      where
+        apply :: Op -> Double -> Double
+        apply (Add x) d = d + x
+        apply (Subtract x) d = d - x
+        apply (Multiply x) d = d * x 
+        apply (Divide x) d = d / x
+        apply Sqrt d = if d < 0 then d else sqrt d
 
 applyAndLogOperations :: [Op] -> Double -> (Double, [String])
-applyAndLogOperations = ???
+applyAndLogOperations list d = runState (f list d) []
+                                      where 
+                                        f :: [Op] -> Double -> State [String] Double
+                                        f [] d = return d
+                                        f (o:ops) d = do
+                                          d' <- applyOpLog o d
+                                          f ops d' 
+
 
 -- Now write these in a simpler way, where the 'State' is the
 -- Double itself that you are tracking with the operations.
 -- This spares you from needing to track it as a separate input!
 applyOpSimple :: Op -> State Double ()
-applyOpSimple = ???
+applyOpSimple op = modify (apply op)
+  where
+    apply :: Op -> Double -> Double
+    apply (Add x) d = d + x
+    apply (Subtract x) d = d - x
+    apply (Multiply x) d = d * x 
+    apply (Divide x) d = d / x
+    apply Sqrt d = if d < 0 then d else sqrt d
 
 applySimpleOperations :: [Op] -> Double -> Double
-applySimpleOperations = ???
+applySimpleOperations ops d = execState (applyOps ops) d
+  where
+    applyOps :: [Op] -> State Double ()
+    applyOps [] = pure ()
+    applyOps (op:rest) = do
+      applyOpSimple op
+      applyOps rest
 
 -- Test Code
 
 opList1 :: [Op]
-opList1 = [Add 5.0, Subtract 2.0, Multiply 3.0, Divide 2.0]
+opList1 = [Add 5.0, Subtract 2.0, Multiply 3.0, Divide 2.0] 
+-- Add : 1 , Subtract : 2, Multiply : 5, Divide : 10, Sqrt : 20
 
 opList2 :: [Op]
 opList2 = [Multiply 2.0, Sqrt]

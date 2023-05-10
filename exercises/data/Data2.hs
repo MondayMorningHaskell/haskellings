@@ -1,5 +1,3 @@
--- I AM NOT DONE
-
 import Test.Tasty
 import Test.Tasty.HUnit
 
@@ -35,6 +33,8 @@ doubleCalculation (LoggedResult x _) = 2 * x
 -- for what a person's job could be. You should at least include
 -- 'Engineer' and 'Lawyer' as constructors. You don't need any extra data
 -- for each constructor, like with Bool!
+data Occupation = Engineer | Developer | Lawyer
+data Person = Adult String String Int Occupation | Child String Int Int
 
 -- Take your two types from the last part and combine them into a single
 -- 'Person' type with two constructors. Now use your new "Occupation" type
@@ -55,7 +55,8 @@ child2 = Child "Stephanie" 12 6
 -- For adults, return their first and last name appended, with a space in between.
 -- For children, just return their first name.
 giveFullName :: Person -> String
-giveFullName = undefined
+giveFullName (Adult firstName lastName _ _ ) = firstName ++ " " ++ lastName
+giveFullName (Child firstName _ _) = firstName
 
 -- Testing Code
 main :: IO ()

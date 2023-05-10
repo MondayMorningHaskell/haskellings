@@ -1,5 +1,3 @@
--- I AM NOT DONE
-
 import System.Directory
 
 {-
@@ -67,7 +65,17 @@ listDirectory :: FilePath -> IO [FilePath]
 --
 -- To run this code without evaluating it, use 'haskellings exec IO1'
 main :: IO ()
-main = ???
+main = do
+  putStrLn "Hello, World!"
+  currentDir <- getCurrentDirectory
+  putStrLn $ "Running from directory: " ++ currentDir
+  homeDir <- getHomeDirectory
+  putStrLn $ "Home directory is: " ++ homeDir
+  filepaths <- listDirectory homeDir
+  let count = length filepaths
+  putStrLn $ "Home directory contains " ++ (show count) ++ " sub-paths." 
+
+
 
 {-
 

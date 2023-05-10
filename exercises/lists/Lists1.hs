@@ -1,5 +1,3 @@
--- I AM NOT DONE
-
 import Test.Tasty
 import Test.Tasty.HUnit
 
@@ -60,15 +58,16 @@ foldr min 9999 [5, 7, 2, 9, 1]
 -- higher order helper functions instead!
 
 addMod3Is2 :: [Int] -> [Int]
-addMod3Is2 = ???
+addMod3Is2 l = map (+3) $ filter (\x -> x `mod` 3 == 2) l
+
 
 sumList :: [Int] -> Int
-sumList = ???
+sumList l = foldr (+) 0 l
 
 -- Return true if every element is 'True'!
 -- (The empty list should return 'True'!)
 allTrue :: [Bool] -> Bool
-allTrue bs = ???
+allTrue bs = foldr (&&) True bs
 
 main :: IO ()
 main = defaultMain $ testGroup "Lists1" $

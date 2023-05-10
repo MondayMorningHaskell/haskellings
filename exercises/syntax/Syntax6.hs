@@ -1,5 +1,3 @@
--- I AM NOT DONE
-
 import Test.Tasty
 import Test.Tasty.HUnit
 
@@ -42,14 +40,25 @@ badSum x y z = prod1 + prod2 + prod3 + prod4
 
 -- Take the sum of each pairwise product of inputs.
 sumPairProducts :: (Int, Int, Int, Int, Int, Int) -> Int
-sumPairProducts = ???
+sumPairProducts (i1,i2,i3,i4,i5,i6) = 
+    let r1 = (i1*i2)+(i1*i3)+(i1*i4)+(i1*i5)+(i1*i6)
+        r2 = (i2*i3)+(i2*i4)+(i2*i5)+(i2*i6)
+        r3 = (i3*i4)+(i3*i5)+(i3*i6)
+        r4 = (i4*i5)+(i4*i6)
+        r5 = (i5*i6)
+    in sum [r1, r2, r3, r4, r5]
 
 -- Take the sum of corresponding elements of the tuples, but only include each
 -- pair when the corresponding bool is true.
 -- e.g. sumTuples (True, False, False) (1, 2, 3) (4, 5, 6) = 5
 --      sumTuples (True, False, True)  (1, 2, 3) (4, 5, 6) = 14
 sumTuples :: (Bool, Bool, Bool) -> (Int, Int, Int) -> (Int, Int, Int) -> Int
-sumTuples = ???
+sumTuples (b1,b2,b3) (x1,x2,x3) (y1,y2,y3) = 
+  let
+    s1 = if b1 then x1+y1 else 0
+    s2 = if b2 then x2+y2 else 0
+    s3 = if b3 then x3+y3 else 0
+  in s1 + s2 + s3
 
 -- Testing Code
 main :: IO ()

@@ -1,5 +1,3 @@
--- I AM NOT DONE
-
 import Control.Monad.Writer
 import Test.Tasty
 import Test.Tasty.HUnit
@@ -67,19 +65,53 @@ instance Show Op where
 -- its cost to the monad (using 'opCost' above).
 -- (If the input to 'Sqrt' is negative, just return the original value)
 applyOpCount :: Op -> Double -> Writer IntAdd Double
-applyOpCount = ???
+applyOpCount op d = do
+  let cost = opCost op
+  tell cost
+  return $ apply op d
+  where 
+    apply :: Op -> Double -> Double
+    apply (Add x) d = d + x
+    apply (Subtract x) d = d - x
+    apply (Multiply x) d = d * x 
+    apply (Divide x) d = d / x
+    apply Sqrt _ = if d < 0 then d else sqrt d
+
 
 -- Now apply a series of operations to an input value using the 'Writer' monad!
 applyAndCountOperations :: [Op] -> Double -> (Double, IntAdd)
-applyAndCountOperations = ???
+applyAndCountOperations list d = runWriter $ f list d
+                                      where 
+                                        f :: [Op] -> Double -> Writer IntAdd Double
+                                        f [] d = return d
+                                        f (o:ops) d = do
+                                          d' <- applyOpCount o d
+                                          f ops d'
 
 -- Do the same as above, except instead of counting the cost, log the
 -- string associated with 'showing' the operation.
 applyOpLog :: Op -> Double -> Writer [String] Double
-applyOpLog = ???
+applyOpLog o d = do
+      let msg = show o
+      tell [msg]
+      return $ apply o d
+      where
+        apply :: Op -> Double -> Double
+        apply (Add x) d = d + x
+        apply (Subtract x) d = d - x
+        apply (Multiply x) d = d * x 
+        apply (Divide x) d = d / x
+        apply Sqrt d = if d < 0 then d else sqrt d
+
 
 applyAndLogOperations :: [Op] -> Double -> (Double, [String])
-applyAndLogOperations = ???
+applyAndLogOperations list d = runWriter $ f list d
+                                      where 
+                                        f :: [Op] -> Double -> Writer [String] Double
+                                        f [] d = return d
+                                        f (o:ops) d = do
+                                          d' <- applyOpLog o d
+                                          f ops d' 
 
 -- Test Code
 

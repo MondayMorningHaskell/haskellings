@@ -1,5 +1,3 @@
--- I AM NOT DONE
-
 import Text.Read
 
 {-
@@ -35,14 +33,42 @@ readMaybe :: (Read a) => String -> Maybe a
 -- If it can be read as an integer properly, print "Received x" where x is the number.
 -- Otherwise, print "Could not read that as an integer." and return 'Nothing'.
 readSingleInteger :: IO (Maybe Int)
-readSingleInteger = ???
+readSingleInteger = do
+  putStrLn "Please enter a number."
+  input <- getLine
+  case readMaybe input of
+    Just num -> do
+      putStrLn $ "Received " ++ show num
+      return (Just num)
+    Nothing -> do
+      putStrLn "Could not read that as an integer."
+      return Nothing
 
 -- Start by retrieving two numbers. If they both succeed, print their sum
 -- with "The sum of these is x." Then read another number and print the
 -- final sum in the same format.
 -- If any input fails, instead print "Sum is not possible." and exit.
 main :: IO ()
-main = ???
+main = do
+  maybeNum1 <- readSingleInteger
+  maybeNum2 <- readSingleInteger
+
+  -- Calculate the sum if both inputs are valid
+  case (maybeNum1, maybeNum2) of
+    (Just num1, Just num2) -> do
+      let sum = num1 + num2
+      putStrLn $ "The sum of these is " ++ show sum ++ "."
+
+      -- Read another number
+      maybeNum3 <- readSingleInteger
+
+      -- Print the final sum if the input is valid
+      case maybeNum3 of
+        Just num3 -> do
+          let finalSum = sum + num3
+          putStrLn $ "The sum of these is " ++ show finalSum ++ "."
+        Nothing -> putStrLn "Sum is not possible."
+    _ -> putStrLn "Sum is not possible."
 
 {-
 

@@ -1,7 +1,5 @@
 module Data5 where
 
--- I AM NOT DONE
-
 {-
 
 - Haskell allows us to create a *type synonym* using the "type" keyword.
@@ -44,11 +42,22 @@ login :: Username -> Password -> LoginResult
 
 -- TODO: Add a few type synonyms to make these functions compile:
 
+type Principal = Double
+type Rate = Double
+
 calculateMonthlyInterest :: Principal -> Rate -> Double
 calculateMonthlyInterest p r = (p * r) / 12.0
 
+type Slope = Double
+type Intercept = Double
+type XCoordinate = Double
+type YCoordinate = Double
+
 calculateY :: Slope -> Intercept -> XCoordinate -> YCoordinate
 calculateY slope intercept x = slope * x + intercept
+
+type Name = String
+type Occupation = String
 
 greet :: Name -> Occupation -> String
 greet n o = "Hello, my name is " ++ n ++ ". I am a " ++ o ++ "."

@@ -1,4 +1,3 @@
--- I AM NOT DONE
 
 import Test.Tasty
 import Test.Tasty.HUnit
@@ -43,20 +42,20 @@ multiplyAndAdd6 :: Int -> Int -> Int
 multiplyAndAdd6 x y = x * y + 6
 
 -- TODO: Fill in these functions and expressions, including the type signatures
-subtract7 :: ???
-subtract7 ???
+subtract7 :: Int -> Int
+subtract7 x = x - 7
 
 -- Get this by using "subtract7"
 twelve :: Int
-twelve = ???
+twelve = subtract7 19
 
 -- Take 2 inputs. Multiply them together, and then multiply by 5.
-multiplyProductBy5 :: ???
-multiplyProductBy5 ???
+multiplyProductBy5 :: Int -> Int -> Int
+multiplyProductBy5 x y = x * y * 5
 
 -- Find some combination of arguments to multiplyProductBy5 that produces 60.
 sixty :: Int
-sixty = ???
+sixty = multiplyProductBy5 3 4
 
 -- Testing Code, You can ignore this:
 main :: IO ()

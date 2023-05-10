@@ -1,5 +1,3 @@
--- I AM NOT DONE
-
 import Test.Tasty
 import Test.Tasty.HUnit
 
@@ -82,16 +80,28 @@ multiplyIfSmall y x = if x < 9.5 then Just (y * x) else Nothing
 -- Re-implement them all now using do-syntax!
 
 sumOfSquareRoots :: Double -> Double -> Maybe Double
-sumOfSquareRoots = ???
+sumOfSquareRoots d1 d2 = do
+  r1 <- safeSquareRoot d1
+  r2 <- safeSquareRoot d2
+  return $ r1 + r2
 
 generateAllResults :: [Int -> Int -> Int] -> [Int] -> [Int] -> [Int]
-generateAllResults = ???
+generateAllResults ops l1 l2 = do
+  f <- ops
+  e1 <- l1
+  e2 <- l2
+  return $ f e1 e2
 
 sqrtAndMultiply :: Double -> Maybe Double
-sqrtAndMultiply = ???
+sqrtAndMultiply d = do
+  r <- safeSquareRoot d
+  multiplyIfSmall 10 r
 
 addAndNegate :: [Int] -> [Int]
-addAndNegate = ???
+addAndNegate l = do
+  e <- l
+  el <- [e+1, e+2,e+3]
+  [el, -el]
 
 main :: IO ()
 main = defaultMain $ testGroup "Monads1" $

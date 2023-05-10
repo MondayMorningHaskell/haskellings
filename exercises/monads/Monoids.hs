@@ -1,5 +1,3 @@
--- I AM NOT DONE
-
 import Data.Monoid
 import Data.Semigroup
 
@@ -44,17 +42,29 @@ instance Monoid [a] where
 -- In the first, "appending" should work like addition.
 -- In the second, "appending" should work like multiplication.
 
-newtype IntAdd = IntAdd Int
+newtype IntAdd = IntAdd Int deriving (Show, Eq)
 
-newtype IntMultiply = IntMultiply Int
+instance Semigroup IntAdd where
+  (<>) (IntAdd i1) (IntAdd i2) = IntAdd ( i1 + i2 )
+
+instance Monoid IntAdd where
+  mempty = IntAdd 0
+
+newtype IntMultiply = IntMultiply Int deriving (Show, Eq)
+
+instance Semigroup IntMultiply where
+  (<>) (IntMultiply i1) (IntMultiply i2) = IntMultiply ( i1 * i2 )
+
+instance Monoid IntMultiply where
+  mempty = IntMultiply 1
 
 -- Write a function that takes any two items of an "appendable" type.
 -- The result should be the two items appended in an "ABBA" pattern.
 -- abba [1, 2] [3] = [1, 2, 3, 3, 1, 2]
 -- abba (IntMultiply 4) (IntMultiply 6) = IntMultiply (4 * 6 * 6 * 4) -- 576
 -- Write the type signature yourself.
-abba :: ???
-abba = undefined
+abba :: (Monoid a) => a -> a -> a
+abba x y = (<>) ((<>) x y) ((<>) y x)
 
 main :: IO ()
 main = defaultMain $ testGroup "Monoids" $

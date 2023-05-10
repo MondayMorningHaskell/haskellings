@@ -1,5 +1,3 @@
--- I AM NOT DONE
-
 import Test.Tasty
 import Test.Tasty.HUnit
 
@@ -67,13 +65,13 @@ multiplyIfSmall y x = if x < 9.5 then Just (y * x) else Nothing
 -- sqrtAndMultiply 25.0 = Just 50.0
 -- sqrtAndMultiply 121.0 = Nothing
 sqrtAndMultiply :: Double -> Maybe Double
-sqrtAndMultiply = ???
+sqrtAndMultiply d = safeSquareRoot d >>= (multiplyIfSmall 10)
 
 -- Given a list of inputs, produce a new list that adds 1, 2, and 3 to each input
 -- and then for the final result, also includes the negation of every input.
 -- addAndNegate [1, 2] -> [2, -2, 3, -3, 4, -4, 3, -3, 4, -4, 5, -5]
 addAndNegate :: [Int] -> [Int]
-addAndNegate = ???
+addAndNegate l = l >>= (\e -> [e+1, e+2,e+3]) >>= (\e -> [e,-e])
 
 main :: IO ()
 main = defaultMain $ testGroup "Monads1" $

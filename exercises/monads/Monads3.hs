@@ -1,5 +1,3 @@
--- I AM NOT DONE
-
 import Control.Monad.Reader
 import Test.Tasty
 import Test.Tasty.HUnit
@@ -77,7 +75,9 @@ add2AndShow = do
 -- result on the original int as well as twice it's value!
 -- runReader add2AndShowDouble 3 -> "(5,8)"
 add2AndShowDouble :: Reader Int String
-add2AndShowDouble = ???
+add2AndShowDouble = do
+  i <- ask
+  return (show (i+2) ++ "," ++ show (i * 2 + 2) )
 
 data User = User
   { userEmail :: String
@@ -89,19 +89,26 @@ data User = User
 
 -- Validate that the entered password is equal to the stored user's password.
 validateAccount :: String -> String -> Reader User Bool
-validateAccount = ???
+validateAccount _ passwordAttempt = do
+    u <- ask
+    let password = userPassword u
+    return $ password == passwordAttempt
 
 -- Given a user, display the lines of a "profile page" of the form:
 -- Name: {name}
 -- Age: {age}
 -- Bio: {bio}
 displayProfile :: Reader User [String]
-displayProfile = ???
+displayProfile = do
+  u <- ask
+  return $ ["Name: " ++ userName u, "Age: " ++ show (userAge u), "Bio: " ++ userBio u]
 
 -- Given a User, and the entered credentials, return their profile
 -- string if the authentication is valid, or otherwise return nothing.
 authAndDisplayProfile :: User -> (String, String) -> Maybe [String]
-authAndDisplayProfile = ???
+authAndDisplayProfile user (emailAttempt, passwordAttempt) = do
+  let success = runReader (validateAccount emailAttempt passwordAttempt) user
+  if success then Just ( runReader displayProfile user ) else Nothing
 
 -- Test Code
 

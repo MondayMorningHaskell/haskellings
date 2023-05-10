@@ -1,5 +1,3 @@
--- I AM NOT DONE
-
 import Test.Tasty
 import Test.Tasty.HUnit
 
@@ -35,14 +33,22 @@ countTrue _ _ = 1
 
 -- Rewrite numberString from last time, but use a pattern match instead of guards!
 numberString :: Word -> String
-numberString = ???
+numberString 0 = "Zero"
+numberString 1 = "One"
+numberString 2 = "Two"
+numberString 3 = "Three"
+numberString 4 = "Four"
+numberString 5 = "Five"
+numberString _ = "Too many!"
 
 -- If the input number is 0-3, return the first, corresponding number of elements
 -- in the list. e.g. takeN 0 [1,2,3,4] = [], takeN 2 [1,2,3,4] = [1,2]
 -- If the input number is larger, return the whole list.
 -- You can assume the input has at least 4 elements.
 takeN :: Word -> [Int] -> [Int]
-takeN = ???
+takeN _ [] = []
+takeN 0 _ = [] 
+takeN w (x:xs) = [x] ++ takeN (w-1) xs
 
 -- Testing Code
 main :: IO ()

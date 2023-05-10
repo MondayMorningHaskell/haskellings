@@ -1,5 +1,3 @@
--- I AM NOT DONE
-
 import Test.Tasty
 import Test.Tasty.HUnit
 
@@ -58,10 +56,10 @@ newtype Username = Username { unUsername :: String }
 --       Turn these type synonyms into newtypes so they cause compilation errors.
 --       Then fix the errors!
 
-type Slope = Double
-type Intercept = Double
-type XCoordinate = Double
-type YCoordinate = Double
+newtype Slope = Slope { unSlope :: Double } 
+newtype Intercept = Intercept { unIntercept :: Double }
+newtype XCoordinate = XCoordinate { unXCoordinate :: Double }
+newtype YCoordinate = YCoordinate { unYCoordinate :: Double } deriving (Show, Eq)
 
 -- NOTE: Add this line after the 'YCoordinate' newtype declaration:
 --
@@ -70,35 +68,35 @@ type YCoordinate = Double
 --       We'll see what it means soon!
 
 x1 :: XCoordinate
-x1 = 4.0
+x1 = XCoordinate 4.0
 
 s1 :: Slope
-s1 = -3.0
+s1 = Slope $ -3.0
 
 i1 :: Intercept
-i1 = 2.0
+i1 = Intercept 2.0
 
 y1 :: YCoordinate
-y1 = calculateY x1 i1 s1
+y1 = calculateY s1 i1 x1
 
 expectedY1 :: YCoordinate
-expectedY1 = -10.0
+expectedY1 = YCoordinate $ -10.0
 
 calculateY :: Slope -> Intercept -> XCoordinate -> YCoordinate
-calculateY intercept slope x = slope * x + intercept
+calculateY slope intercept x = YCoordinate $ (unSlope slope) * (unXCoordinate x) + (unIntercept intercept)
 
 -- Change these to account for newtypes!
 x2 :: XCoordinate
-x2 = 3.5
+x2 = XCoordinate 3.5
 
 s2 :: Slope
-s2 = 2.3
+s2 = Slope 2.3
 
 i2 :: Intercept
-i2 = 3.7
-
+i2 = Intercept 3.7
+ 
 y2 :: YCoordinate
-y2 = 11.75
+y2 = YCoordinate 11.75
 
 -- Testing Code
 

@@ -1,7 +1,5 @@
 module Types1 where
 
--- I AM NOT DONE
-
 {-
 - In Haskell, every expression has a *type*.
   With *type inference*, the compiler can usually determine the
@@ -38,11 +36,11 @@ expression2 = 4.5
 
 -- TODO: Provide types for each of the expressions below. Of the example types
 -- given, how many work for each one?
-expression3 :: ???
+expression3 :: Int
 expression3 = 50
 
-expression4 :: ???
+expression4 :: Double
 expression4 = 100.1
 
-expression5 :: ???
+expression5 :: Int
 expression5 = -32

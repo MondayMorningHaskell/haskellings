@@ -1,5 +1,3 @@
--- I AM NOT DONE
-
 import Control.Monad.Trans.Maybe
 import Data.List
 import Text.Read
@@ -49,26 +47,80 @@ data User = User
 -- Must contain the '@' and '.' characters.
 -- Prompt: "Please enter your email"
 readEmail :: MaybeT IO String
-readEmail = ???
+readEmail = MaybeT $ do
+  putStrLn "Please enter your email"
+  s <- getLine
+  let validated = f s
+  case validated of
+    True ->
+      return $ Just s
+    False -> 
+      return Nothing
+  where
+    f :: String -> Bool
+    f s = '@' `elem` s && '.' `elem` s
+
 
 -- Must be at least 8 characters
 -- Prompt: "Please enter your password"
 readPassword :: MaybeT IO String
-readPassword = ???
+readPassword = MaybeT $ do
+  putStrLn "Please enter your password"
+  s <- getLine
+  let validated = f s
+  case validated of
+    True ->
+      return $ Just s
+    False -> 
+      return Nothing
+  where
+    f :: String -> Bool
+    f s = length s >= 8
+
 
 -- Should pass 'readMaybe' for an Int
 -- Prompt: "Please enter your age"
 readAge :: MaybeT IO Int
-readAge = ???
+readAge = MaybeT $ do
+  putStrLn "Please enter your age"
+  s <- getLine
+  let validated = f s
+  case validated of
+    True ->
+      return $ Just $ (read s :: Int)
+    False -> 
+      return Nothing
+  where
+    f :: String -> Bool
+    f s = case (readMaybe s :: Maybe Int) of
+            Just _ -> True
+            Nothing -> False
+
 
 -- Apply the functions above to produce a 'User'
 readUser :: MaybeT IO User
-readUser = ???
+readUser = MaybeT $ do
+  email <- runMaybeT readEmail
+  case email of
+    Just e -> do
+      password <- runMaybeT readPassword
+      case password of 
+        Just p -> do
+          age <- runMaybeT readAge
+          case age of
+            Just a -> return $ (Just User { email = e, password = p, age = a })
+            Nothing -> return Nothing
+        Nothing -> return Nothing
+    Nothing -> return Nothing
 
 -- Call your 'readUser' function on two different users,
 -- printing the results each time.
 main :: IO ()
-main = ???
+main = do
+  user1 <- runMaybeT readUser
+  putStrLn $ show user1
+  user2 <- runMaybeT readUser
+  putStrLn $ show user2
 
 {-
 

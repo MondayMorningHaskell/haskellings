@@ -1,4 +1,3 @@
--- I AM NOT DONE
 
 import Test.Tasty
 import Test.Tasty.HUnit
@@ -30,12 +29,12 @@ multiplyBy3Add5 = multiplyBy3AndAdd 5
 -- Then multiply the second elements together as well.
 -- Add the results.
 multiplyAndAdd :: (Int, Int) -> (Int, Int) -> Int
-multiplyAndAdd = ???
+multiplyAndAdd = \(x1,y1) -> \(x2, y2) -> x1*x2 + y1*y2
 
 -- Take a tuple of two Ints.
 -- Multiply the first value by 3 and the second by 4. Then add the results.
-multiplyBy3And4AndAdd :: ???
-multiplyBy3And4AndAdd = ???
+multiplyBy3And4AndAdd :: (Int, Int) -> Int
+multiplyBy3And4AndAdd = \(i1, i2)-> i1*3 + i2*4
 
 -- Testing Code
 main :: IO ()

@@ -1,5 +1,3 @@
--- I AM NOT DONE
-
 import Test.Tasty
 import Test.Tasty.HUnit
 
@@ -55,11 +53,12 @@ safeSquareRoot x = if x < 0 then Nothing else Just (sqrt x)
 -- Rewrite this function so that it uses 'fmap' instead of a case statement!
 -- Try to get the definition on one, short line!
 multiplySqrtDouble :: Double -> Double -> Maybe Double
-multiplySqrtDouble x y = case safeSquareRoot product of
-  Nothing -> Nothing
-  Just z -> Just (z * 2)
-  where
-    product = x * y
+-- multiplySqrtDouble x y = case safeSquareRoot product of
+--   Nothing -> Nothing
+--   Just z -> Just (z * 2)
+--   where
+--     product = x * y
+multiplySqrtDouble x y = fmap (*2) $ safeSquareRoot (x*y)
 
 -- Write a functor instance for this data type!
 
@@ -71,9 +70,18 @@ data Metrics m = Metrics
   , mode :: Maybe m
   } deriving (Show, Eq)
 
+instance Functor Metrics where
+  fmap f m = Metrics { 
+    latestMeasurements = map f (latestMeasurements m)
+  , average = f (average m)
+  , Main.max = f (Main.max m)
+  , Main.min = f (Main.min m)
+  , mode = fmap f (mode m) 
+  }
+
 -- Now write a simple function with fmap to double the value of all the metrics!
 doubleMetrics :: Metrics Double -> Metrics Double
-doubleMetrics = undefined
+doubleMetrics = fmap (*2) 
 
 -- 
 

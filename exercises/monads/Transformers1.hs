@@ -1,5 +1,3 @@
--- I AM NOT DONE
-
 import Control.Monad.Trans.Class
 import Control.Monad.State
 
@@ -90,7 +88,29 @@ applyOp Sqrt y = if y < 0 then y else sqrt y
 -- final 'Double' value.
 -- However, you should also print each operation as it is processed.
 applyOperations :: [Op] -> Double -> StateT Int IO Double
-applyOperations = ???
+applyOperations list d = f list d
+  where 
+    f :: [Op] -> Double -> StateT Int IO Double
+    f [] d = return d
+    f (op:ops) d = do
+       lift $ putStrLn $ show op
+       d' <- applyOpCount op d
+       f ops d'
+
+    applyOpCount :: Op -> Double -> StateT Int IO Double
+    applyOpCount op d = do
+      s <- get
+      let cost = opCost op
+      put $ cost + s
+      return $ apply op d
+  
+    apply :: Op -> Double -> Double
+    apply (Add x) d = d + x
+    apply (Subtract x) d = d - x
+    apply (Multiply x) d = d * x 
+    apply (Divide x) d = d / x
+    apply Sqrt _ = if d < 0 then d else sqrt d
+
 
 -- Prompt the user for a number and three operations:
 -- 'Please enter a number.'
@@ -98,8 +118,25 @@ applyOperations = ???
 -- Pass these inputs to 'applyOperations'.
 -- Print the final tuple result from runState (e.g. 'Result: (1.0, 5)' )
 main :: IO ()
-main = ???
+main = do
+  putStrLn "Please enter a number."
+  num <- getLine
+  let double = (read num :: Double)
+  putStrLn "Please enter three operations."
+  (state, result) <- run 0 double 0
+  putStrLn $ "Result: (" ++ show state ++ "," ++ show result ++ ")"
 
+  where
+    run :: Int -> Double -> Int -> IO (Double, Int)
+    run state double counter = do
+      case counter < 3 of 
+        True -> do 
+          s <- getLine
+          let op = (read s :: Op)
+          (double, state) <- runStateT (applyOperations [op] double) state
+          run state double (counter + 1)
+        False -> do
+          runStateT (applyOperations [] double) state
 {-
 
 Sample Input:

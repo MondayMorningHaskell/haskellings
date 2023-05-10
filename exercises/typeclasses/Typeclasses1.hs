@@ -1,5 +1,3 @@
--- I AM NOT DONE
-
 import Test.Tasty
 import Test.Tasty.HUnit
 
@@ -51,23 +49,28 @@ objectMessage obj = "Object is: " ++ show obj
 -- TODO: Define instances of 'Show' and 'Eq' for these types and then fill in
 --       'equalMessage' function so they tests can use it on the types.
 
-data Occupation = Lawyer | Programmer | Engineer | Doctor | Manager | Teacher
+data Occupation = Lawyer | Programmer | Engineer | Doctor | Manager | Teacher deriving (Show, Eq)
 
 data Person =
   Adult String String Int Occupation |
   Child String Int Int
+  deriving (Show, Eq)
 
 -- A 'newtype' can also have typeclass instances!
 -- (Basic type synonyms cannot)
-newtype InterestRate = InterestRate Double
+newtype InterestRate = InterestRate Double deriving (Show, Eq)
 
 -- equalMessage should compare two objects of the same type.
 -- If they are the same, it should return "Objects are both '{x}'!"
 --   (where {x} is replaced by the "show" instance for the input object, keep the apostrophes)
 -- If they are not equal, return "Objects '{x}' and '{y}' are not equal!"
 -- Include a type signature!
-equalMessage :: ???
-equalMessage = undefined
+equalMessage :: (Eq a, Show a) => a -> a -> String
+equalMessage x y = if x == y 
+                  then 
+                    "Objects are both '" ++ show x ++ "'!" 
+                  else 
+                    "Objects '"++ show x ++"' and '"++ show y ++"' are not equal!"
 
 -- Testing Code
 

@@ -1,5 +1,3 @@
--- I AM NOT DONE
-
 import Test.Tasty
 import Test.Tasty.HUnit
 
@@ -44,7 +42,8 @@ evalList mylist = case myList of
 -- sum of the first elements. But if there are at least 4 elements,
 -- you can simply return 10.
 evalList :: Bool -> [Int] -> Int
-evalList = ???
+evalList True xs = if length xs > 4 then 4 else length xs
+evalList False xs = if length xs > 4 then 10 else sum xs
 
 -- Testing Code
 main :: IO ()

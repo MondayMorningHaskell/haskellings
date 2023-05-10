@@ -1,7 +1,5 @@
 module Types3 where
 
--- I AM NOT DONE
-
 {-
 - We can combine values of different types together using *tuples*.
 
@@ -18,11 +16,11 @@ tuple2 = ('a', True, 9.563)
 
 -- TODO: Fill in the missing type signatures or expression values
 
-tuple3 :: ???
+tuple3 :: (Int, Int, Bool, Bool)
 tuple3 = (3, 3, True, False)
 
 tuple4 :: (String, String, String)
-tuple4 = ???
+tuple4 = ("as","sd","sds")
 
 tuple5 :: (Int, String, Int, String, Double)
-tuple5 = ???
+tuple5 = (2, "a", 4, "1231", 5.5)

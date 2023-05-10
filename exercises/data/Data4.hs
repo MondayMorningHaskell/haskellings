@@ -1,5 +1,3 @@
--- I AM NOT DONE
-
 import Test.Tasty
 import Test.Tasty.HUnit
 
@@ -52,7 +50,7 @@ data Occupation =
 
 -- TODO: Change this type so that the last field (occupation) is *parameterized*.
 --       Examples down below will variously use 'String' or the 'Occupation' type.
-data Adult = Adult String String Int String
+data Adult a = Adult String String Int a
 
 adult1 :: Adult String
 adult1 = Adult "John" "Smith" 45 "Lawyer"
@@ -63,12 +61,18 @@ adult2 = Adult "Jane" "Smith" 39 Engineer
 -- Return a tuple with the 2nd and 3rd elements of the list.
 -- If there are fewer than 3 elements, return Nothing.
 secondAndThird :: [Int] -> Maybe (Int, Int)
-secondAndThird = undefined
+secondAndThird xs 
+  | length xs < 3 = Nothing
+  | otherwise = Just (xs!!1, xs!!2)
 
 -- Like above, but if there aren't enough elements, return a String saying:
 -- "Only {x} element(s) in the list"
 secondAndThird' :: [Int] -> Either String (Int, Int)
-secondAndThird' = undefined
+secondAndThird' xs
+  | length xs < 3 = Left $ "Only " ++ l ++ " element(s) in the list"
+  | otherwise = Right (xs!!1, xs!!2)
+  where
+    l = show (length xs)
 
 -- Testing Code
 main :: IO ()

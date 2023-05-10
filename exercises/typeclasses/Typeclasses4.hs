@@ -1,5 +1,3 @@
--- I AM NOT DONE
-
 import Test.Tasty
 import Test.Tasty.HUnit
 
@@ -30,7 +28,7 @@ data Point3 = Point3 Int Int Int
 
 instance Mathable Point3 where
   getSum (Point3 a b c) = a + b + c
-  getSum (Point3 a b c) = a * b * c
+  getProduct (Point3 a b c) = a * b * c
   getMin (Point3 a b c) = min a (min b c)
   getMax (Point3 a b c) = max a (max b c)
 
@@ -41,6 +39,10 @@ instance Mathable Point3 where
 -- 'getName' should return the object's full name.
 -- 'greet' should return the string "Hello there, " and then append the full name.
 
+class HasName a where
+  getName :: a -> String
+  greet :: a -> String
+
 -- Make an instance of this class for both 'Adult' and 'Child'
 data Adult = Adult
   { firstName :: String
@@ -48,17 +50,28 @@ data Adult = Adult
   , adultAge :: Int
   }
 
+instance HasName Adult where
+  getName a1 = firstName a1 ++ " " ++ lastName a1
+  greet a1 = "Hello there, " ++ getName a1
+
 data Child = Child
   { name :: String
   , childAge :: Int
   , grade :: Int
   }
 
+instance HasName Child where
+  getName a1 = name a1
+  greet a1 = "Hello there, " ++ getName a1
+
 -- Take two objects of potentially different types and give an ordering based
 -- on their full name (i.e. using getName)
 -- (Add constraints as necessary)
-compareByName :: a -> b -> Ordering
-compareByName = undefined
+compareByName :: (HasName a, HasName b) => a -> b -> Ordering
+compareByName x y = compare nx ny
+                where
+                  nx = getName x
+                  ny = getName y
 
 -- Test Code
 

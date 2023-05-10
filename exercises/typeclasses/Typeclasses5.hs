@@ -1,5 +1,3 @@
--- I AM NOT DONE
-
 import Test.Tasty
 import Test.Tasty.HUnit
 
@@ -35,10 +33,18 @@ printEquals x y = if x == y -- < Can use (==) because of implicit Eq constraint
 -- compareFromEntry should take a string and the class variable and assess
 -- whether or not they are the same, returning a String message and a boolean.
 
+class (Eq a, Show a, Read a) => Debuggable a where
+  logObject :: a -> String -> String
+  compareFromEntry :: String -> a -> (Bool, String)
+
 -- Create instances of this class for the 'Person' and 'Point3' types.
 -- Use the sample output to guide you
 data Person = Person String String Int
   deriving (Show, Read, Eq)
+
+instance Debuggable Person where
+  logObject p f = "Produced '" ++ show p ++ "' from file " ++ f 
+  compareFromEntry m p = if (show p == m) then (True, "Found entered Person object equivalent.") else (False, "Found entered Person object does not match.")
 
 -- logObject (Person "John" "Smith" 32) "Test.hs" -> "Produced 'Person \"John\" \"Smith\" 32' from file Test.hs"
 -- compareFromEntry "Person \"John\" \"Smith\" 32" (Person "John" "Smith" 32)
@@ -48,6 +54,10 @@ data Person = Person String String Int
 
 data Point3 = Point3 Int Int Int
   deriving (Show, Read, Eq)
+
+instance Debuggable Point3 where
+  logObject p f = "Calculated '" ++ show p ++ "' from input file " ++ f 
+  compareFromEntry m p = if (show p == m) then (True, "New Point calculation matches.") else (False, "New Point calculation does not match previous.")
 
 -- logObject (Point3 3 4 5) "Test.hs" -> "Calculated 'Point 3 4 5' from input file Test.hs"
 -- compareFromEntry (Point3 3 4 5) (Point3 3 4 5)
@@ -62,7 +72,8 @@ data Point3 = Point3 Int Int Int
 -- compareAndPrint "Point3 3 4 5" (Point3 6 8 10)
 --   -> (False, "'Point3 3 4 5' vs. 'Point3 6 8 10'")
 compareAndPrint :: (Debuggable a) => String -> a -> (Bool, String)
-compareAndPrint = undefined
+compareAndPrint m d = if (fst (compareFromEntry m d)) then (True, printed) else (False, printed)
+                      where printed = "'"++m++"'" ++ " vs. " ++ "'"++show d++"'"
 
 -- Test Code
 

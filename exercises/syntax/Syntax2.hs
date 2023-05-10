@@ -1,5 +1,3 @@
--- I AM NOT DONE
-
 import Test.Tasty
 import Test.Tasty.HUnit
 
@@ -38,13 +36,29 @@ example list1
 
 -- Rewrite 'countTrue', except this it takes 3 inputs, so use guards!
 countTrue :: Bool -> Bool -> Bool -> Int
-countTrue = ???
+countTrue b1 b2 b3
+    | (b1 == True) && (b2 == True) && (b3 == True) = 3
+    | (b1 == True) && (b2 == True) && (b3 == False) = 2
+    | (b1 == True) && (b2 == False) && (b3 == True) = 2
+    | (b1 == True) && (b2 == False) && (b3 == False) = 1
+    | (b1 == False) && (b2 == True) && (b3 == True) = 2
+    | (b1 == False) && (b2 == True) && (b3 == False) = 1
+    | (b1 == False) && (b2 == False) && (b3 == True) = 1
+    | (b1 == False) && (b2 == False) && (b3 == False) = 0
+    
 
 -- Return a string representation of the (positive) input number,
 -- from 0 = "Zero" up through 5 = "Five".
 -- If it's larger than 5, return "Too many!"
 numberString :: Word -> String
-numberString = ???
+numberString w
+    | w == 0 = "Zero"
+    | w == 1 = "One"
+    | w == 2 = "Two"
+    | w == 3 = "Three"
+    | w == 4 = "Four"
+    | w == 5 = "Five"
+    | otherwise = "Too many!"
 
 -- Testing Code
 main :: IO ()
